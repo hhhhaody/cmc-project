@@ -10,7 +10,9 @@ import Notification from "../components/Notification.vue";
 <template>
   <main class="layout">
     <span class="g4 animate__animated animate__fadeInRight">
-      <i>维保任务</i>
+      <i>信息提醒中心 </i>
+
+      <Notification />
 
       <!-- <LineGraph /> -->
     </span>
@@ -18,9 +20,7 @@ import Notification from "../components/Notification.vue";
       <i>远程监控</i>
     </span>
     <span class="g2 animate__animated animate__fadeInRight">
-      <i>信息提醒中心 </i>
-
-      <Notification />
+      <i>维保任务</i>
     </span>
     <span class="g1 animate__animated animate__fadeInLeft">
       <i>监测设备统计</i>

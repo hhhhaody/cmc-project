@@ -31,9 +31,33 @@ ul > li {
   margin: 2vh 0;
 }
 
-ul:nth-child(0) {
+ul :nth-child(1) {
   animation: fadeInUpBig; /* referring directly to the animation's @keyframe declaration */
   animation-duration: 1s;
+}
+ul :nth-child(2) {
+  animation: fadeInUpBig; /* referring directly to the animation's @keyframe declaration */
+  animation-duration: 1.2s;
+}
+ul :nth-child(3) {
+  animation: fadeInUpBig; /* referring directly to the animation's @keyframe declaration */
+  animation-duration: 1.4s;
+}
+ul :nth-child(4) {
+  animation: fadeInUpBig; /* referring directly to the animation's @keyframe declaration */
+  animation-duration: 1.6s;
+}
+ul :nth-child(5) {
+  animation: fadeInUpBig; /* referring directly to the animation's @keyframe declaration */
+  animation-duration: 1.8s;
+}
+ul :nth-child(6) {
+  animation: fadeInUpBig; /* referring directly to the animation's @keyframe declaration */
+  animation-duration: 2s;
+}
+ul :nth-child(7) {
+  animation: fadeInUpBig; /* referring directly to the animation's @keyframe declaration */
+  animation-duration: 2.2s;
 }
 
 /* .el-carousel__item {
