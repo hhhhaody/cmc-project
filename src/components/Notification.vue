@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import NotificationRow from "./NotificationRow.vue";
 
 const msg = ref([]);
 msg.value.push("设备故障报警");
@@ -17,7 +18,9 @@ msg.value.push("产线上原材料即将耗尽，请尽快上料！");
   </el-carousel> -->
   <ul>
     <li v-for="item in msg" :key="item">
-      {{ item }}
+      <NotificationRow>
+        <template #msg>{{ item }}</template>
+      </NotificationRow>
     </li>
   </ul>
 </template>
