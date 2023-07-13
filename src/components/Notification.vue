@@ -26,13 +26,13 @@ msg.value.push("产线上原材料即将耗尽，请尽快上料！");
 </template>
 
 <style scoped>
-ul {
+/* ul {
   margin: 2vh 1vh;
-}
+} */
 
-ul > li {
+/* ul > li {
   margin: 2vh 0;
-}
+} */
 
 ul :nth-child(1) {
   animation: fadeInUpBig; /* referring directly to the animation's @keyframe declaration */
