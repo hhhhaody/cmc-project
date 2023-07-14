@@ -6,28 +6,25 @@ import RadarGraph from "../components/RadarGraph.vue";
 import UsageRecord from "../components/UsageRecord.vue";
 import { ref } from "vue";
 
-const station = ref("");
-const options = [
-  {
-    value: "station1",
-    label: "station1",
-  },
-  {
-    value: "station2",
-    label: "station2",
-  },
-  {
-    value: "station3",
-    label: "station3",
-  },
-  {
-    value: "station4",
-    label: "station4",
-  },
-];
+const radar = ref("station1");
+const bar = ref("station1");
+// radar.value = "station1";
 
-const select = (val) => {
-  station.value = val;
+const changeStation = (type, val) => {
+  // type: 1 for radar
+  // console.log(type);
+  switch (type) {
+    case 1:
+      // code block
+      radar.value = val;
+      break;
+    case 2:
+      // code block
+      bar.value = val;
+      break;
+    default:
+    // code block
+  }
 };
 </script>
 
@@ -46,21 +43,28 @@ const select = (val) => {
     <span class="g2 animate__animated animate__fadeInRight">
       <i
         >耗时统计
-        <el-select
-          v-model="station"
-          class="m-2"
-          placeholder="station1"
-          @change="select"
-        >
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          /> </el-select
-      ></i>
+        <el-dropdown class="tab">
+          <span class="el-dropdown-link"> {{ radar }} </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="changeStation(1, 'station1')"
+                >station1</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeStation(1, 'station2')"
+                >station2</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeStation(1, 'station3')"
+                >station3</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeStation(1, 'station4')"
+                >station4</el-dropdown-item
+              >
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </i>
 
-      <RadarGraph class="graph" :station="station" />
+      <RadarGraph class="graph" :station="radar" />
     </span>
     <span class="g1 animate__animated animate__fadeInLeft">
       <i>原材料使用情况</i>
@@ -145,4 +149,28 @@ i {
     )
     2 10; */
 }
+
+.tab {
+  display: inline-block;
+  width: 10vh;
+  right: 2vh;
+  position: absolute;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  font-size: medium;
+  color: #fff;
+  text-shadow: 1px -1px 5px #a3ccf9;
+}
+
+/* .el-dropdown-menu {
+  color: #fff;
+  background: #6281a473;
+}
+:deep .el-dropdown-menu__item {
+  color: #fff;
+}
+:deep .el-popper__arrow {
+  display: none;
+} */
 </style>
