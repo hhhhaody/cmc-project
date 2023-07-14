@@ -4,6 +4,31 @@ import LineGraph from "../components/LineGraph.vue";
 import BarGraph from "../components/BarGraph.vue";
 import RadarGraph from "../components/RadarGraph.vue";
 import UsageRecord from "../components/UsageRecord.vue";
+import { ref } from "vue";
+
+const station = ref("");
+const options = [
+  {
+    value: "station1",
+    label: "station1",
+  },
+  {
+    value: "station2",
+    label: "station2",
+  },
+  {
+    value: "station3",
+    label: "station3",
+  },
+  {
+    value: "station4",
+    label: "station4",
+  },
+];
+
+const select = (val) => {
+  station.value = val;
+};
 </script>
 
 <template>
@@ -19,9 +44,23 @@ import UsageRecord from "../components/UsageRecord.vue";
     </span>
 
     <span class="g2 animate__animated animate__fadeInRight">
-      <i>耗时统计</i>
+      <i
+        >耗时统计
+        <el-select
+          v-model="station"
+          class="m-2"
+          placeholder="station1"
+          @change="select"
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          /> </el-select
+      ></i>
 
-      <RadarGraph class="graph" />
+      <RadarGraph class="graph" :station="station" />
     </span>
     <span class="g1 animate__animated animate__fadeInLeft">
       <i>原材料使用情况</i>
@@ -52,7 +91,7 @@ import UsageRecord from "../components/UsageRecord.vue";
 }
 
 .graph {
-  height: 35vh;
+  height: 36vh;
 }
 .g1 {
   grid-area: graph1;
@@ -76,6 +115,7 @@ span {
   /* height: 36vh; */
   /* background-color: #1019281e; */
   /* background: linear-gradient(#1d1d1ded, transparent); */
+  /* overflow: hidden; */
 }
 
 i {

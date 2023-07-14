@@ -85,6 +85,7 @@ span {
   width: 100%; */
   /* background-color: #1019285f; */
   /* background: linear-gradient(#1d1d1ded, transparent); */
+  /* overflow: hidden; */
 }
 
 i {
