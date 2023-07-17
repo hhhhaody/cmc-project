@@ -5,22 +5,24 @@ import GaugeGraph from "../components/GaugeGraph.vue";
 import PieGraph from "../components/PieGraph.vue";
 import DeviceStatus from "../components/DeviceStatus.vue";
 import Notification from "../components/Notification.vue";
+import MaintenanceTask from "../components/MaintenanceTask.vue";
 </script>
 
 <template>
   <main class="layout">
     <span class="g4 animate__animated animate__fadeInRight">
-      <i>信息提醒中心 </i>
+      <i>维保任务</i>
 
-      <Notification />
-
+      <MaintenanceTask />
       <!-- <LineGraph /> -->
     </span>
     <span class="g3 animate__animated animate__fadeInLeft">
-      <i>远程监控</i>
+      <i>信息提醒中心 </i>
+
+      <Notification />
     </span>
     <span class="g2 animate__animated animate__fadeInRight">
-      <i>维保任务</i>
+      <i>远程监控</i>
     </span>
     <span class="g1 animate__animated animate__fadeInLeft">
       <i>监测设备统计</i>
@@ -100,7 +102,7 @@ i {
       to right,
       transparent 5%,
       #f3f7fcbb 10%,
-      #5893c6 20%,
+      #6ea3d7 20%,
       transparent 90%
     )
     2 10;

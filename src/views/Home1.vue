@@ -134,7 +134,7 @@ i {
       to right,
       transparent 5%,
       #f3f7fcbb 10%,
-      #54a1e7 20%,
+      #6ea3d7 20%,
       transparent 90%
     )
     2 10;

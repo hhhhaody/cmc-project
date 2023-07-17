@@ -5,6 +5,7 @@
       style="width: 4vh; height: 4vh; margin-right: 8px"
       class="warningIcon"
     />
+
     <div class="warningBorder"></div>
   </div>
 </template>
@@ -23,6 +24,7 @@ const prop = defineProps({
   position: relative;
   color: #fff;
   overflow: hidden;
+  font-size: smaller;
 }
 
 .redBg {
@@ -56,7 +58,7 @@ const prop = defineProps({
   position: absolute;
   top: 18%;
   right: 0.1vh;
-  opacity: 0.5;
+  opacity: 0.2;
 }
 
 .warningBorder {
@@ -67,6 +69,6 @@ const prop = defineProps({
   height: 5vh;
   top: 25%;
   right: 0.4vh;
-  opacity: 0.5;
+  opacity: 0.2;
 }
 </style>
