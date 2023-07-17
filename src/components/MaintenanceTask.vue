@@ -279,9 +279,9 @@ const level4 = plan.value.filter((device) => device.type === 4);
 
 <style scoped>
 .collapse {
-  height: 36vh;
+  height: 35vh;
   width: 90%;
-  margin-top: 1vh;
+  margin-top: 1.5vh;
   margin-left: 1vh;
   overflow: auto;
 }
