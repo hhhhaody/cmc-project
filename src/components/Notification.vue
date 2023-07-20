@@ -60,7 +60,7 @@ setTimeout(start, 1000);
 
 <style scoped>
 .list {
-  height: 36vh;
+  height: 35vh;
   margin-top: 1vh;
   overflow: auto;
 }
