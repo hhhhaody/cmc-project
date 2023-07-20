@@ -8,8 +8,12 @@ import { ref, onMounted, inject, watch, nextTick } from "vue";
 const RadarChartRef = ref();
 
 const props = defineProps({
-  station: { type: String, default: "station1" },
+  station: { type: String },
+  stations: { type: Array },
 });
+
+// console.log(props.station);
+// console.log(props.stations[0]);
 
 const data = ref([]);
 
@@ -50,12 +54,12 @@ onMounted(() => {
     radar: {
       //   shape: "circle",
       indicator: [
-        { name: "Station 1" },
-        { name: "Station 2" },
-        { name: "Station 3" },
-        { name: "Station 4" },
-        { name: "Station 5" },
-        { name: "Station 6" },
+        { name: "上料设备" },
+        { name: "成品转移" },
+        { name: "桁架下料" },
+        { name: "下料设备" },
+        { name: "机械臂上料" },
+        { name: "激光切割" },
       ],
       center: ["50%", "50%"],
       radius: "60%",
@@ -85,7 +89,7 @@ watch(
   (newVal) => {
     // console.log(props.station);
 
-    if (props.station === "station1") {
+    if (props.station === props.stations[0]) {
       data.value = [
         {
           value: [4200, 3000, 20000, 35000, 50000, 18000],
@@ -97,7 +101,7 @@ watch(
         },
       ];
     }
-    if (props.station === "station2") {
+    if (props.station === props.stations[1]) {
       data.value = [
         {
           value: [4200, 2300, 20000, 32300, 43000, 12351],
@@ -109,7 +113,7 @@ watch(
         },
       ];
     }
-    if (props.station === "station3") {
+    if (props.station === props.stations[2]) {
       data.value = [
         {
           value: [46600, 22200, 20300, 30000, 2351, 1395],
@@ -120,8 +124,8 @@ watch(
           name: "Actual Spending",
         },
       ];
-    }
-    if (props.station === "station4") {
+    } 
+    if (props.station === props.stations[3]) {
       data.value = [
         {
           value: [4200, 2300, 20000, 3300, 43000, 12351],

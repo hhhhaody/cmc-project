@@ -4,73 +4,80 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted, inject } from "vue";
-function randomData() {
-  now = new Date(+now + oneDay);
-  value = value + Math.random() * 21 - 10;
-  return {
-    name: now.toString(),
-    value: [
-      [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("/"),
-      Math.round(value),
-    ],
-  };
-}
-
-let data = ref([]);
-let now = Date.now();
-let oneDay = 24 * 3600 * 1000;
-let value = Math.random() * 1000;
-for (var i = 0; i < 1000; i++) {
-  data.value.push(randomData());
-}
-// console.log(data);
-
+// import { fa } from "element-plus/es/locale";
+import { ref, onMounted, inject, watch, defineProps, reactive } from "vue";
 const LineChartRef = ref();
+
+const props = defineProps({
+  station: { type: String},
+  stations: { type: Array},
+});
+
+const data = reactive([]);
+// 模拟从数据源获取数据的方法
+
+function getDataFromAPI(station) {
+  // 这里使用假数据
+  const fakeData = [];
+  const now = Date.now();
+  const oneDay = 24 * 3600 * 1000;
+  let value = Math.random() * 1000;
+
+  for (let i = 0; i < 1000; i++) {
+    const time = new Date(now + i * oneDay);
+    value += Math.random() * 21 - 10;
+    fakeData.push({
+      name: time.toString(),
+      value: [
+        [time.getFullYear(), time.getMonth() + 1, time.getDate()].join("/"),
+        Math.round(value),
+      ],
+    });
+  }
+  return fakeData;
+}
+
+let LineChart;
+
+function randomData() {
+    // 这是一个示例的随机数据生成函数，根据实际需求进行修改
+    const now = new Date();
+    const value = Math.random() * 1000;
+    return {
+      name: now.toString(),
+      value: [
+        [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("/"),
+        Math.round(value),
+      ],
+    };
+  }
+
+  function start() {
+    setInterval(function () {
+      for (var i = 0; i < 5; i++) {
+        data.shift();
+        data.push(randomData());
+      }
+      LineChart.setOption({
+        series: [
+          {
+            data: data,
+          },
+        ],
+      });
+    }, 1500);
+  }
+
+data.splice(0, data.length, ...getDataFromAPI(props.station === props.stations[0]));
+
 onMounted(() => {
   // 注入echarts实例
   const echarts = inject("echarts");
   // 基于准备好的dom，初始化echarts实例
-  const LineChart = echarts.init(LineChartRef.value, "vintage");
+  LineChart = echarts.init(LineChartRef.value, "vintage");
   // 绘制图表
   LineChart.setOption({
-    // title: {
-    //   text: "Line Chart",
-    // },
-    // xAxis: {
-    //   type: "category",
-    //   data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    // },
-    // yAxis: {
-    //   type: "value",
-    // },
-    // series: [
-    //   {
-    //     data: [820, 932, 901, 934, 1290, 1330, 1320],
-    //     type: "line",
-    //     smooth: true,
-    //   },
-    //   {
-    //     data: [801, 952, 919, 914, 1200, 930, 1620],
-    //     type: "line",
-    //     smooth: true,
-    //   },
-    // ],
 
-    // title: {
-    //   text: "Dynamic Data & Time Axis",
-    // },
-
-    // visualMap: [
-    //   {
-    //     show: false,
-    //     type: "continuous",
-    //     dimension: 0,
-    //   },
-    // ],
-    // grid: {
-    //   bottom: "15%",
-    // },
     tooltip: {
       trigger: "axis",
       formatter: function (params) {
@@ -91,20 +98,7 @@ onMounted(() => {
           params.value[1]
         );
       },
-      // axisPointer: {
-      //   animation: true,
-      //   lineStyle: {
-      //     color: "#fff",
-      //     width: 0.2,
-      //     type: "solid",
-      //   },
-      // },
-      // backgroundColor: "#1019285f",
-      // textStyle: {
-      //   color: "fff",
-      //   textShadowColor: "#3d93c6",
-      //   textShadowBlur: 5,
-      // },
+
     },
     xAxis: {
       type: "time",
@@ -124,29 +118,41 @@ onMounted(() => {
         name: "Fake Data",
         type: "line",
         showSymbol: false,
-        data: data.value,
+        data: data, // 使用data.value来表示折线图的数据
       },
     ],
   });
 
-  function start() {
-    setInterval(function () {
-      for (var i = 0; i < 5; i++) {
-        data.value.shift();
-        data.value.push(randomData());
-      }
-      LineChart.setOption({
-        series: [
-          {
-            data: data.value,
-          },
-        ],
-      });
-    }, 1000);
-  }
-
-  // setTimeout(start, 2000);
+  start();
 });
+
+
+watch(
+  () => props,
+  (newVal) => {
+    // console.log(props.station);
+    if (props.station === props.stations[0]) {
+      data.splice(0, data.length, ...getDataFromAPI(newVal));
+      // console.log(data);
+    }
+    if (props.station === props.stations[1]) {
+      data.splice(0, data.length, ...getDataFromAPI(newVal));
+      // console.log(data);
+    }
+    if (props.station === props.stations[2]) {
+      data.splice(0, data.length, ...getDataFromAPI(newVal));
+    }
+    if (props.station === props.stations[3]) {
+      data.splice(0, data.length, ...getDataFromAPI(newVal));
+    }
+
+  },
+  {
+    deep: true,
+  }
+);
+
+
 </script>
 <style lang="scss" scoped>
 .echart {
