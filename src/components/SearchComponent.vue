@@ -18,8 +18,10 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(["search"]);
+
 const placeholder = ref("");
-placeholder.value = "Please input " + props.searchTitle.toLowerCase();
+placeholder.value = "请输入" + props.searchTitle.toLowerCase();
 
 const searchResult = ref([]);
 const searchContent = ref("");
@@ -36,21 +38,24 @@ const querySearchAsync = (queryString, cb) => {
   }, 1000 * Math.random());
 };
 
-// const createFilter = (queryString) => {
-//   return (tableData) => {
-//     return (
-//       tableData.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-//     );
-//   };
-// };
+const createFilter = (queryString) => {
+  return (searchFrom) => {
+    return (
+      searchFrom.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+    );
+  };
+};
 
 const handleSelect = (item) => {
-  console.log(item);
+  // console.log(props.searchTitle);
+  emit("search", props.searchTitle, item.value);
 };
 
 onMounted(() => {
   searchResult.value = props.loadAllData();
 });
+
+defineExpose({ searchContent });
 </script>
 
 <template>

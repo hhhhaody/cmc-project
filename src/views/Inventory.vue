@@ -1,82 +1,84 @@
 <script setup>
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, watch } from "vue";
 import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
 import SearchComponent from "../components/SearchComponent.vue";
+import PaginationComponent from "../components/PaginationComponent.vue";
 
+const search1 = ref();
+const search2 = ref();
+const pagination = ref();
 const tableData = [
   {
-    name: "material 1",
-    model: "20x20",
+    物料名称: "material 1",
+    规格型号: "20x20",
     stockQuantity: 220,
     threshold: 100,
   },
   {
-    name: "material 2",
-    model: "20x30",
+    物料名称: "material 2",
+    规格型号: "20x30",
     stockQuantity: 100,
     threshold: 100,
   },
   {
-    name: "material 3",
-    model: "30x30",
+    物料名称: "material 3",
+    规格型号: "30x30",
     stockQuantity: 150,
     threshold: 100,
   },
   {
-    name: "material 4",
-    model: "40x40",
+    物料名称: "material 4",
+    规格型号: "40x40",
     stockQuantity: 260,
     threshold: 100,
   },
   {
-    name: "material 5",
-    model: "40x20",
+    物料名称: "material 5",
+    规格型号: "40x20",
     stockQuantity: 190,
     threshold: 100,
   },
   {
-    name: "material 6",
-    model: "20x20",
+    物料名称: "material 6",
+    规格型号: "20x20",
     stockQuantity: 150,
     threshold: 100,
   },
   {
-    name: "material 6",
-    model: "20x20",
+    物料名称: "material 6",
+    规格型号: "20x20",
     stockQuantity: 150,
     threshold: 100,
   },
   {
-    name: "material 6",
-    model: "20x20",
+    物料名称: "material 6",
+    规格型号: "20x20",
     stockQuantity: 150,
     threshold: 100,
   },
   {
-    name: "material 6",
-    model: "20x20",
+    物料名称: "material 6",
+    规格型号: "20x20",
     stockQuantity: 150,
     threshold: 100,
   },
   {
-    name: "material 6",
-    model: "20x20",
+    物料名称: "material 6",
+    规格型号: "20x20",
     stockQuantity: 150,
     threshold: 100,
   },
   {
-    name: "material 6",
-    model: "20x20",
+    物料名称: "material 6",
+    规格型号: "20x20",
     stockQuantity: 150,
     threshold: 100,
   },
 ];
 
 const tableShown = reactive([]);
-const materials = ref([]);
-const models = ref([]);
-const material = ref("");
-const model = ref("");
+// tableShown.value = pagination.value.tableShown.value;
+
 const loadAllMaterial = () => {
   return [
     { value: "material 1", link: "https://github.com/vuejs/vue" },
@@ -98,77 +100,65 @@ const loadAllModel = () => {
   ];
 };
 
-let timeout;
-const querySearchAsyncMaterial = (queryString, cb) => {
-  const results = queryString
-    ? materials.value.filter(createFilter(queryString))
-    : materials.value;
+const total = ref(tableData.length);
 
-  clearTimeout(timeout);
-  timeout = setTimeout(() => {
-    cb(results);
-  }, 1000 * Math.random());
-};
-const querySearchAsyncModel = (queryString, cb) => {
-  const results = queryString
-    ? models.value.filter(createFilter(queryString))
-    : models.value;
-
-  clearTimeout(timeout);
-  timeout = setTimeout(() => {
-    cb(results);
-  }, 1000 * Math.random());
+let query = new Map();
+const search = (title, keyword) => {
+  // console.log(title, keyword);
+  query.set(title, keyword);
+  // console.log(query.keys());
 };
 
-const createFilter = (queryString) => {
-  return (tableData) => {
-    return (
-      tableData.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-    );
-  };
+const filter = () => {
+  tableShown.value = tableData;
+  query.forEach((val, key) => {
+    // console.log(key, val);
+    tableShown.value = tableShown.value.filter((e) => e[key] === val);
+  });
+  total.value = tableShown.value.length;
 };
 
-const handleSelect = (item) => {
-  console.log(item);
+const reset = () => {
+  tableShown.value = tableData;
+  query.clear();
+  total.value = tableData.length;
+  search1.value.searchContent = "";
+  search2.value.searchContent = "";
 };
 
-const currentPage1 = ref(1);
-const currentPage2 = ref(5);
-const currentPage3 = ref(5);
-const currentPage4 = ref(4);
-const pageSize2 = ref(20);
-const pageSize3 = ref(20);
-const pageSize4 = ref(40);
-const small = ref(false);
-const background = ref(true);
-const disabled = ref(false);
+const currentPage = ref(1);
+const pageSize = ref(10);
+// const small = ref(false);
+// const background = ref(true);
+// const disabled = ref(false);
 
-const handleSizeChange = (val) => {
-  // console.log(`${val} items per page`);
-  pageSize2.value = val;
-  tableShown.value = tableData.slice(
-    (currentPage1.value - 1) * pageSize2.value,
-    currentPage1.value * pageSize2.value
-  );
-};
-const handleCurrentChange = (val) => {
-  // console.log(`current page: ${val}`);
-  currentPage1.value = val;
-  tableShown.value = tableData.slice(
-    (currentPage1.value - 1) * pageSize2.value,
-    currentPage1.value * pageSize2.value
-  );
-};
+// const handleSizeChange = (val) => {
+//   // console.log(`${val} items per page`);
+//   pageSize.value = val;
+//   tableShown.value = tableData.slice(
+//     (currentPage.value - 1) * pageSize.value,
+//     currentPage.value * pageSize.value
+//   );
+// };
+// const handleCurrentChange = (val) => {
+//   // console.log(`current page: ${val}`);
+//   currentPage.value = val;
+//   tableShown.value = tableData.slice(
+//     (currentPage.value - 1) * pageSize.value,
+//     currentPage.value * pageSize.value
+//   );
+// };
 
 // const selectable = () => {};
 
 onMounted(() => {
   // materials.value = loadAllMaterial();
   // models.value = loadAllModel();
-  tableShown.value = tableData.slice(
-    (currentPage1.value - 1) * pageSize2.value,
-    currentPage1.value * pageSize2.value
-  );
+  // tableShown.value = tableData.slice(
+  //   (currentPage.value - 1) * pageSize.value,
+  //   currentPage.value * pageSize.value
+  // );
+  tableShown.value = pagination.value.tableShown.value;
 });
 </script>
 <template>
@@ -188,22 +178,29 @@ onMounted(() => {
         <!-- search -->
         <div>
           <SearchComponent
-            search-title="Material Name"
+            search-title="物料名称"
+            ref="search1"
             :load-all-data="loadAllMaterial"
+            @search="search"
           />
           <SearchComponent
-            search-title="Model type"
+            search-title="规格型号"
+            ref="search2"
             :load-all-data="loadAllModel"
+            @search="search"
           />
-          <el-button type="primary" style="margin-left: 10px; width: 7%"
+          <el-button
+            type="primary"
+            style="margin-left: 10px; width: 7%"
+            @click="filter"
             ><Search
               style="width: 1em; height: 1em; margin-right: 8px"
-            />Search</el-button
+            />搜索</el-button
           >
-          <el-button style="width: 7%"
+          <el-button style="width: 7%" @click="reset"
             ><DeleteFilled
               style="width: 1em; height: 1em; margin-right: 8px"
-            />Reset</el-button
+            />清空</el-button
           >
         </div>
         <br />
@@ -253,8 +250,8 @@ onMounted(() => {
             align="center"
             min-width="70vh"
           />
-          <el-table-column prop="name" label="Name" align="center" />
-          <el-table-column prop="model" label="Model" align="center" />
+          <el-table-column prop="物料名称" label="物料名称" align="center" />
+          <el-table-column prop="规格型号" label="规格型号" align="center" />
           <el-table-column
             prop="stockQuantity"
             label="Stock Quantity"
@@ -271,21 +268,27 @@ onMounted(() => {
       </el-main>
       <!-- pagination -->
       <el-footer style="display: flex; justify-content: center">
-        <div class="demo-pagination-block">
+        <!-- <div class="demo-pagination-block">
           <el-pagination
             class="el_total-color"
-            v-model:current-page="currentPage1"
-            v-model:page-size="pageSize2"
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
             :page-sizes="[10, 20, 50, 100]"
             :small="small"
             :disabled="disabled"
             :background="background"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="tableData.length"
+            :total="total"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
           /></div
-      ></el-footer>
+      > -->
+        <PaginationComponent
+          :table-data="tableData"
+          :total="total"
+          ref="pagination"
+        />
+      </el-footer>
     </el-container>
   </dv-border-box1>
 </template>

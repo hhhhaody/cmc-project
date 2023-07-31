@@ -305,7 +305,7 @@ el-collapse-item {
 :deep .el-collapse-item__header {
   /* background: radial-gradient(ellipse at bottom, #6ca2f3a4, transparent 90%),
     radial-gradient(ellipse at top, #8aadda76, transparent 50%); */
-  background-color: #31538271;
+  background-color: #3b639b71;
 
   border: solid 0px #559cde50;
   /* border-image: linear-gradient(
@@ -324,7 +324,7 @@ el-collapse-item {
   padding: 0;
   /* padding-left: 2vh; */
   /* color: #1f67d3; */
-  background: radial-gradient(ellipse at bottom, #7093c6a4, transparent 90%),
+  background: radial-gradient(ellipse at bottom, #6b9ce6a4, transparent 90%),
     radial-gradient(ellipse at top, #87a8d376, transparent 50%);
   /* background-color: #1f5493cd; */
   border: solid 0px #559cde50;

@@ -91,14 +91,6 @@ const tableData = [
 ];
 
 const tableShown = reactive([]);
-const sections = ref([]);
-const models = ref([]);
-const devices = ref([]);
-const suppliers = ref([]);
-const section = ref("");
-const model = ref("");
-const device = ref("");
-const supplier = ref("");
 
 const loadAllProduct = () => {
   return [
@@ -131,31 +123,26 @@ const handleSelect = (item) => {
   console.log(item);
 };
 
-const currentPage1 = ref(1);
-const currentPage2 = ref(5);
-const currentPage3 = ref(5);
-const currentPage4 = ref(4);
-const pageSize2 = ref(20);
-const pageSize3 = ref(20);
-const pageSize4 = ref(40);
+const currentPage = ref(1);
+const pageSize = ref(10);
 const small = ref(false);
 const background = ref(true);
 const disabled = ref(false);
 
 const handleSizeChange = (val) => {
   // console.log(`${val} items per page`);
-  pageSize2.value = val;
+  pageSize.value = val;
   tableShown.value = tableData.slice(
-    (currentPage1.value - 1) * pageSize2.value,
-    currentPage1.value * pageSize2.value
+    (currentPage.value - 1) * pageSize.value,
+    currentPage.value * pageSize.value
   );
 };
 const handleCurrentChange = (val) => {
   // console.log(`current page: ${val}`);
-  currentPage1.value = val;
+  currentPage.value = val;
   tableShown.value = tableData.slice(
-    (currentPage1.value - 1) * pageSize2.value,
-    currentPage1.value * pageSize2.value
+    (currentPage.value - 1) * pageSize.value,
+    currentPage.value * pageSize.value
   );
 };
 
@@ -167,8 +154,8 @@ onMounted(() => {
   //   devices.value = loadAllDevice();
   //   suppliers.value = loadAllSupplier();
   tableShown.value = tableData.slice(
-    (currentPage1.value - 1) * pageSize2.value,
-    currentPage1.value * pageSize2.value
+    (currentPage.value - 1) * pageSize.value,
+    currentPage.value * pageSize.value
   );
 });
 </script>
@@ -255,8 +242,8 @@ onMounted(() => {
         <div class="demo-pagination-block">
           <el-pagination
             class="el_total-color"
-            v-model:current-page="currentPage1"
-            v-model:page-size="pageSize2"
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
             :page-sizes="[10, 20, 50, 100]"
             :small="small"
             :disabled="disabled"
