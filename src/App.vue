@@ -98,7 +98,9 @@ const show = () => {
             <el-dropdown-item>
               <RouterLink to="/security" @click="hide">远程视频监控</RouterLink>
             </el-dropdown-item>
-            <el-dropdown-item>安全抓拍记录</el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/capture" @click="hide">安全抓拍记录</RouterLink>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -183,8 +185,8 @@ const show = () => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 55%;
-  height: 55%;
+  width: 50%;
+  height: 50%;
 }
 
 /* .fullscreenVideo {

@@ -2,7 +2,10 @@
   <div class="demo-collapse">
     <!-- 使用Element Plus的Collapse组件 -->
     <!-- activeNames指定了默认打开的面板，@change绑定了面板切换事件的处理函数 -->
-    <el-collapse v-model="activeNames" @change="handleChange">
+    <el-collapse v-model="activeNames" @change="handleChange" 
+      style="
+        --el-collapse-border-color: transparent;    /* 面板的边框颜色 */
+      ">
       <!-- 遍历每一个工作站 -->
       <el-collapse-item v-for="(option, index) in options" :title="option.title" :name="index.toString()" :key="index">
         <div v-for="(checked, stream) in option.streams" :key="stream">
@@ -131,6 +134,7 @@ export default {
   font-weight: 600;
   height: 50px;
   padding: 0 20px;
+  border: none;
 }
 
 /* 每个折叠项内容的背景和文本颜色 */
@@ -171,5 +175,18 @@ export default {
   height: 10px;
   border-radius: 50%;
   background: white;
+}
+
+:deep .el-collapse-item__wrap {
+  border: none;
+}
+
+:deep .head_active .el-collapse-item__header.is-active {
+  border-bottom-color: transparent;
+  /* color: #667687; */
+}
+
+:deep .el-collapse-item__header.is-active {
+  border-bottom: 0px solid #ebeef5;
 }
 </style>
