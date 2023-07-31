@@ -4,42 +4,102 @@ import LineGraph from "../components/LineGraph.vue";
 import BarGraph from "../components/BarGraph.vue";
 import RadarGraph from "../components/RadarGraph.vue";
 import UsageRecord from "../components/UsageRecord.vue";
+// import GaugeGraph from "../components/GaugeGraph.vue";
 import { ref } from "vue";
 
-const radar = ref("station1");
-const bar = ref("station1");
+const stations = ref(["型钢切割工作站", "地面钢网工作站", "方通组焊工作站", "模块总装工作站"]);
+const radar = ref(stations.value[0]); //耗时统计图形组件
+const bar = ref(stations.value[0]); //产品生产情况图形组件
+const usage = ref(stations.value[0]); //原材料使用情况图形组件
+const line = ref(stations.value[0]);  //能耗统计图形组件
+
+// console.log(stations.value[0]);
 // radar.value = "station1";
 
 const changeStation = (type, val) => {
   // type: 1 for radar
   // console.log(type);
+  // console.log(val);
+
   switch (type) {
     case 1:
       // code block
       radar.value = val;
+      // console.log(radar.value);
       break;
     case 2:
       // code block
       bar.value = val;
+      // console.log(bar.value);
+      break;
+    case 3:
+    //   // code block
+      usage.value = val;
+      break;
+    case 4:
+      // code block
+      line.value = val;
       break;
     default:
     // code block
   }
 };
+
 </script>
 
 <template>
   <main class="layout">
     <span class="g4 animate__animated animate__fadeInRight">
-      <i>能耗统计</i>
-      <LineGraph class="graph" />
+      <i
+        >能耗统计
+        <el-dropdown class="tab">
+          <span class="el-dropdown-link"> {{ line }} </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="changeStation(4, stations[0])"
+                >型钢切割工作站</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeStation(4, stations[1])"
+                >地面钢网工作站</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeStation(4, stations[2])"
+                >方通组焊工作站</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeStation(4, stations[3])"
+                >模块总装工作站</el-dropdown-item
+              >
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </i>
+      <LineGraph class="graph" :station="line" :stations="stations"/>
     </span>
     <span class="g3 animate__animated animate__fadeInLeft">
-      <i>产品生产情况</i>
+      <i
+        >产品生产情况
+        <el-dropdown class="tab">
+          <span class="el-dropdown-link"> {{ bar }} </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="changeStation(2, stations[0])"
+                >型钢切割工作站</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeStation(2, stations[1])"
+                >地面钢网工作站</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeStation(2, stations[2])"
+                >方通组焊工作站</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeStation(2, stations[3])"
+                >模块总装工作站</el-dropdown-item
+              >
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </i>
 
-      <BarGraph class="graph" />
+      <BarGraph class="graph" :station="bar" :stations="stations"/>
     </span>
-
     <span class="g2 animate__animated animate__fadeInRight">
       <i
         >耗时统计
@@ -47,29 +107,50 @@ const changeStation = (type, val) => {
           <span class="el-dropdown-link"> {{ radar }} </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="changeStation(1, 'station1')"
-                >station1</el-dropdown-item
+              <el-dropdown-item @click="changeStation(1, stations[0])"
+                >型钢切割工作站</el-dropdown-item
               >
-              <el-dropdown-item @click="changeStation(1, 'station2')"
-                >station2</el-dropdown-item
+              <el-dropdown-item @click="changeStation(1, stations[1])"
+                >地面钢网工作站</el-dropdown-item
               >
-              <el-dropdown-item @click="changeStation(1, 'station3')"
-                >station3</el-dropdown-item
+              <el-dropdown-item @click="changeStation(1, stations[2])"
+                >方通组焊工作站</el-dropdown-item
               >
-              <el-dropdown-item @click="changeStation(1, 'station4')"
-                >station4</el-dropdown-item
+              <el-dropdown-item @click="changeStation(1, stations[3])"
+                >模块总装工作站</el-dropdown-item
               >
             </el-dropdown-menu>
           </template>
         </el-dropdown>
       </i>
 
-      <RadarGraph class="graph" :station="radar" />
+      <RadarGraph class="graph" :station="radar" :stations="stations"/>
     </span>
     <span class="g1 animate__animated animate__fadeInLeft">
-      <i>原材料使用情况</i>
+      <i
+        >原材料使用情况
+        <el-dropdown class="tab">
+          <span class="el-dropdown-link"> {{ usage }} </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="changeStation(3, stations[0])"
+                >型钢切割工作站</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeStation(3, stations[1])"
+                >地面钢网工作站</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeStation(3, stations[2])"
+                >方通组焊工作站</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeStation(3, stations[3])"
+                >模块总装工作站</el-dropdown-item
+              >
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </i>
 
-      <UsageRecord class="graph" />
+      <UsageRecord class="graph" :station="usage" :stations="stations"/>
     </span>
     <span class="g5"> </span>
   </main>
@@ -152,7 +233,7 @@ i {
 
 .tab {
   display: inline-block;
-  width: 10vh;
+  /* width: 10vh; */
   right: 2vh;
   position: absolute;
   text-align: center;
@@ -160,7 +241,7 @@ i {
   cursor: pointer;
   font-size: medium;
   color: #fff;
-  text-shadow: 1px -1px 5px #a3ccf9;
+  /* text-shadow: 1px -1px 5px #a3ccf9; */
 }
 
 /* .el-dropdown-menu {

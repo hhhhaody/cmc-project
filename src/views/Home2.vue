@@ -6,6 +6,7 @@ import PieGraph from "../components/PieGraph.vue";
 import DeviceStatus from "../components/DeviceStatus.vue";
 import Notification from "../components/Notification.vue";
 import MaintenanceTask from "../components/MaintenanceTask.vue";
+import RemoteMonitor from "../components/RemoteMonitor.vue";
 </script>
 
 <template>
@@ -23,6 +24,8 @@ import MaintenanceTask from "../components/MaintenanceTask.vue";
     </span>
     <span class="g2 animate__animated animate__fadeInRight">
       <i>远程监控</i>
+
+      <RemoteMonitor />
     </span>
     <span class="g1 animate__animated animate__fadeInLeft">
       <i>监测设备统计</i>

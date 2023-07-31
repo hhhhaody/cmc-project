@@ -1,139 +1,133 @@
 <script setup>
-const tableData = [
-  {
-    date: "2016-05-03",
-    name: "Tom",
-    address: "No. 189, Grove St, Los Angeles",
-  },
-  {
-    date: "2016-05-02",
-    name: "Tom",
-    address: "No. 189, Grove St, Los Angeles",
-  },
-  {
-    date: "2016-05-04",
-    name: "Tom",
-    address: "No. 189, Grove St, Los Angeles",
-  },
-  {
-    date: "2016-05-01",
-    name: "Tom",
-    address: "No. 189, Grove St, Los Angeles",
-  },
+import { ref, onMounted, watchEffect, reactive, watch, toRefs, inject } from "vue";
+import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
+import Hls from "hls.js"; // 引入Hls.js库，用于播放m3u8格式的视频流
+import MyCollapse from "@/components/MyCollapse.vue"; // 引入自定义组件MyCollapse
+
+// m3u8视频流地址列表
+const videoUrls = [
+  'http://113.106.166.37:7086/live/cameraid/1000022%240/substream/2.m3u8',
+  'http://113.106.166.37:7086/live/cameraid/1000018%240/substream/2.m3u8',
+  'http://113.106.166.37:7086/live/cameraid/1000016%240/substream/2.m3u8',
+  'http://113.106.166.37:7086/live/cameraid/1000015%240/substream/2.m3u8',
+  'http://113.106.166.37:7086/live/cameraid/1000014%240/substream/2.m3u8',
+  'http://113.106.166.37:7086/live/cameraid/1000008%240/substream/2.m3u8',
+  'http://113.106.166.37:7086/live/cameraid/1000005%240/substream/2.m3u8',
+  'http://113.106.166.37:7086/live/cameraid/1000004%240/substream/2.m3u8',
 ];
 
-import { ref } from "vue";
-import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
-import Search from "../components/SearchComponent.vue";
+// 定义用于保存video元素引用的变量
+const videoPlayer1 = ref(null);
+const videoPlayer2 = ref(null);
+const videoPlayer3 = ref(null);
+const videoPlayer4 = ref(null);
+const videoElements = [videoPlayer1, videoPlayer2, videoPlayer3, videoPlayer4];
 
-const currentPage1 = ref(5);
-const currentPage2 = ref(5);
-const currentPage3 = ref(5);
-const currentPage4 = ref(4);
-const pageSize2 = ref(10);
-const pageSize3 = ref(20);
-const pageSize4 = ref(40);
-const small = ref(false);
-const background = ref(false);
-const disabled = ref(false);
+// 声明响应式对象，用于保存当前的视频流列表
+const state = reactive({
+  currentStreams: []
+});
 
-const handleSizeChange = (val) => {
-  console.log(`${val} items per page`);
+// 定义处理默认视频流的函数
+const handleDefaultStreams = (defaultStreams) => {
+  state.currentStreams = defaultStreams;
 };
-const handleCurrentChange = (val) => {
-  console.log(`current page: ${val}`);
+
+// 将响应式对象转化为可引用的对象
+const refs = toRefs(state);
+
+// 定义处理视频流改变的函数
+const handleStreamChanged = ({ stream, index }) => {
+  let newStreams = [...refs.currentStreams.value];
+  newStreams[index] = stream;
+  refs.currentStreams.value = newStreams;
 };
+
+// 在组件挂载后执行的操作
+onMounted(() => {
+  // 对每个视频元素进行监听
+  videoElements.forEach((elementRef, index) => {
+    // 当对应的视频流发生变化时进行处理
+    watch(() => refs.currentStreams.value[index], (newStream) => {
+      if (elementRef.value) {
+        // 如果浏览器支持Hls
+        if (Hls.isSupported()) {
+          // 如果视频元素已有hls对象，先销毁
+          if (elementRef.value.hls) {
+            elementRef.value.hls.destroy();
+          }
+          // 创建新的Hls对象，并绑定到视频元素上
+          const hls = new Hls();
+          elementRef.value.hls = hls;
+          hls.attachMedia(elementRef.value);
+          hls.loadSource(newStream);
+
+          // 对Hls对象的事件进行监听，处理错误情况
+          hls.on(Hls.Events.ERROR, function (event, data) {
+            if (data.fatal) {
+              switch (data.type) {
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                  console.log("fatal network error encountered, try to recover");
+                  hls.startLoad();
+                  break;
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                  console.log("fatal media error encountered, try to recover");
+                  hls.recoverMediaError();
+                  break;
+                default:
+                  hls.destroy();
+                  break;
+              }
+            }
+          });
+        } else if (elementRef.value.canPlayType("application/vnd.apple.mpegurl")) {
+          // 如果浏览器不支持Hls但支持mpegURL格式，直接设置视频源
+          elementRef.value.src = newStream;
+        }
+
+        // 自动播放视频
+        elementRef.value.play();
+
+      }
+    });
+  });
+
+  // 如果初始的视频流列表非空，尝试播放所有视频
+  if (refs.currentStreams.value.length > 0) {
+    videoElements.forEach((elementRef, index) => {
+      if (elementRef.value) {
+        elementRef.value.play();
+      }
+    });
+  }
+});
+
 </script>
+
+<!-- 模板部分，这个页面用于展示一些视频流，大致可以分为左侧的一个大视频窗口，
+右上侧的三个小视频窗口，以及右下侧的一个自定义折叠组件MyCollapse。 -->
 <template>
-  <dv-border-box1
-    ref="borderRef"
-    class="subNavPage animate__animated animate__zoomIn"
-    :color="['#4f698794', '#4f698794']"
-    background-color="#4f698794"
-  >
-    <el-container class="subNavPage">
-      <br />
-      <h1 style="text-align: center; width: 100%; margin-top: 1vh">
-        远程视频监控
-      </h1>
-      <!--<el-main style="overflow: hidden">
-        <div>
-          Material Name:
-          <el-autocomplete
-            v-model="state"
-            :fetch-suggestions="querySearchAsync"
-            placeholder="Please input material name"
-            @select="handleSelect"
-          />
-          Model type:
-          <el-autocomplete
-            v-model="state"
-            :fetch-suggestions="querySearchAsync"
-            placeholder="Please input model type"
-            @select="handleSelect"
-          />
-          <el-button type="primary"
-            ><Search
-              style="width: 1em; height: 1em; margin-right: 8px"
-            />Search</el-button
-          >
-          <el-button
-            ><DeleteFilled
-              style="width: 1em; height: 1em; margin-right: 8px"
-            />Reset</el-button
-          >
-        </div>
-        <br />
-        <div style="display: flex; justify-content: space-between">
-          <span>
-            <el-button type="primary"
-              ><Plus style="width: 1em; height: 1em; margin-right: 8px" />Add
-              new material</el-button
-            >
-            <el-button type="primary"
-              ><Download
-                style="width: 1em; height: 1em; margin-right: 8px"
-              />Download</el-button
-            >
-          </span>
-          <span>
-            <el-button>Inbound</el-button>
-            <el-button>Outbound</el-button>
-            <el-button>Transfer </el-button>
-          </span>
-        </div>
-        <div
-          style="
-            text-decoration: underline;
-            color: rgba(0, 191, 255, 0.726);
-            position: relative;
-            left: 91%;
-          "
-        >
-          Operation Record
-        </div>
-        <el-table :data="tableData" style="width: 100%">
-          <el-table-column prop="date" label="Date" width="180" />
-          <el-table-column prop="name" label="Name" width="180" />
-          <el-table-column prop="address" label="Address" />
-        </el-table>
-      </el-main>
-      <el-footer style="display: flex; justify-content: center">
-        <div class="demo-pagination-block">
-          <el-pagination
-            v-model:current-page="currentPage4"
-            v-model:page-size="pageSize4"
-            :page-sizes="[10, 20, 30, 40]"
-            :small="small"
-            :disabled="disabled"
-            :background="background"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="400"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          /></div
-      ></el-footer> -->
-    </el-container>
+  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
+    background-color="#4f698794">
+    <br />
+    <h1>远程视频监控</h1>
+    <div class="video-grid">
+      <div class="video-container video-large">
+        <video ref="videoPlayer1" controls type="application/x-mpegURL"></video>
+      </div>
+      <div class="video-container video-small">
+        <video ref="videoPlayer2" controls type="application/x-mpegURL"></video>
+      </div>
+      <div class="video-container video-small">
+        <video ref="videoPlayer3" controls type="application/x-mpegURL"></video>
+      </div>
+      <div class="video-container video-small">
+        <video ref="videoPlayer4" controls type="application/x-mpegURL"></video>
+      </div>
+      <div class="right-sidebar">
+        <my-collapse @stream-changed="handleStreamChanged" @default-streams="handleDefaultStreams"></my-collapse>
+      </div>
+    </div>
   </dv-border-box1>
 </template>
 
@@ -144,12 +138,63 @@ const handleCurrentChange = (val) => {
   height: 100%;
   width: 95%;
   margin: 0 auto;
+  position: relative;
 }
 
-.demo-pagination-block + .demo-pagination-block {
-  margin-top: 10px;
+.video-grid {
+  display: grid;
+  grid-template-columns: 50% 25% 20%;
+  grid-gap: 5px;
+  height: 600px;
 }
-.demo-pagination-block .demonstration {
-  margin-bottom: 16px;
+
+.video-container {
+  width: 90%;
+  height: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+  overflow: hidden;
+  /*防止视频元素溢出*/
+  position: relative;
+  /*为了让视频元素能够绝对定位*/
+  top: 30px;
+}
+
+.video-large {
+  grid-column: 1 / 2;
+  /* 左侧大视频框占用第1列 */
+  grid-row: 1 / 4;
+  /* 左侧大视频框占用第1行到第3行 */
+  margin-left: 8%;
+  /* margin-top: 5%; */
+
+}
+
+.video-small {
+  grid-column: 2 / 3;
+  /* 右侧三个小视频框占用第2列 */
+}
+
+video {
+  position: absolute;
+  /* 为了让视频元素能够绝对定位 */
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 3%;
+  object-fit: cover;
+}
+
+.right-sidebar {
+  grid-column: 3 / 4;
+  /* 右侧边栏占用第4列 */
+  grid-row: 1 / 4;
+  /* 右侧边栏占用第1行到第3行 */
+  overflow: auto;
+  /* 为了让右侧边栏内容超出时能够滚动 */
+  margin-top: 30px;
 }
 </style>
