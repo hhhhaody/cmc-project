@@ -1,12 +1,14 @@
 <script setup>
-import { ref, onMounted, reactive, watch } from "vue";
+import { ref, onMounted, reactive } from "vue";
 import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
 import SearchComponent from "../components/SearchComponent.vue";
 import PaginationComponent from "../components/PaginationComponent.vue";
 
 const search1 = ref();
 const search2 = ref();
-const pagination = ref();
+
+// 模拟初始数据
+// TODO: 从后端获取数据
 const tableData = [
   {
     物料名称: "material 1",
@@ -77,8 +79,9 @@ const tableData = [
 ];
 
 const tableShown = reactive([]);
-// tableShown.value = pagination.value.tableShown.value;
 
+// 模拟物料名称搜索栏提供的联想数据
+// TODO: 从后端获取数据
 const loadAllMaterial = () => {
   return [
     { value: "material 1", link: "https://github.com/vuejs/vue" },
@@ -90,6 +93,8 @@ const loadAllMaterial = () => {
   ];
 };
 
+// 模拟规格型号搜索栏提供的联想数据
+// TODO: 从后端获取数据
 const loadAllModel = () => {
   return [
     { value: "20x20", link: "https://github.com/vuejs/vue" },
@@ -100,8 +105,11 @@ const loadAllModel = () => {
   ];
 };
 
+
 const total = ref(tableData.length);
 
+
+// 记录用于通过搜索组件输入的搜索种类及对应关键词
 let query = new Map();
 const search = (title, keyword) => {
   // console.log(title, keyword);
@@ -109,6 +117,8 @@ const search = (title, keyword) => {
   // console.log(query.keys());
 };
 
+// 前端实现关键字搜索功能，后期只需传递关键词由后端实现相关功能
+// FIXME:后端实现后可能不需要此function
 const filter = () => {
   tableShown.value = tableData;
   query.forEach((val, key) => {
@@ -118,6 +128,7 @@ const filter = () => {
   total.value = tableShown.value.length;
 };
 
+// 清空搜索组件的关键字搜索，并初始化表格展示数据
 const reset = () => {
   tableShown.value = tableData;
   query.clear();
@@ -126,39 +137,15 @@ const reset = () => {
   search2.value.searchContent = "";
 };
 
-const currentPage = ref(1);
-const pageSize = ref(10);
-// const small = ref(false);
-// const background = ref(true);
-// const disabled = ref(false);
 
-// const handleSizeChange = (val) => {
-//   // console.log(`${val} items per page`);
-//   pageSize.value = val;
-//   tableShown.value = tableData.slice(
-//     (currentPage.value - 1) * pageSize.value,
-//     currentPage.value * pageSize.value
-//   );
-// };
-// const handleCurrentChange = (val) => {
-//   // console.log(`current page: ${val}`);
-//   currentPage.value = val;
-//   tableShown.value = tableData.slice(
-//     (currentPage.value - 1) * pageSize.value,
-//     currentPage.value * pageSize.value
-//   );
-// };
-
-// const selectable = () => {};
+// 分页器组件传递给父组件的列表，用于分页展示
+const table = (list) => {
+  tableShown.value = list.value;
+};
 
 onMounted(() => {
-  // materials.value = loadAllMaterial();
-  // models.value = loadAllModel();
-  // tableShown.value = tableData.slice(
-  //   (currentPage.value - 1) * pageSize.value,
-  //   currentPage.value * pageSize.value
-  // );
-  tableShown.value = pagination.value.tableShown.value;
+  //初始化表格展示数据，数据需从后端获取
+  tableShown.value = tableData
 });
 </script>
 <template>
@@ -286,7 +273,7 @@ onMounted(() => {
         <PaginationComponent
           :table-data="tableData"
           :total="total"
-          ref="pagination"
+          @table="table"
         />
       </el-footer>
     </el-container>

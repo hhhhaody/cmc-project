@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, reactive } from "vue";
 const props = defineProps(["tableData", "total"]);
+const emit = defineEmits(["table"]);
 const tableShown = reactive([]);
 const tableData = props.tableData;
 const currentPage = ref(1);
@@ -16,7 +17,8 @@ const handleSizeChange = (val) => {
     (currentPage.value - 1) * pageSize.value,
     currentPage.value * pageSize.value
   );
-  console.log(tableShown);
+  // console.log(tableShown);
+  emit("table", tableShown);
 };
 const handleCurrentChange = (val) => {
   // console.log(`current page: ${val}`);
@@ -25,19 +27,18 @@ const handleCurrentChange = (val) => {
     (currentPage.value - 1) * pageSize.value,
     currentPage.value * pageSize.value
   );
-  console.log(tableShown);
+  // console.log(tableShown);
+  emit("table", tableShown);
 };
 
 onMounted(() => {
-  // materials.value = loadAllMaterial();
-  // models.value = loadAllModel();
   tableShown.value = tableData.slice(
     (currentPage.value - 1) * pageSize.value,
     currentPage.value * pageSize.value
   );
 });
 
-defineExpose({ tableShown });
+// defineExpose({ tableShown });
 </script>
 
 <template>
