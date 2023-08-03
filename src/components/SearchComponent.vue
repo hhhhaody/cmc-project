@@ -1,21 +1,11 @@
 <script setup>
 import { ref, onMounted } from "vue";
+import { getSearchSuggestionAPI  } from "../apis/material";
+
 const props = defineProps({
   searchTitle: { type: String, default: "Material Name" },
   wNo: { type: Number },
-  loadAllData: {
-    type: Function,
-    default: () => {
-      return [
-        { value: "material 1", link: "https://github.com/vuejs/vue" },
-        { value: "material 2", link: "https://github.com/ElemeFE/element" },
-        { value: "material 3", link: "https://github.com/ElemeFE/cooking" },
-        { value: "material 4", link: "https://github.com/ElemeFE/mint-ui" },
-        { value: "material 5", link: "https://github.com/vuejs/vuex" },
-        { value: "material 6", link: "https://github.com/vuejs/vue-router" },
-      ];
-    },
-  },
+  field:{type:String,default:"id"}
 });
 
 const emit = defineEmits(["search"]);
@@ -28,6 +18,7 @@ const searchContent = ref("");
 
 let timeout;
 const querySearchAsync = (queryString, cb) => {
+
   const results = queryString
     ? searchResult.value.filter(createFilter(queryString))
     : searchResult.value;
@@ -47,12 +38,22 @@ const createFilter = (queryString) => {
 };
 
 const handleSelect = (item) => {
-  // console.log(props.searchTitle);
-  emit("search", props.searchTitle, item.value);
+  emit("search", props.field, item.value);
 };
 
+const check = (val) => {
+  emit("search", props.field, val);
+
+}
+
+const loadSuggestion = async () => {
+  const res = await getSearchSuggestionAPI(props.field)
+  searchResult.value = res.data
+};
+
+
 onMounted(() => {
-  searchResult.value = props.loadAllData();
+  loadSuggestion()
 });
 
 defineExpose({ searchContent });
@@ -68,5 +69,6 @@ defineExpose({ searchContent });
     clearable
     :placeholder="placeholder"
     @select="handleSelect"
+    @change = "check"
   />
 </template>
