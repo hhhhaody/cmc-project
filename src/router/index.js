@@ -36,6 +36,10 @@ const router = createRouter({
       path: '/security',
       name: 'security',
       component: () => import('../views/Security.vue')
+    }, {
+      path: '/capture',
+      name: 'capture',
+      component: () => import('../views/Capture.vue')
     },
 
 
