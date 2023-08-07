@@ -66,7 +66,9 @@ const show = () => {
             <el-dropdown-item>
               <RouterLink to="/facility" @click="hide">设备台账管理</RouterLink>
             </el-dropdown-item>
-            <el-dropdown-item>设备运行监测</el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/DeviceStatus" @click="hide">设备运行监测</RouterLink>
+            </el-dropdown-item>
             <el-dropdown-item>故障维修记录</el-dropdown-item>
             <el-dropdown-item>设备维护计划</el-dropdown-item>
             <el-dropdown-item>设备文件管理</el-dropdown-item>

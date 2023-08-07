@@ -40,6 +40,10 @@ const router = createRouter({
       path: '/capture',
       name: 'capture',
       component: () => import('../views/Capture.vue')
+    }, {
+      path: '/DeviceStatus',
+      name: 'DeviceStatus',
+      component: () => import('../views/DeviceStatus.vue')
     },
 
 
