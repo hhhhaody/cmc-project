@@ -1,6 +1,8 @@
 //axios encapsulation
 import axios from "axios";
 
+const _axiosPromiseArr = []
+
 const httpInstance = axios.create({
     baseURL: '/api',
     timeout: 5000,
@@ -10,6 +12,9 @@ const httpInstance = axios.create({
 //interceptor
 httpInstance.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
+    config.cancelToken = new axios.CancelToken(cancel => {
+        _axiosPromiseArr.push({ cancel })
+    })
     return config;
 }, function (error) {
     // 对请求错误做些什么
@@ -20,6 +25,15 @@ httpInstance.interceptors.request.use(function (config) {
 httpInstance.interceptors.response.use(function (response) {
     // 2xx 范围内的状态码都会触发该函数。
     // 对响应数据做点什么
+    if (response.data.code === 500) {
+        // 清除当前所有的未得到结果的异步请求
+        _axiosPromiseArr.forEach((element, index) => {
+            element.cancel()
+            delete _axiosPromiseArr[index]
+        });
+        localStorage.clear();
+        return false;
+    }
     return response.data;
 }, function (error) {
     // 超出 2xx 范围的状态码都会触发该函数。
