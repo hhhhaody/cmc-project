@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from "vue-router";
 import HelloWorld from "./components/HelloWorld.vue";
 
 // test API function
-import { testAPI } from "./apis/home";
+// import { testAPI } from "./apis/home";
 import { ref } from "vue";
 
 // const depts = ref([]);

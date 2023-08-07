@@ -1,9 +1,8 @@
 <script setup>
-import { ref, onMounted, reactive } from "vue";
-const props = defineProps(["tableData", "total"]);
-const emit = defineEmits(["table"]);
-const tableShown = reactive([]);
-const tableData = props.tableData;
+import { ref } from "vue";
+const props = defineProps(["total"]);
+const emit = defineEmits(["cur","size"]);
+
 const currentPage = ref(1);
 const pageSize = ref(10);
 const small = ref(false);
@@ -12,44 +11,15 @@ const disabled = ref(false);
 
 const handleSizeChange = (val) => {
   // console.log(`${val} items per page`);
-  pageSize.value = val;
-  tableShown.value = tableData.slice(
-    (currentPage.value - 1) * pageSize.value,
-    currentPage.value * pageSize.value
-  );
-  // console.log(tableShown);
-  emit("table", { value: tableShown.value, pageSize: pageSize.value });
+  emit("size",val)
 };
+
 const handleCurrentChange = (val) => {
   // console.log(`current page: ${val}`);
-  currentPage.value = val;
-  tableShown.value = tableData.slice(
-    (currentPage.value - 1) * pageSize.value,
-    currentPage.value * pageSize.value
-  );
-  // console.log(tableShown);
-  emit("table", { value: tableShown.value, pageSize: pageSize.value });
+  emit("cur",val)
+
 };
 
-// 定义一个重置方法，用于重置当前页面和分页大小
-const reset = () => {
-  // 将当前页码设置为1
-  currentPage.value = 1;
-  // 重新设置每页显示的项目数量
-  handleSizeChange(pageSize.value);
-};
-onMounted(() => {
-  tableShown.value = tableData.slice(
-    (currentPage.value - 1) * pageSize.value,
-    currentPage.value * pageSize.value
-  );
-  emit("table", { value: tableShown.value, pageSize: pageSize.value });
-});
-
-// defineExpose({ tableShown });
-defineExpose({
-  reset
-});
 </script>
 
 <template>
