@@ -1,14 +1,14 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { getSearchSuggestionAPI  } from "../apis/material";
+import { getSearchSuggestionAPI } from "../apis/material";
 
 const props = defineProps({
   searchTitle: { type: String, default: "Material Name" },
   wNo: { type: Number },
-  field:{type:String,default:"id"}
+  field: { type: String, default: "id" }
 });
 
-const emit = defineEmits(["search"]);
+const emit = defineEmits(["search", "edit"]);
 
 const placeholder = ref("");
 placeholder.value = "请输入" + props.searchTitle.toLowerCase();
@@ -46,6 +46,14 @@ const check = (val) => {
 
 }
 
+const focus = () => {
+  emit("edit", true);
+
+}
+const blur = () => {
+  emit("edit", false);
+}
+
 const loadSuggestion = async () => {
   const res = await getSearchSuggestionAPI(props.field)
   searchResult.value = res.data
@@ -56,19 +64,14 @@ onMounted(() => {
   loadSuggestion()
 });
 
+
+
 defineExpose({ searchContent });
 </script>
 
 <template>
   {{ props.searchTitle }}:
-  <el-autocomplete
-    style="margin: 0 1vh"
-    :style="{ width: props.wNo + '%' }"
-    v-model="searchContent"
-    :fetch-suggestions="querySearchAsync"
-    clearable
-    :placeholder="placeholder"
-    @select="handleSelect"
-    @change = "check"
-  />
+  <el-autocomplete style="margin: 0 1vh" :style="{ width: props.wNo + '%' }" v-model="searchContent"
+    :fetch-suggestions="querySearchAsync" clearable :placeholder="placeholder" @select="handleSelect" @change="check"
+    @blur="blur" @focus="focus" />
 </template>
