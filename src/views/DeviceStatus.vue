@@ -107,13 +107,18 @@ const workstations = reactive([
 
         <!-- 描述每种颜色对应的设备状态的说明部分 -->
         <div class="status-description">
-            * 绿色：正常运行
-            <br />
-            * 灰色：停机
-            <br />
-            * 黄色：检修维护
-            <br />
-            * 红色：报警
+            <span class="status-item">
+                绿色：正常运行
+            </span>
+            <span class="status-item">
+                灰色：停机
+            </span>
+            <span class="status-item">
+                黄色：检修维护
+            </span>
+            <span class="status-item">
+                红色：报警
+            </span>
         </div>
 
         <!-- 用于显示所有工作站的容器 -->
@@ -168,7 +173,7 @@ const workstations = reactive([
     display: flex;
     justify-content: center;
     padding: 0 0%;
-    margin-top: 10px;
+    margin-top: 25px;
 
 }
 
@@ -283,6 +288,9 @@ const workstations = reactive([
     text-align: left;
     color: #fff;
     margin-left: 120px;
-    margin-top: 20px;
+    margin-top: 60px;
+}
+.status-item {
+    margin-right: 20px;
 }
 </style>
