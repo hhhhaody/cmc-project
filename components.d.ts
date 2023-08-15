@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     BarGraph: typeof import('./src/components/BarGraph.vue')['default']
     DeviceStatus: typeof import('./src/components/DeviceStatus.vue')['default']
+    DialogComponent: typeof import('./src/components/DialogComponent.vue')['default']
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCalendar: typeof import('element-plus/es')['ElCalendar']
