@@ -31,6 +31,14 @@ export const addMaterialAPI = (data) => {
     })
 }
 
+export const updateMaterialAPI = (data) => {
+    return httpInstance({
+        url: '/materials',
+        method: 'put',
+        data
+    })
+}
+
 export const deleteMaterialAPI = (id) => {
     return httpInstance({
         url: '/materials/' + id,
@@ -40,7 +48,13 @@ export const deleteMaterialAPI = (id) => {
 
 export const getSearchSuggestionAPI = (field) => {
     return httpInstance({
-        url: '/materials/' + field
+        url: '/materials/search/' + field
+    })
+}
+
+export const getByIdAPI = (id) => {
+    return httpInstance({
+        url: '/materials/' + id
     })
 }
 

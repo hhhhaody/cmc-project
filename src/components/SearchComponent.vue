@@ -4,6 +4,7 @@ import { getSearchSuggestionAPI } from "../apis/material";
 
 const props = defineProps({
   searchTitle: { type: String, default: "Material Name" },
+  searchContent: { type: String, default: "" },
   wNo: { type: Number },
   field: { type: String, default: "id" }
 });
@@ -14,7 +15,7 @@ const placeholder = ref("");
 placeholder.value = "请输入" + props.searchTitle.toLowerCase();
 
 const searchResult = ref([]);
-const searchContent = ref("");
+const searchContent = ref(props.searchContent);
 
 let timeout;
 const querySearchAsync = (queryString, cb) => {
@@ -48,10 +49,11 @@ const check = (val) => {
 
 const focus = () => {
   emit("edit", true);
-
+  // console.log("editing");
 }
 const blur = () => {
   emit("edit", false);
+  // console.log("not editing");
 }
 
 const loadSuggestion = async () => {
@@ -73,5 +75,5 @@ defineExpose({ searchContent });
   {{ props.searchTitle }}:
   <el-autocomplete style="margin: 0 1vh" :style="{ width: props.wNo + '%' }" v-model="searchContent"
     :fetch-suggestions="querySearchAsync" clearable :placeholder="placeholder" @select="handleSelect" @change="check"
-    @blur="blur" @focus="focus" />
+    @focus="focus" @blur="blur" />
 </template>

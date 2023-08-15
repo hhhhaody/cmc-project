@@ -1,9 +1,12 @@
 <script setup>
 import { ref, onMounted, reactive, onUnmounted, watch } from "vue";
+import { RouterLink } from "vue-router";
 import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
 import SearchComponent from "../components/SearchComponent.vue";
 import PaginationComponent from "../components/PaginationComponent.vue";
-import { getMaterialAPI, addMaterialAPI, deleteMaterialAPI } from "../apis/material";
+import DialogComponent from "../components/DialogComponent.vue";
+import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, getByIdAPI } from "../apis/material";
+
 
 // 从后端获取数据
 const tableData = reactive([]);
@@ -18,21 +21,47 @@ const getDataFromAPI = async () => {
 };
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
+
 //搜索组件相关
+//#region
 const search1 = ref();
 const search2 = ref();
+const name = ref("")
+const spec = ref("")
 //用于重新加载搜索框和搜索建议
 const renderKey = ref(0)
 const updateSearchSuggestion = () => {
   renderKey.value = renderKey.value + 1
 }
 
-//默认为可刷新状态，如搜索框处于编辑状态，则变为false
+//默认为可刷新状态，如搜索框处于编辑状态，停止实时刷新
 const refresh = ref(true)
 const edit = (val) => {
-  if (val) refresh.value = false
-  else refresh.value = true
+  if (val) {
+    // console.log("loadmore false");
+    loadMore(false)
+  }
+  else {
+    // console.log("loadmore true");
+    loadMore(true)
+  }
 };
+
+const isLoading = ref(false);
+const loadMore = (status) => {
+  if (isLoading.value) {
+    return;
+  }
+  isLoading.value = true;
+  // 执行加载更多逻辑
+  // console.log("now setting refresh to be ", status);
+  refresh.value = status;
+
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 1000);
+};
+
 
 // 记录用于通过搜索组件输入的搜索种类及对应关键词
 const search = (title, keyword) => {
@@ -43,24 +72,29 @@ const search = (title, keyword) => {
 
 // 根据关键字搜索数据库
 const update = () => {
+  refresh.value = true
   getDataFromAPI()
 };
 
 // 清空搜索组件的关键字搜索，并初始化表格展示数据
 const reset = () => {
+  refresh.value = true
   name.value = "";
   spec.value = "";
   search1.value.searchContent = "";
   search2.value.searchContent = "";
   getDataFromAPI()
 };
+
+// #endregion
+
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //分页组件相关
+//#region
+
 const currentPage = ref(1);
 const pageSize = ref(10);
-const name = ref("")
-const spec = ref("")
 
 //分页器回传的每页条数
 const size = (val) => {
@@ -74,65 +108,53 @@ const cur = (val) => {
   getDataFromAPI()
 
 };
+// #endregion
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //弹框相关
-const addFormVisible = ref(false)
-const formLabelWidth = '10vh'
+//新增
+//#region
+const dialog = ref(false)
+const addDialog = ref()
+const editDialog = ref()
+
+const dialogClose = () => {
+  dialog.value = false
+}
 
 //表单数据
-const form = reactive({
+const addform = reactive({
+  name: '',
+  spec: '',
+  threshold: ''
+})
+const updateform = reactive({
+  id: '',
   name: '',
   spec: '',
   threshold: ''
 })
 
-const addform = ref()
+//编辑相关
+//数据回显API
 
-//清空表单并关闭弹框
-const clear = () => {
-  // console.log(form);
-  form.name = '',
-    form.spec = '',
-    form.threshold = ''
-  addFormVisible.value = false
-  getDataFromAPI()
-
-}
-
-//表单验证
-const submitForm = async (form) => {
-  if (!form) return
-  await form.validate((valid, fields) => {
-    if (valid) {
-      //向数据库发送增加请求并更新列表
-
-      // console.log('submit!')
-      add()
-      clear()
-    } else {
-      console.log('error submit!', fields)
-    }
-  })
-
-}
-
-//发送表单中的数据给数据库, 成功后关闭弹框
-const add = async () => {
-  const res = await addMaterialAPI(form);
+const getMaterialByID = async (id) => {
+  const res = await getByIdAPI(id);
   if (res.code === 1) {
-    addFormVisible.value = false
-    getDataFromAPI()
+    updateform.name = res.data.name
+    updateform.spec = res.data.spec
+    updateform.threshold = res.data.threshold
   }
-  // console.log(res);
 };
 
 
+// #endregion
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //确认删除
+//#region
 
 import { ElMessage, ElMessageBox } from 'element-plus'
 
@@ -148,13 +170,14 @@ const deleteConfirm = (id) => {
     '温馨提示',
     {
       confirmButtonText: '确认',
+
       cancelButtonText: '取消',
       type: 'warning',
     }
   )
     .then(() => {
       refresh.value = true
-      console.log(id);
+      // console.log(id);
       del(id)
       ElMessage({
         type: 'success',
@@ -170,18 +193,32 @@ const deleteConfirm = (id) => {
       })
     })
 }
-
+// #endregion
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //定时器 实时刷新数据相关
+//#region
+const jump = () => {
+  this.router.replace({ path: '/inventory/operation/' })
+}
+
+
+
+//#endregion
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//定时器 实时刷新数据相关
+//#region
+
 const timer = ref()
 
 const startTimer = () => {
   //创建定时器来实时更新数据
   timer.value = setInterval(() => {
     console.log("实时刷新中");
-    getDataFromAPI()
-  }, 2000)
+    //FIXME: 调试时修改此处
+    // getDataFromAPI()
+  }, 5000)
 }
 
 
@@ -200,11 +237,14 @@ onMounted(() => {
 });
 
 // 有弹框时或用户编辑搜索条件时停止实时更新 
-watch([addFormVisible, refresh], (val1, val2) => {
-  // console.log(`dialog visible is ${val1[0]}, refresh is ${val1[1]}`)
+watch([dialog, refresh], (val1, val2) => {
+  console.log(`dialog visible is ${val1[0]}, refresh is ${val1[1]}`)
   if (val1[0] | !val1[1]) clearInterval(timer.value)
   else startTimer()
 })
+
+// #endregion
+
 </script>
 
 <template>
@@ -219,10 +259,10 @@ watch([addFormVisible, refresh], (val1, val2) => {
       <el-main style="overflow: hidden">
         <!-- search -->
         <div>
-          <SearchComponent :key="renderKey" search-title="物料名称" ref="search1" field="name" @search="search"
-            @edit="edit" />
-          <SearchComponent :key="renderKey" search-title="规格型号" ref="search2" field="spec" @search="search"
-            @edit="edit" />
+          <SearchComponent :key="renderKey" search-title="物料名称" :searchContent=name ref="search1" field="name"
+            @search="search" @edit="edit" />
+          <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=spec ref="search2" field="spec"
+            @search="search" @edit="edit" />
           <el-button type="primary" style="margin-left: 10px; width: 7%" @click="update">
             <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
           </el-button>
@@ -234,7 +274,7 @@ watch([addFormVisible, refresh], (val1, val2) => {
         <!-- operation -->
         <div style="display: flex; justify-content: space-between">
           <span>
-            <el-button type="primary" @click="addFormVisible = true">
+            <el-button type="primary" @click="addDialog.dialogVisible = true, dialog = true">
               <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增物料
             </el-button>
 
@@ -255,46 +295,69 @@ watch([addFormVisible, refresh], (val1, val2) => {
             text-decoration: underline;
             color: #729fd0;
             position: relative;
-            left: 44%;
+            left: 95%;
+            width: fit-content;
+            cursor: pointer;
           ">
-          操作记录
+          <RouterLink to="/inventory/operation">操作记录</RouterLink>
         </div>
 
         <!-- 弹框区 -->
-        <el-dialog v-model="addFormVisible" title="新增物料类型" align-center destroy-on-close>
-          <el-form ref="addform" :model="form" label-position=left :label-width="formLabelWidth" @submit.prevent>
-            <el-form-item label="物料名称" prop="name" :rules="[
-              { required: true, message: '请输入物料名称', trigger: 'blur' },
-              {
-                min: 1, max: 30,
-                message: '长度必须在1-30之间', trigger: 'blur'
-              }]">
-              <el-input v-model="form.name" autocomplete="off" />
-            </el-form-item>
-            <el-form-item label="规格型号" prop="spec" :rules="[
-              { required: true, message: '请输入规格型号', trigger: 'blur' },
-              {
-                min: 1, max: 30,
-                message: '长度必须在1-30之间', trigger: 'blur'
-              }]">
-              <el-input v-model="form.spec" autocomplete="off" />
-            </el-form-item>
-            <el-form-item label="低库存阈值" prop="threshold" :rules="[
-              { required: true, message: '请输入阈值', trigger: 'blur' },
-              { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-            ]">
-              <el-input v-model.number="form.threshold" autocomplete="off" />
-            </el-form-item>
-          </el-form>
-          <template #footer>
-            <span class="dialog-footer">
-              <el-button @click="clear">取消</el-button>
-              <el-button type="primary" @click="submitForm(addform)">
-                确定
-              </el-button>
-            </span>
-          </template>
-        </el-dialog>
+        <!-- 新增弹框 -->
+        <DialogComponent ref="addDialog" :form="addform" dialog-title="新增物料类型" :refreshFunc="getDataFromAPI"
+          :confirm-func="addMaterialAPI" @dialogClose="dialogClose">
+          <el-form-item label="物料名称" prop="name" :rules="[
+            { required: true, message: '请输入物料名称', trigger: 'blur' },
+            {
+              min: 1, max: 30,
+              message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
+            <el-input v-model="addform.name" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="规格型号" prop="spec" :rules="[
+            { required: true, message: '请输入规格型号', trigger: 'blur' },
+            {
+              min: 1, max: 30,
+              message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
+            <el-input v-model="addform.spec" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="低库存阈值" prop="threshold" :rules="[
+            { required: true, message: '请输入阈值', trigger: 'blur' },
+            { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
+          ]">
+            <el-input v-model.number="addform.threshold" autocomplete="off" />
+          </el-form-item>
+        </DialogComponent>
+
+        <!-- 编辑弹框 -->
+        <DialogComponent ref="editDialog" :form="updateform" dialog-title="编辑物料类型" :refreshFunc="getDataFromAPI"
+          :confirm-func="updateMaterialAPI" @dialogClose="dialogClose">
+          <el-form-item label="物料名称" prop="name" :rules="[
+            { required: true, message: '请输入物料名称', trigger: 'blur' },
+            {
+              min: 1, max: 30,
+              message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
+            <el-input v-model="updateform.name" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="规格型号" prop="spec" :rules="[
+            { required: true, message: '请输入规格型号', trigger: 'blur' },
+            {
+              min: 1, max: 30,
+              message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
+            <el-input v-model="updateform.spec" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="低库存阈值" prop="threshold" :rules="[
+            { required: true, message: '请输入阈值', trigger: 'blur' },
+            { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
+          ]">
+            <el-input v-model.number="updateform.threshold" autocomplete="off" />
+          </el-form-item>
+        </DialogComponent>
+
+
 
 
         <!-- table -->
@@ -307,7 +370,10 @@ watch([addFormVisible, refresh], (val1, val2) => {
           <el-table-column prop="threshold" label="低库存阈值" align="center" />
           <el-table-column prop="operation" label="操作" align="center">
             <template #default="scope">
-              <el-button class="inline_button"> 编辑 </el-button>
+              <el-button class="inline_button"
+                @click="getMaterialByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, updateform.id = scope.row.id">
+                编辑
+              </el-button>
               <el-button class="inline_button" @click="deleteConfirm(scope.row.id)">
                 删除
               </el-button>
