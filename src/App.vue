@@ -70,7 +70,9 @@ const show = () => {
               <RouterLink to="/DeviceStatus" @click="hide">设备运行监测</RouterLink>
             </el-dropdown-item>
             <el-dropdown-item>故障维修记录</el-dropdown-item>
-            <el-dropdown-item>设备维护计划</el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/MaintenancePlan" @click="hide">设备维护计划</RouterLink>
+            </el-dropdown-item>
             <el-dropdown-item>设备文件管理</el-dropdown-item>
             <el-dropdown-item>产线组成</el-dropdown-item>
           </el-dropdown-menu>

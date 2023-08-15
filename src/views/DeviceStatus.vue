@@ -108,16 +108,16 @@ const workstations = reactive([
         <!-- 描述每种颜色对应的设备状态的说明部分 -->
         <div class="status-description">
             <span class="status-item">
-                绿色：正常运行
+                绿色:正常运行
             </span>
             <span class="status-item">
-                灰色：停机
+                灰色:停机
             </span>
             <span class="status-item">
-                黄色：检修维护
+                黄色:检修维护
             </span>
             <span class="status-item">
-                红色：报警
+                红色:报警
             </span>
         </div>
 

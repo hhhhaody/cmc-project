@@ -44,6 +44,10 @@ const router = createRouter({
       path: '/DeviceStatus',
       name: 'DeviceStatus',
       component: () => import('../views/DeviceStatus.vue')
+    }, {
+      path: '/MaintenancePlan',
+      name: 'MaintenancePlan',
+      component: () => import('../views/MaintenancePlan.vue')
     },
 
 
