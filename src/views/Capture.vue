@@ -16,7 +16,7 @@ const images = reactive([
     { url: '/public/CandidImages/candid9.jpeg', date: '2023-07-24 12:06:18' },
     { url: '/public/CandidImages/candid10.jpeg', date: '2023-07-24 17:02:19' },
     { url: '/public/CandidImages/candid11.jpeg', date: '2023-07-24 19:01:36' },
-    { url: '/public/CandidImages/candid12.jpeg', date: '2023-07-34 13:33:44' },
+    { url: '/public/CandidImages/candid12.jpeg', date: '2023-07-14 13:33:44' },
     { url: '/public/CandidImages/candid13.jpeg', date: '2023-07-23 12:26:46' },
     { url: '/public/CandidImages/candid14.jpeg', date: '2023-07-22 11:52:57' },
     { url: '/public/CandidImages/candid15.jpeg', date: '2023-06-22 08:35:38' },
@@ -45,8 +45,8 @@ const value = ref('')
 
 // 定义一个ref用于存储默认的时间范围
 const defaultTime = ref < [Date, Date] > ([
-    new Date(2000, 1, 1, 0, 0, 0),
-    new Date(2000, 2, 1, 23, 59, 59),
+    new Date(2023, 4, 1, 0, 0, 0), // 5月1日 00:00:00
+    new Date(2023, 4, 31, 23, 59, 59), // 5月31日 23:59:59
 ])
 
 // 定义一个查询函数，该函数会按照给定的日期范围筛选图片
@@ -197,7 +197,7 @@ const gridColumns = computed(() => {
     padding: 30px 0; /* 区块的顶部和底部内边距 */
     text-align: left; /* 文本的对齐方式 */
     border-right: solid 1px var(--el-border-color); /* 区块右边的边框 */
-    padding-left: 160px; /* 区块的左内边距 */
+    padding-left: 650px; /* 区块的左内边距 */
     display: flex; /* 区块的布局方式为弹性盒布局 */
     align-items: center; /* 子元素在交叉轴上的对齐方式为居中 */
 }
