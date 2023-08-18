@@ -11,7 +11,7 @@ const props = defineProps({
     data: { type: Object }
 });
 
-const emit = defineEmits(["search", "edit"]);
+const emit = defineEmits(["search"]);
 
 const placeholder = ref("");
 placeholder.value = "请选择" + props.searchTitle.toLowerCase();
@@ -49,14 +49,6 @@ const check = (val) => {
 
 }
 
-const focus = () => {
-    emit("edit", true);
-    // console.log("editing");
-}
-const blur = () => {
-    emit("edit", false);
-    // console.log("not editing");
-}
 
 const loadSuggestion = async () => {
     const res = await getDialogSearchSuggestionAPI(props.database, props.field, props.data)

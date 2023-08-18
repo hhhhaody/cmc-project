@@ -69,6 +69,9 @@ const search = (title, keyword) => {
   // console.log(title, keyword);
   if (title === "name") name.value = keyword
   if (title === "spec") spec.value = keyword
+
+
+  if (title === "supplier") stockInform.supplier = keyword
 };
 
 // 根据关键字搜索数据库
@@ -395,7 +398,7 @@ watch([dialog, refresh], (val1, val2) => {
             <!-- <DialogSearch :key="renderKey" search-title="供料单位" :searchContent=stockInform.supplier field="supplier"
               @search="dialogSearchSuggestion" :data="stockInform" database="materials/operation" /> -->
             <SearchComponent :key="renderKey" search-title="供料单位" :searchContent=stockInform.supplier field="supplier"
-              @search="search" @edit="edit" database="materials/operation" />
+              @search="search" database="materials/operation" />
 
             <!-- <el-input v-model="stockInform.supplier" autocomplete="off" /> -->
           </el-form-item>
