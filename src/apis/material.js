@@ -1,15 +1,4 @@
 import httpInstance from "../utils/http";
-// export function testAPI() {
-//     return httpInstance({
-//         url: '/depts'
-//     })
-// }
-
-// export function getMaterialAPI() {
-//     return httpInstance({
-//         url: '/materials'
-//     })
-// }
 
 export const getMaterialAPI = (page, pageSize, name, spec) => {
     return httpInstance({
@@ -46,9 +35,17 @@ export const deleteMaterialAPI = (id) => {
     })
 }
 
-export const getSearchSuggestionAPI = (field) => {
+export const getSearchSuggestionAPI = (database, field) => {
     return httpInstance({
-        url: '/materials/search/' + field
+        url: '/' + database + '/search/' + field
+    })
+}
+
+export const getDialogSearchSuggestionAPI = (database, field, data) => {
+    return httpInstance({
+        url: '/' + database + '/search/' + field,
+        method: 'post',
+        data
     })
 }
 
@@ -59,14 +56,19 @@ export const getByIdAPI = (id) => {
 }
 
 
-// export function getHotAPI() {
-//     return httpInstance({
-//         url: '/home/hot'
-//     })
-// }
-
-// export const getGoodsAPI = () => {
-//     return httpInstance({
-//         url: '/home/goods'
-//     })
-// }
+export const getMaterialOperationAPI = (page, pageSize, operation, name, spec, supplyTimeStart, supplyTimeEnd, supplier, operator) => {
+    return httpInstance({
+        url: '/materials/operation',
+        params: {
+            page,
+            pageSize,
+            operation,
+            name,
+            spec,
+            supplyTimeStart,
+            supplyTimeEnd,
+            supplier,
+            operator
+        }
+    })
+}

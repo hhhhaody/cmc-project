@@ -84,9 +84,7 @@ const show = () => {
             <el-dropdown-item>生产耗时记录</el-dropdown-item>
 
             <el-dropdown-item>
-              <RouterLink to="/production" @click="hide"
-                >实际产量记录</RouterLink
-              >
+              <RouterLink to="/production" @click="hide">实际产量记录</RouterLink>
             </el-dropdown-item>
             <el-dropdown-item>能耗统计记录</el-dropdown-item>
           </el-dropdown-menu>
@@ -134,16 +132,8 @@ const show = () => {
   </main>
 
   <div class="videoContainer">
-    <video
-      class="fullscreenVideo"
-      id="bgVid"
-      playsinline=""
-      autoplay=""
-      muted=""
-      loop=""
-      :style="{ display: animation }"
-    >
-      <source src="./assets/videos/bg-1.mp4" type="video/mp4" />
+    <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="" :style="{ display: animation }">
+      <source src="./assets/videos/cmc-2.mp4" type="video/mp4" />
     </video>
   </div>
 </template>
@@ -170,13 +160,13 @@ const show = () => {
   /* background: #435e7cc4; */
   /* background: #435e7c; */
 
-  background: 
-  /* radial-gradient(
+  background:
+    /* radial-gradient(
       100vh 100vh at 41%,
       transparent 30%,
       #182330a5 60%
-    ), */ url("./assets/images/bg1.png")
-    no-repeat center fixed;
+    ), */
+    url("./assets/images/bg1.png") no-repeat center fixed;
   background-size: cover;
 }
 
@@ -231,6 +221,7 @@ const show = () => {
   animation-duration: 4s;
   animation-fill-mode: forwards; */
 }
+
 /* #182330a2 */
 /* 动画代码 */
 @keyframes bgzoom {
@@ -261,10 +252,12 @@ header {
 h1 {
   width: 100%;
 }
+
 h1 span {
   display: block;
   height: 2em;
 }
+
 h1 img {
   height: 100%;
   margin: 0 1rem;
@@ -313,10 +306,12 @@ nav .nav2 {
   left: -5%;
   top: -35%;
 }
+
 nav .nav3 {
   left: 5%;
   top: -35%;
 }
+
 nav .nav4 {
   left: 10%;
 }

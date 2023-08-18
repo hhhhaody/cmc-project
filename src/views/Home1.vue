@@ -33,7 +33,7 @@ const changeStation = (type, val) => {
       // console.log(bar.value);
       break;
     case 3:
-    //   // code block
+      //   // code block
       usage.value = val;
       break;
     case 4:
@@ -50,107 +50,71 @@ const changeStation = (type, val) => {
 <template>
   <main class="layout">
     <span class="g4 animate__animated animate__fadeInRight">
-      <i
-        >能耗统计
+      <i>能耗统计
         <el-dropdown class="tab">
           <span class="el-dropdown-link"> {{ line }} </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="changeStation(4, stations[0])"
-                >型钢切割工作站</el-dropdown-item
-              >
-              <el-dropdown-item @click="changeStation(4, stations[1])"
-                >地面钢网工作站</el-dropdown-item
-              >
-              <el-dropdown-item @click="changeStation(4, stations[2])"
-                >方通组焊工作站</el-dropdown-item
-              >
-              <el-dropdown-item @click="changeStation(4, stations[3])"
-                >模块总装工作站</el-dropdown-item
-              >
+              <el-dropdown-item @click="changeStation(4, stations[0])">型钢切割工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(4, stations[1])">地面钢网工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(4, stations[2])">方通组焊工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(4, stations[3])">模块总装工作站</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
       </i>
-      <LineGraph class="graph" :station="line" :stations="stations"/>
+      <LineGraph class="graph" :station="line" :stations="stations" />
     </span>
     <span class="g3 animate__animated animate__fadeInLeft">
-      <i
-        >产品生产情况
+      <i>产品生产情况
         <el-dropdown class="tab">
           <span class="el-dropdown-link"> {{ bar }} </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="changeStation(2, stations[0])"
-                >型钢切割工作站</el-dropdown-item
-              >
-              <el-dropdown-item @click="changeStation(2, stations[1])"
-                >地面钢网工作站</el-dropdown-item
-              >
-              <el-dropdown-item @click="changeStation(2, stations[2])"
-                >方通组焊工作站</el-dropdown-item
-              >
-              <el-dropdown-item @click="changeStation(2, stations[3])"
-                >模块总装工作站</el-dropdown-item
-              >
+              <el-dropdown-item @click="changeStation(2, stations[0])">型钢切割工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(2, stations[1])">地面钢网工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(2, stations[2])">方通组焊工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(2, stations[3])">模块总装工作站</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
       </i>
 
-      <BarGraph class="graph" :station="bar" :stations="stations"/>
+      <BarGraph class="graph" :station="bar" :stations="stations" />
     </span>
     <span class="g2 animate__animated animate__fadeInRight">
-      <i
-        >耗时统计
+      <i>耗时统计
         <el-dropdown class="tab">
           <span class="el-dropdown-link"> {{ radar }} </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="changeStation(1, stations[0])"
-                >型钢切割工作站</el-dropdown-item
-              >
-              <el-dropdown-item @click="changeStation(1, stations[1])"
-                >地面钢网工作站</el-dropdown-item
-              >
-              <el-dropdown-item @click="changeStation(1, stations[2])"
-                >方通组焊工作站</el-dropdown-item
-              >
-              <el-dropdown-item @click="changeStation(1, stations[3])"
-                >模块总装工作站</el-dropdown-item
-              >
+              <el-dropdown-item @click="changeStation(1, stations[0])">型钢切割工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(1, stations[1])">地面钢网工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(1, stations[2])">方通组焊工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(1, stations[3])">模块总装工作站</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
       </i>
 
-      <RadarGraph class="graph" :station="radar" :stations="stations"/>
+      <RadarGraph class="graph" :station="radar" :stations="stations" />
     </span>
     <span class="g1 animate__animated animate__fadeInLeft">
-      <i
-        >原材料使用情况
+      <i>原材料使用情况
         <el-dropdown class="tab">
           <span class="el-dropdown-link"> {{ usage }} </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="changeStation(3, stations[0])"
-                >型钢切割工作站</el-dropdown-item
-              >
-              <el-dropdown-item @click="changeStation(3, stations[1])"
-                >地面钢网工作站</el-dropdown-item
-              >
-              <el-dropdown-item @click="changeStation(3, stations[2])"
-                >方通组焊工作站</el-dropdown-item
-              >
-              <el-dropdown-item @click="changeStation(3, stations[3])"
-                >模块总装工作站</el-dropdown-item
-              >
+              <el-dropdown-item @click="changeStation(3, stations[0])">型钢切割工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(3, stations[1])">地面钢网工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(3, stations[2])">方通组焊工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(3, stations[3])">模块总装工作站</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
       </i>
 
-      <UsageRecord class="graph" :station="usage" :stations="stations"/>
+      <UsageRecord class="graph" :station="usage" :stations="stations" />
     </span>
     <span class="g5"> </span>
   </main>
@@ -165,7 +129,7 @@ const changeStation = (type, val) => {
   /* padding: 0 2em; */
 
   grid-template-columns: repeat(auto-fit, minmax(20vh, 1fr));
-  grid-template-rows: repeat(auto-fit, minmax(36vh, 1fr));
+  grid-template-rows: repeat(auto-fit, minmax(35vh, 1fr));
   grid-template-areas:
     "graph1 graph5 graph5 graph2"
     "graph3 graph5 graph5 graph4";
@@ -176,20 +140,25 @@ const changeStation = (type, val) => {
 }
 
 .graph {
-  height: 36vh;
+  height: 35vh;
 }
+
 .g1 {
   grid-area: graph1;
 }
+
 .g2 {
   grid-area: graph2;
 }
+
 .g3 {
   grid-area: graph3;
 }
+
 .g4 {
   grid-area: graph4;
 }
+
 .g5 {
   grid-area: graph5;
   background-color: transparent;
@@ -211,14 +180,11 @@ i {
   line-height: 100%;
   padding: 1vh 1vh;
   border-bottom: solid 0.5vh #54a1e7;
-  border-image: linear-gradient(
-      to right,
+  border-image: linear-gradient(to right,
       transparent 5%,
       #f3f7fcbb 10%,
       #6ea3d7 20%,
-      transparent 90%
-    )
-    2 10;
+      transparent 90%) 2 10;
 
   /* border-bottom: solid 0.5vh #db6a82;
   border-image: linear-gradient(

@@ -6,6 +6,7 @@ const props = defineProps({
   searchTitle: { type: String, default: "Material Name" },
   searchContent: { type: String, default: "" },
   wNo: { type: Number },
+  database: { type: String, default: "materials" },
   field: { type: String, default: "id" }
 });
 
@@ -57,7 +58,7 @@ const blur = () => {
 }
 
 const loadSuggestion = async () => {
-  const res = await getSearchSuggestionAPI(props.field)
+  const res = await getSearchSuggestionAPI(props.database, props.field)
   searchResult.value = res.data
 };
 

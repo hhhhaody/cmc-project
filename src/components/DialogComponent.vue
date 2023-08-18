@@ -12,14 +12,14 @@ const props = defineProps({
         }
     }, //表单数据
     refreshFunc: { type: Function }, //刷新方程
-    confirmFunc: { type: Function } //刷新方程
+    confirmFunc: { type: Function } //提交方程
 });
 
 const emit = defineEmits(["dialogClose"]);
 
 
 const dialogVisible = ref(false)
-const formLabelWidth = '11vh'
+const formLabelWidth = '12vh'
 
 
 const formRef = ref()
@@ -66,7 +66,8 @@ defineExpose({ dialogVisible })
 
 <template>
     <el-dialog v-model="dialogVisible" :title="props.dialogTitle" align-center destroy-on-close @close="clear">
-        <el-form ref="formRef" :model="props.form" label-position=left :label-width="formLabelWidth" @submit.prevent>
+        <el-form ref="formRef" :model="props.form" label-position=right :label-width="formLabelWidth" @submit.prevent
+            style="padding-right: 4vh;">
             <slot></slot>
         </el-form>
         <template #footer>
