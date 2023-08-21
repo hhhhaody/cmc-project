@@ -53,6 +53,9 @@ const router = createRouter({
       path: '/MaintenancePlan',
       name: 'MaintenancePlan',
       component: () => import('../views/MaintenancePlan.vue')
+    }, {
+      path: '/MaintenancePlan/MaintainList',
+      component: () => import('../views/MaintainList.vue')
     },
 
 

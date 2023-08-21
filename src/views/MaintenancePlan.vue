@@ -40,6 +40,21 @@ function goToToday() {
     <br />
     <h1>设备维护计划</h1>
 
+    <div style="
+            height: 0vh;
+            line-height: 0vh;
+            /* text-decoration: underline;  */
+            color: #729fd0;
+            position: relative;
+            left: 90%;
+            width: fit-content; 
+            cursor: pointer;
+            font-size: 20px;
+          ">
+      <RouterLink to="/MaintenancePlan/MaintainList" style="margin-right: 10px; color: white;">列表</RouterLink>
+      <RouterLink to="/MaintenancePlan" style="color: white;">日历</RouterLink>
+    </div>
+
     <div class="calendar-container">
       <el-calendar class="custom-calendar" v-model="currentDate">
         <template #header>
