@@ -4,14 +4,14 @@ import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
 import SearchComponent from "../components/SearchComponent.vue";
 import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
-import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, getByIdAPI } from "../apis/material";
+import { getMaterialOperationAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, getByIdAPI } from "../apis/material";
 
 
 // 从后端获取数据
 const tableData = reactive([]);
 const total = ref(0)
 const getDataFromAPI = async () => {
-    const res = await getMaterialAPI(currentPage.value, pageSize.value, name.value, spec.value);
+    const res = await getMaterialOperationAPI(currentPage.value, pageSize.value, operation.value, name.value, spec.value, timeStart.value, timeEnd.value, supplier.value, operator.value);
     // console.log(res.data);
     tableData.value = res.data.data;
     total.value = res.data.total
@@ -32,7 +32,8 @@ const search6 = ref();
 const operation = ref("")
 const name = ref("")
 const spec = ref("")
-const time = ref("")
+const timeStart = ref("")
+const timeEnd = ref("")
 const supplier = ref("")
 const operator = ref("")
 const show = ref(false)
@@ -96,15 +97,19 @@ const reset = () => {
     operation.value = "";
     name.value = "";
     spec.value = "";
-    time.value = "";
+    timeStart.value = "";
+    timeEnd.value = "";
     supplier.value = "";
     operator.value = "";
     search1.value.searchContent = "";
     search2.value.searchContent = "";
     search3.value.searchContent = "";
-    search4.value.searchContent = "";
-    search5.value.searchContent = "";
-    search6.value.searchContent = "";
+
+    if (show) {
+        search5.value.searchContent = "";
+        search6.value.searchContent = "";
+    }
+
     getDataFromAPI()
 };
 
@@ -282,11 +287,11 @@ watch([dialog, refresh], (val1, val2) => {
                 <!-- search -->
                 <div>
                     <SearchComponent :key="renderKey" search-title="操作" :searchContent=operation ref="search1"
-                        field="operation" @search="search" @edit="edit" />
+                        field="operation" database="materials/operation" @search="search" @edit="edit" />
                     <SearchComponent :key="renderKey" search-title="物料名称" :searchContent=name ref="search2" field="name"
-                        @search="search" @edit="edit" />
+                        @search="search" database="materials/operation" @edit="edit" />
                     <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=spec ref="search3" field="spec"
-                        @search="search" @edit="edit" />
+                        @search="search" database="materials/operation" @edit="edit" />
                     <el-button style="margin-left: 10px; width: 7%" @click="show = !show">
                         <ArrowDown style="width: 1em; height: 1em; margin-right: 8px" />更多
                     </el-button>
@@ -303,9 +308,9 @@ watch([dialog, refresh], (val1, val2) => {
                             end-placeholder="结束日期" :default-time="defaultTime1" />
                     </div>
                     <SearchComponent :key="renderKey" search-title="供料单位" :searchContent=supplier ref="search5"
-                        field="supplier" @search="search" @edit="edit" />
+                        field="supplier" database="materials/operation" @search="search" @edit="edit" />
                     <SearchComponent :key="renderKey" search-title="操作人员" :searchContent=operator ref="search6"
-                        field="operator" @search="search" @edit="edit" />
+                        field="operator" database="materials/operation" @search="search" @edit="edit" />
                 </div>
                 <br />
                 <!-- operation -->
@@ -381,14 +386,29 @@ watch([dialog, refresh], (val1, val2) => {
 
                 <!-- table -->
                 <el-table :data="tableData.value" style="width: 100%; border-radius: 1vh" table-layout="fixed"
-                    height="48vh">
-                    <el-table-column type="selection" align="center" />
-                    <el-table-column label="Index" type="index" align="center" min-width="70vh" />
+                    show-overflow-tooltip height="48vh">
+                    <el-table-column type="selection" align="center" min-width="20vh" />
+                    <el-table-column label="序号" type="index" align="center" min-width="40vh" />
+                    <el-table-column prop="batch" label="物料批次" align="center" />
                     <el-table-column prop="name" label="物料名称" align="center" />
                     <el-table-column prop="spec" label="规格型号" align="center" />
-                    <el-table-column prop="amount" label="库存数量" align="center" />
-                    <el-table-column prop="threshold" label="低库存阈值" align="center" />
-                    <el-table-column prop="operation" label="操作" align="center">
+                    <el-table-column prop="amount" label="数量" align="center" />
+                    <el-table-column prop="operation" label="操作" align="center" min-width="40vh" />
+                    <el-table-column prop="operateTime" label="操作时间" align="center">
+                        <template #default="scope">
+                            {{ scope.row.operateTime.substring(0, 10) }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="operator" label="操作人员" align="center" />
+                    <el-table-column prop="supplier" label="供料单位" align="center" />
+                    <el-table-column prop="supplyTime" label="供料日期" align="center">
+                        <template #default="scope">
+                            {{ scope.row.supplyTime.substring(0, 10) }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="receipt" label="凭证" align="center" min-width="40vh" />
+                    <el-table-column prop="operation1" label="业务操作" align="center">
                         <template #default="scope">
                             <el-button class="inline_button"
                                 @click="getMaterialByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, updateform.id = scope.row.id">

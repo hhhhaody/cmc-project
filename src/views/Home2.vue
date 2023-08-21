@@ -53,7 +53,7 @@ import RemoteMonitor from "../components/RemoteMonitor.vue";
   /* padding: 0 2em; */
 
   grid-template-columns: repeat(auto-fit, minmax(20vh, 1fr));
-  grid-template-rows: repeat(auto-fit, minmax(36vh, 1fr));
+  grid-template-rows: repeat(auto-fit, minmax(35vh, 1fr));
   grid-template-areas:
     "graph1 graph5 graph5 graph2"
     "graph3 graph5 graph5 graph4";
@@ -64,20 +64,25 @@ import RemoteMonitor from "../components/RemoteMonitor.vue";
 }
 
 .graph {
-  height: 36vh;
+  height: 35vh;
 }
+
 .g1 {
   grid-area: graph1;
 }
+
 .g2 {
   grid-area: graph2;
 }
+
 .g3 {
   grid-area: graph3;
 }
+
 .g4 {
   grid-area: graph4;
 }
+
 .g5 {
   grid-area: graph5;
   background-color: transparent;
@@ -101,13 +106,10 @@ i {
   line-height: 100%;
   padding: 1vh 1vh;
   border-bottom: solid 0.5vh #5893c6;
-  border-image: linear-gradient(
-      to right,
+  border-image: linear-gradient(to right,
       transparent 5%,
       #f3f7fcbb 10%,
       #6ea3d7 20%,
-      transparent 90%
-    )
-    2 10;
+      transparent 90%) 2 10;
 }
 </style>

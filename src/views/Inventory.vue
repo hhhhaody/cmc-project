@@ -3,6 +3,7 @@ import { ref, onMounted, reactive, onUnmounted, watch } from "vue";
 import { RouterLink } from "vue-router";
 import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
 import SearchComponent from "../components/SearchComponent.vue";
+import DialogSearch from "../components/DialogSearch.vue";
 import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
 import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, getByIdAPI } from "../apis/material";
@@ -68,6 +69,9 @@ const search = (title, keyword) => {
   // console.log(title, keyword);
   if (title === "name") name.value = keyword
   if (title === "spec") spec.value = keyword
+
+
+  if (title === "supplier") stockInform.supplier = keyword
 };
 
 // 根据关键字搜索数据库
@@ -118,6 +122,7 @@ const cur = (val) => {
 const dialog = ref(false)
 const addDialog = ref()
 const editDialog = ref()
+const stockInDialog = ref()
 
 const dialogClose = () => {
   dialog.value = false
@@ -135,6 +140,19 @@ const updateform = reactive({
   spec: '',
   threshold: ''
 })
+const stockInform
+  = reactive({
+    name: '',
+    spec: '',
+    batch: '',
+    amount: '',
+    supplier: '',
+    supplyTime: '',
+    operateTime: '',
+    operator: '',
+    receipt: '',
+  })
+
 
 //编辑相关
 //数据回显API
@@ -148,6 +166,15 @@ const getMaterialByID = async (id) => {
   }
 };
 
+// 弹框内输入框搜索相关
+
+
+const dialogSearchSuggestion = (title, keyword) => {
+  if (title === "name") stockInform.name = keyword
+  if (title === "spec") stockInform.spec = keyword
+  updateSearchSuggestion()
+  // console.log(stockInform);
+}
 
 // #endregion
 
@@ -194,17 +221,7 @@ const deleteConfirm = (id) => {
     })
 }
 // #endregion
-//-----------------------------------------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------------------------------------
-//定时器 实时刷新数据相关
-//#region
-const jump = () => {
-  this.router.replace({ path: '/inventory/operation/' })
-}
 
-
-
-//#endregion
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //定时器 实时刷新数据相关
@@ -245,6 +262,9 @@ watch([dialog, refresh], (val1, val2) => {
 
 // #endregion
 
+
+
+
 </script>
 
 <template>
@@ -283,7 +303,7 @@ watch([dialog, refresh], (val1, val2) => {
             </el-button>
           </span>
           <span>
-            <el-button>入库</el-button>
+            <el-button @click="stockInDialog.dialogVisible = true, dialog = true">入库</el-button>
             <el-button>出库</el-button>
             <el-button>转入不良物料 </el-button>
           </span>
@@ -357,13 +377,72 @@ watch([dialog, refresh], (val1, val2) => {
           </el-form-item>
         </DialogComponent>
 
+        <!-- 入库弹框 -->
+        <DialogComponent ref="stockInDialog" :form="stockInform" dialog-title="物料入库" :refreshFunc="getDataFromAPI"
+          :confirm-func="addMaterialAPI" @dialogClose="dialogClose">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="物料名称" prop="name">
+                <DialogSearch :key="renderKey" :wNo="100" search-title="物料名称" :searchContent=stockInform.name field="name"
+                  @search="dialogSearchSuggestion" :data="stockInform" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="规格型号" prop="spec">
+                <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号" :searchContent=stockInform.spec field="spec"
+                  @search="dialogSearchSuggestion" :data="stockInform" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-form-item label="供料单位" prop="supplier">
+            <!-- <DialogSearch :key="renderKey" search-title="供料单位" :searchContent=stockInform.supplier field="supplier"
+              @search="dialogSearchSuggestion" :data="stockInform" database="materials/operation" /> -->
+            <SearchComponent :key="renderKey" search-title="供料单位" :searchContent=stockInform.supplier field="supplier"
+              @search="search" database="materials/operation" />
+
+            <!-- <el-input v-model="stockInform.supplier" autocomplete="off" /> -->
+          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="入库人员" prop="operator">
+                <el-input v-model="stockInform.operator" autocomplete="off" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="入库数量" prop="amount">
+                <el-input v-model="stockInform.amount" autocomplete="off" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="入库日期" prop="operateTime">
+                <el-input v-model="stockInform.operationTime" autocomplete="off" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="供料日期" prop="supplierTime">
+                <el-input v-model="stockInform.supplyTime" autocomplete="off" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-form-item label="签收凭证" prop="receipt">
+            <!-- <el-input v-model="stockInform.receipt" autocomplete="off" /> -->
+            <el-upload v-model:file-list="fileList" class="upload-demo"
+              action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" multiple :on-preview="handlePreview"
+              :on-remove="handleRemove" :before-remove="beforeRemove" :limit="3" :on-exceed="handleExceed">
+              <el-button type="primary">上传</el-button>
+            </el-upload>
+          </el-form-item>
+
+        </DialogComponent>
 
 
 
         <!-- table -->
         <el-table :data="tableData.value" style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh">
           <el-table-column type="selection" align="center" />
-          <el-table-column label="Index" type="index" align="center" min-width="70vh" />
+          <el-table-column label="序号" type="index" align="center" min-width="70vh" />
           <el-table-column prop="name" label="物料名称" align="center" />
           <el-table-column prop="spec" label="规格型号" align="center" />
           <el-table-column prop="amount" label="库存数量" align="center" />
