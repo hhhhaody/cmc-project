@@ -1,18 +1,18 @@
 <template>
   <div class="pieRow">
     <PieGraph class="graph" :online="1000" :offline="130" />
-    <PieGraph class="graph" :online="1200" :offline="30" pieName="Station1" />
+    <PieGraph class="graph" :online="1200" :offline="30" pieName="型钢切割工作站" />
   </div>
   <div class="pieRow pieRow2">
-    <PieGraph class="graph" :online="1100" :offline="98" pieName="Station2" />
-    <PieGraph class="graph" :online="788" :offline="29" pieName="Station3" />
+    <PieGraph class="graph" :online="1100" :offline="98" pieName="地面钢网工作站" />
+    <PieGraph class="graph" :online="788" :offline="29" pieName="方通组焊工作站" />
   </div>
 </template>
 <script setup>
 import PieGraph from "./PieGraph.vue";
 
 const props = defineProps({
-  pieName: { type: String, default: "Overall Device Status" },
+  pieName: { type: String, default: "总设备数" },
   online: { type: Number, default: 1250 },
   offline: { type: Number, default: 320 },
 });

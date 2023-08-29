@@ -8,7 +8,7 @@ import { ref, onMounted, inject, computed } from "vue";
 const PieChartRef = ref();
 
 const props = defineProps({
-  pieName: { type: String, default: "Overall Device Status" },
+  pieName: { type: String, default: "总设备数" },
   online: { type: Number, default: 1250 },
   offline: { type: Number, default: 320 },
 });
@@ -129,7 +129,7 @@ onMounted(() => {
         });
         // console.log(datas); //打印结果见下图
         if (name === "none") {
-          return "{0|Total}   " + " {1|" + totalNum + "}";
+          return "{0|设备总数}   " + " {1|" + totalNum + "}";
         } else {
           return (
             "{0|" + name + "}  " + "{1|" + data.value[index].value + "}"

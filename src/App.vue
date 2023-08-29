@@ -73,8 +73,12 @@ const show = () => {
             <el-dropdown-item>
               <RouterLink to="/MaintenancePlan" @click="hide">设备维护计划</RouterLink>
             </el-dropdown-item>
-            <el-dropdown-item>设备文件管理</el-dropdown-item>
-            <el-dropdown-item>产线组成</el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/DeviceFiles" @click="hide">设备文件管理</RouterLink>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/Compose" @click="hide">产线组成</RouterLink>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -83,12 +87,17 @@ const show = () => {
         <span class="el-dropdown-link"> 生产管理 </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>生产耗时记录</el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/TimeConsuming" @click="hide">生产耗时记录</RouterLink>
+            </el-dropdown-item>
 
             <el-dropdown-item>
               <RouterLink to="/production" @click="hide">实际产量记录</RouterLink>
             </el-dropdown-item>
-            <el-dropdown-item>能耗统计记录</el-dropdown-item>
+            
+            <el-dropdown-item>
+              <RouterLink to="/EnergyConsumption" @click="hide">能耗统计记录</RouterLink>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
