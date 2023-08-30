@@ -1,5 +1,5 @@
 <template>
-    <div class="add-container" v-if="isVisible">
+    <div class="add-container" v-show="isVisible">
         <h3>新增</h3>
         <div class="separator"></div>
 
@@ -59,6 +59,43 @@
 <script>
 import { ref } from "vue";
 import { ElDatePicker, ElOption, ElTimePicker, ElInput, ElButton, ElSelect } from 'element-plus';
+
+const tableData = [
+  {
+    lineName: "Line1",
+    positionName: "Position1",
+    deviceModel: "Type1",
+    maintenanceDate: "2021-04-13",
+    actualCompletionDate: "2021-04-13",
+    maintenancePerson: "方舟",
+    description: "清洁焊接机器人表面",
+    }, {
+    lineName: "Line1",
+    positionName: "Position1",
+    deviceModel: "Type1",
+    maintenanceDate: "2021-04-13",
+    actualCompletionDate: "2021-04-13",
+    maintenancePerson: "方舟",
+    description: "清洁焊接机器人表面",
+    }, {
+    lineName: "Line1",
+    positionName: "Position1",
+    deviceModel: "Type1",
+    maintenanceDate: "2021-04-13",
+    actualCompletionDate: "2021-04-13",
+    maintenancePerson: "方舟",
+    description: "清洁焊接机器人表面",
+    }, {
+    lineName: "Line1",
+    positionName: "Position1",
+    deviceModel: "Type1",
+    maintenanceDate: "2021-04-13",
+    actualCompletionDate: "2021-04-13",
+    maintenancePerson: "方舟",
+    description: "清洁焊接机器人表面",
+    },
+]
+
 
 export default {
     props: {

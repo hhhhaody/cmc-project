@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, computed } from "vue";
 import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
-// import PaginationComponent from "../components/PaginationComponent.vue";
+import PaginationComponent from "../components/PaginationComponent.vue";
 
 // 初始化一个reactive的images数组，数组元素包含图片的url和日期
 const images = reactive([
@@ -28,6 +28,32 @@ const images = reactive([
     { url: '/public/CandidImages/candid21.jpeg', date: '2023-05-18 19:10:26' },
 ]);
 
+const total = ref(images.length)
+
+const currentPage = ref(1);
+const pageSize = ref(10);
+
+//分页器回传的每页条数
+const size = (val) => {
+    pageSize.value = val;
+};
+
+//分页器回传的当前页
+const cur = (val) => {
+    currentPage.value = val;
+};
+
+
+// 分页显示的图片，使用computed属性计算得到
+const displayedImages = computed(() => {
+    const startIndex = (currentPage.value - 1) * pageSize.value;
+    const endIndex = startIndex + pageSize.value;
+    return images.slice(startIndex, endIndex);
+});
+
+// 设置总图片数量，用于分页组件
+total.value = images.length;
+
 // 使用images数组生成一个新的srcList数组，只包含每个元素的url
 let srcList = reactive(images.map(image => image.url));
 
@@ -51,32 +77,25 @@ const defaultTime = ref < [Date, Date] > ([
 
 // 定义一个查询函数，该函数会按照给定的日期范围筛选图片
 const query = () => {
-    // 输出查询日期
-    console.log('查询日期：', value.value);
-    // 当value的值存在，并且长度为2（代表日期范围）时，进行图片筛选
     if (value.value && value.value.length === 2) {
-        // 解构赋值开始和结束日期
         const [startDate, endDate] = value.value;
-        // 用filter方法筛选images，返回在开始和结束日期之间的图片
-        displayedImages.value = images.filter(image => {
+        const filteredImages = images.filter(image => {
             const imageDate = new Date(image.date);
             return imageDate >= startDate && imageDate <= endDate;
         });
+        images.splice(0, images.length, ...filteredImages); // Reassign the filtered images
+        currentPage.value = 1; // Reset to the first page after query
+        total.value = images.length; // Update total
     }
 };
 
-// 定义一个PaginationComponent的ref，用于保存PaginationComponent组件的实例
-const paginationComponent = ref(null);
 
 // 定义一个重置函数，该函数会重置value的值，并将所有图片赋值给displayedImages，并重置PaginationComponent
 const reset = () => {
-    value.value = '';
-    displayedImages.value = images;
-    paginationComponent.value.reset();
+    value.value = '';         // 清空日期选择器的值
+    currentPage.value = 1;   // 重置到第一页
+    images.value = initialImages.value; // 将图片数组重置为初始状态
 };
-
-// 定义一个ref用于存储页面大小
-let pageSize = ref(10);
 
 // 定义一个computed属性用于计算网格列的样式，当pageSize的值大于20或10时，返回'repeat(5, 1fr)'，否则返回'repeat(5, 1fr)'
 const gridColumns = computed(() => {
@@ -139,8 +158,7 @@ const gridColumns = computed(() => {
             <el-footer style="display: flex; justify-content: center">
 
                 <!-- 自定义的 PaginationComponent 分页组件 -->
-                <PaginationComponent ref="paginationComponent" :tableData="images" :total="images.length" :pageSize="10"
-                    @table="handleTableUpdate" />
+                <PaginationComponent :total="total" @size="size" @cur="cur" />
 
             </el-footer>
         </div>

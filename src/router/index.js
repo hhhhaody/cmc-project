@@ -63,12 +63,27 @@ const router = createRouter({
       path: '/MaintenancePlan',
       name: 'MaintenancePlan',
       component: () => import('../views/MaintenancePlan.vue')
+    }, {
+      path: '/MaintenancePlan/MaintainList',
+      component: () => import('../views/MaintainList.vue')
+    }, {
+      path: '/DeviceFiles',
+      name: 'DeviceFiles',
+      component: () => import('../views/DeviceFiles.vue')
+    }, {
+      path: '/Compose',
+      name: 'compose',
+      component: () => import('../views/Compose.vue')
+    }, {
+      path: '/TimeConsuming',
+      name: 'TimeConsuming',
+      component: () => import('../views/TimeConsuming.vue')
+    }, {
+      path: '/EnergyConsumption',
+      name: 'EnergyConsumption',
+      component: () => import('../views/EnergyConsumption.vue')
     },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('../views/Login.vue')
-    },
+
 
 
     {
