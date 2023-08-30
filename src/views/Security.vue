@@ -108,7 +108,7 @@ onMounted(() => {
 右上侧的三个小视频窗口，以及右下侧的一个自定义折叠组件MyCollapse。 -->
 <template>
   <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-    background-color="#4f698794">
+    background-color="#3545659e">
     <br />
     <h1>远程视频监控</h1>
     <div class="video-grid">

@@ -161,12 +161,8 @@ onMounted(() => {
 </script>
 <template>
   <!-- borderbox -->
-  <dv-border-box1
-    ref="borderRef"
-    class="subNavPage animate__animated animate__zoomIn"
-    :color="['#4f698794', '#4f698794']"
-    background-color="#4f698794"
-  >
+  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
+    background-color="#3545659e">
     <!-- body -->
     <el-container class="subNavPage">
       <br />
@@ -175,85 +171,47 @@ onMounted(() => {
       <el-main style="overflow: hidden">
         <!-- search -->
         <div>
-          <SearchComponent
-            search-title="Product Name"
-            :load-all-data="loadAllProduct"
-          />
-          <SearchComponent
-            search-title="Model type"
-            :load-all-data="loadAllModel"
-          />
-          <el-button type="primary" style="margin-left: 10px; width: 7%"
-            ><Search
-              style="width: 1em; height: 1em; margin-right: 8px"
-            />Search</el-button
-          >
-          <el-button style="width: 7%"
-            ><DeleteFilled
-              style="width: 1em; height: 1em; margin-right: 8px"
-            />Reset</el-button
-          >
+          <SearchComponent search-title="Product Name" :load-all-data="loadAllProduct" />
+          <SearchComponent search-title="Model type" :load-all-data="loadAllModel" />
+          <el-button type="primary" style="margin-left: 10px; width: 7%">
+            <Search style="width: 1em; height: 1em; margin-right: 8px" />Search
+          </el-button>
+          <el-button style="width: 7%">
+            <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />Reset
+          </el-button>
         </div>
         <br />
         <!-- operation -->
         <div style="display: flex; justify-content: space-between">
           <span>
-            <el-button type="primary"
-              ><Download
-                style="width: 1em; height: 1em; margin-right: 8px"
-              />Download</el-button
-            >
+            <el-button type="primary">
+              <Download style="width: 1em; height: 1em; margin-right: 8px" />Download
+            </el-button>
           </span>
         </div>
 
         <!-- table -->
         <div>
-          <el-table
-            :data="tableShown.value"
-            show-overflow-tooltip
-            style="width: 100%; border-radius: 1vh; margin-top: 1vh"
-            table-layout="fixed"
-            height="50vh"
-          >
+          <el-table :data="tableShown.value" show-overflow-tooltip
+            style="width: 100%; border-radius: 1vh; margin-top: 1vh" table-layout="fixed" height="50vh">
             <el-table-column type="selection" align="center" />
-            <el-table-column
-              type="index"
-              label="Index"
-              align="center"
-              min-width="60vh"
-            />
+            <el-table-column type="index" label="Index" align="center" min-width="60vh" />
             <el-table-column prop="name" label="Name" align="center" />
             <el-table-column prop="model" label="Model" align="center" />
-            <el-table-column
-              prop="produceDate"
-              label="Produce Date"
-              align="center"
-            />
-            <el-table-column
-              prop="produceNo"
-              label="Produce No."
-              align="center"
-            />
+            <el-table-column prop="produceDate" label="Produce Date" align="center" />
+            <el-table-column prop="produceNo" label="Produce No." align="center" />
           </el-table>
         </div>
       </el-main>
       <!-- pagination -->
       <el-footer style="display: flex; justify-content: center">
         <div class="demo-pagination-block">
-          <el-pagination
-            class="el_total-color"
-            v-model:current-page="currentPage"
-            v-model:page-size="pageSize"
-            :page-sizes="[10, 20, 50, 100]"
-            :small="small"
-            :disabled="disabled"
-            :background="background"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="tableData.length"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          /></div
-      ></el-footer>
+          <el-pagination class="el_total-color" v-model:current-page="currentPage" v-model:page-size="pageSize"
+            :page-sizes="[10, 20, 50, 100]" :small="small" :disabled="disabled" :background="background"
+            layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" @size-change="handleSizeChange"
+            @current-change="handleCurrentChange" />
+        </div>
+      </el-footer>
     </el-container>
   </dv-border-box1>
 </template>
@@ -268,9 +226,10 @@ onMounted(() => {
   position: relative;
 }
 
-.demo-pagination-block + .demo-pagination-block {
+.demo-pagination-block+.demo-pagination-block {
   margin-top: 10px;
 }
+
 .demo-pagination-block .demonstration {
   margin-bottom: 16px;
 }

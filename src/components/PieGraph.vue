@@ -24,12 +24,12 @@ data.value = [
     value: space.value,
     name: "none",
   },
-  { value: online.value, name: "Online" },
+  { value: online.value, name: "在线" },
   {
     value: space.value,
     name: "none",
   },
-  { value: offline.value, name: "Offline" },
+  { value: offline.value, name: "离线" },
 ];
 onMounted(() => {
   // 注入echarts实例
@@ -88,7 +88,7 @@ onMounted(() => {
     width: "50%",
     legend: {
       icon: "circle",
-      data: ["none", "Online", "Offline"],
+      data: ["none", "在线", "离线"],
       orient: "vertical",
       //   padding: [0, 0, 0, 50],
       itemWidth: 5,
@@ -121,7 +121,7 @@ onMounted(() => {
         data.value.forEach(function (v, i) {
           if (v.name !== "none") totalNum += v.value;
         });
-        let legendData = ["none", "Online", "none", "Offline"];
+        let legendData = ["none", "在线", "none", "离线"];
         legendData.forEach(function (v, i) {
           if (v == name) {
             index = i;
@@ -129,7 +129,7 @@ onMounted(() => {
         });
         // console.log(datas); //打印结果见下图
         if (name === "none") {
-          return "{0|Total}   " + " {1|" + totalNum + "}";
+          return "{0|总数} " + " {1|" + totalNum + "}";
         } else {
           return (
             "{0|" + name + "}  " + "{1|" + data.value[index].value + "}"
@@ -187,12 +187,12 @@ onMounted(() => {
                 name: "none",
               },
 
-              { value: online.value, name: "Online" },
+              { value: online.value, name: "在线" },
               {
                 value: space.value,
                 name: "none",
               },
-              { value: offline.value, name: "Offline" },
+              { value: offline.value, name: "离线" },
             ],
           },
         ],

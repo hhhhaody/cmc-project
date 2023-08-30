@@ -36,7 +36,7 @@ function goToToday() {
 
 <template>
   <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-    background-color="#4f698794">
+    background-color="#3545659e">
     <br />
     <h1>设备维护计划</h1>
 

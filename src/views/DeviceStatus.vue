@@ -100,7 +100,7 @@ const workstations = reactive([
     <!-- 使用dv-border-box1组件作为主要的布局容器，通过ref引用这个组件以便在其他地方操作它。这个组件被赋予了一个动画类，使它在进入时有一个放大的动画效果。
          其颜色属性设置了边界的颜色，背景颜色属性设置了背景的颜色 -->
     <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-        background-color="#4f698794">
+        background-color="#3545659e">
         <br />
         <!-- 标题显示为"设备运行监测" -->
         <h1>设备运行监测</h1>
@@ -290,6 +290,7 @@ const workstations = reactive([
     margin-left: 120px;
     margin-top: 60px;
 }
+
 .status-item {
     margin-right: 20px;
 }

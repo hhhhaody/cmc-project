@@ -35,19 +35,6 @@ export const deleteMaterialAPI = (id) => {
     })
 }
 
-export const getSearchSuggestionAPI = (database, field) => {
-    return httpInstance({
-        url: '/' + database + '/search/' + field
-    })
-}
-
-export const getDialogSearchSuggestionAPI = (database, field, data) => {
-    return httpInstance({
-        url: '/' + database + '/search/' + field,
-        method: 'post',
-        data
-    })
-}
 
 export const getByIdAPI = (id) => {
     return httpInstance({
@@ -56,7 +43,7 @@ export const getByIdAPI = (id) => {
 }
 
 
-export const getMaterialOperationAPI = (page, pageSize, operation, name, spec, supplyTimeStart, supplyTimeEnd, supplier, operator) => {
+export const getMaterialOperationAPI = (page, pageSize, operation, name, spec, operateTimeStart, operateTimeEnd, supplier, operator) => {
     return httpInstance({
         url: '/materials/operation',
         params: {
@@ -65,10 +52,37 @@ export const getMaterialOperationAPI = (page, pageSize, operation, name, spec, s
             operation,
             name,
             spec,
-            supplyTimeStart,
-            supplyTimeEnd,
+            operateTimeStart,
+            operateTimeEnd,
             supplier,
             operator
         }
+    })
+}
+
+export const addMaterialOperationAPI = (data) => {
+    return httpInstance({
+        url: '/materials/operation',
+        method: 'post',
+        data
+    })
+}
+
+export const getByBatchAPI = (batch) => {
+    return httpInstance({
+        url: '/materials/operation/' + encodeURIComponent(batch)
+    })
+}
+
+export const getMaterialOperationByIdAPI = (id) => {
+    return httpInstance({
+        url: '/materials/operation/id/' + id
+    })
+}
+
+export const deleteMaterialOperationAPI = (id) => {
+    return httpInstance({
+        url: '/materials/operation/id/' + id,
+        method: 'delete'
     })
 }

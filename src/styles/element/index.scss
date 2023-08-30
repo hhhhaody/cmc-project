@@ -1,10 +1,26 @@
 @forward 'element-plus/theme-chalk/src/common/var.scss' with ($colors: ('primary': ('base': #729fd0,
-        ),
-        'success':('base':#30ccd1,
-        ),
-        'warning':('base':#ffb302,
-        ),
-        'danger':('base':#e26237,
-        ),
-        'error':('base':#c93939,
-        )));
+                ),
+                'success':('base':#339a528b,
+                ),
+                'warning':('base':#ffb302,
+                ),
+                'danger':('base':#e26237,
+                ),
+                'error':('base':#c93939,
+                ),
+                'info':('base':#729fd0,
+                ), ));
+
+.el-notification {
+        &.is-success {
+                background-color: var(--el-color-success-base); // 使用自定义的 success 颜色
+                color: var(--el-color-primary-light); // 使用自定义的 primary 颜色
+        }
+
+        &.is-warning {
+                background-color: var(--el-color-warning-base); // 使用自定义的 warning 颜色
+                color: var(--el-color-danger-dark); // 使用自定义的 danger 颜色
+        }
+
+        // ... 同样方式修改其他通知类型的样式
+}

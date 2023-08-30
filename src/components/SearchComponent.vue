@@ -1,10 +1,11 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { getSearchSuggestionAPI } from "../apis/material";
+import { getSearchSuggestionAPI } from "../apis/util";
 
 const props = defineProps({
   searchTitle: { type: String, default: "Material Name" },
   searchContent: { type: String, default: "" },
+  hideTitle: { type: Boolean, default: false },
   wNo: { type: Number },
   database: { type: String, default: "materials" },
   field: { type: String, default: "id" }
@@ -16,6 +17,7 @@ const placeholder = ref("");
 placeholder.value = "请输入" + props.searchTitle.toLowerCase();
 
 const searchResult = ref([]);
+
 const searchContent = ref(props.searchContent);
 
 let timeout;
@@ -73,8 +75,13 @@ defineExpose({ searchContent });
 </script>
 
 <template>
-  {{ props.searchTitle }}:
-  <el-autocomplete style="margin: 0 1vh" :style="{ width: props.wNo + '%' }" v-model="searchContent"
-    :fetch-suggestions="querySearchAsync" clearable :placeholder="placeholder" @select="handleSelect" @change="check"
-    @focus="focus" @blur="blur" />
+  <template v-if="props.hideTitle === false">{{ props.searchTitle }}:
+    <el-autocomplete style="margin: 0 1vh" :style="{ width: props.wNo + '%' }" v-model="searchContent"
+      :fetch-suggestions="querySearchAsync" clearable :placeholder="placeholder" @select="handleSelect" @change="check"
+      @focus="focus" @blur="blur" />
+  </template>
+  <template v-else>
+    <el-autocomplete :style="{ width: props.wNo + '%' }" v-model="searchContent" :fetch-suggestions="querySearchAsync"
+      clearable :placeholder="placeholder" @select="handleSelect" @change="check" @focus="focus" @blur="blur" />
+  </template>
 </template>

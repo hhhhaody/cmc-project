@@ -20,6 +20,7 @@ import { echarts } from "@/utils/echarts"; // 按需引入echarts
 provide("echarts", echarts); // 提供全局使用
 
 const animation = ref();
+// const nav = ref("block")
 // animation.value = true;
 
 const hide = () => {
@@ -37,7 +38,7 @@ const show = () => {
       <h1>
         <span>
           <!-- <img alt="Our logo" src="@/assets/logo.png" /> -->
-          CMC Management System
+          CMC产线智能化管理系统
         </span>
       </h1>
     </header>
@@ -135,7 +136,7 @@ const show = () => {
 
   <div class="videoContainer">
     <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="" :style="{ display: animation }">
-      <source src="./assets/videos/cmc-2.mp4" type="video/mp4" />
+      <source src="./assets/videos/深色3.mp4" type="video/mp4" />
     </video>
   </div>
 </template>
@@ -168,7 +169,7 @@ const show = () => {
       transparent 30%,
       #182330a5 60%
     ), */
-    url("./assets/images/bg1.png") no-repeat center fixed;
+    url("./assets/images/map-2.png") no-repeat center fixed;
   background-size: cover;
 }
 

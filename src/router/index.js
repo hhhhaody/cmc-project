@@ -3,6 +3,16 @@ import HomeView from '../views/HomeView.vue'
 import Home1 from '../views/Home1.vue'
 import Home2 from '../views/Home2.vue'
 
+export function getQueryVariable(variable) {
+  const query = window.location.search.substring(1);
+  const vars = query.split("&");
+  for (let i = 0; i < vars.length; i++) {
+    const pair = vars[i].split("=");
+    if (pair[0] == variable) { return pair[1]; }
+  }
+  return (false);
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -54,7 +64,11 @@ const router = createRouter({
       name: 'MaintenancePlan',
       component: () => import('../views/MaintenancePlan.vue')
     },
-
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/Login.vue')
+    },
 
 
     {
@@ -67,5 +81,25 @@ const router = createRouter({
     }
   ]
 })
+
+// router.beforeEach((to, from, next) => {
+//   let pid = getQueryVariable('pid')
+//   if (to.name !== 'login' && !isAuthenticated()) next({ name: 'login', query: { pid: pid || '' } })
+//   else next()
+// })
+//判断是否登录
+function isAuthenticated() {
+  let setToken = getQueryVariable('token') || '';
+  if (setToken) {
+    setToken = decodeURIComponent(setToken);
+    sessionStorage.setItem("mobile_data_token", setToken);
+  }
+  const token = sessionStorage.getItem("mobile_data_token");
+  if (token) {
+    return true
+  } else {
+    return false
+  }
+}
 
 export default router

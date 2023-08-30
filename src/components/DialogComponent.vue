@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-
+import { ElNotification } from 'element-plus'
 const props = defineProps({
     dialogTitle: { type: String, default: "新增物料类型" },
     form: {
@@ -11,11 +11,12 @@ const props = defineProps({
             threshold: ''
         }
     }, //表单数据
+    image: { type: Boolean, default: false },
     refreshFunc: { type: Function }, //刷新方程
     confirmFunc: { type: Function } //提交方程
 });
 
-const emit = defineEmits(["dialogClose"]);
+const emit = defineEmits(["dialogClose", "saveImage"]);
 
 
 const dialogVisible = ref(false)
@@ -44,17 +45,29 @@ const submitForm = async (form) => {
             // console.log('submit!')
             push()
             clear()
+            if (props.image) emit("saveImage")
+            emit("dialogClose");
+
         } else {
             console.log('error submit!', fields)
         }
     })
-    emit("dialogClose");
 }
 
 //发送表单中的数据给数据库, 成功后关闭弹框
 const push = async () => {
     const res = await props.confirmFunc(props.form);
     if (res.code === 1) {
+        console.log(res);
+        if (res.data != null) {
+            ElNotification({
+                title: '成功',
+                message: res.data,
+                duration: 0,
+                type: "success"
+            })
+        }
+
         dialogVisible.value = false
         props.refreshFunc()
     }

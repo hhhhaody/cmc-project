@@ -1,12 +1,14 @@
 <script setup>
-import { ref, onMounted, reactive, onUnmounted, watch } from "vue";
+import { ref, onMounted, reactive, onUnmounted, watch, computed, toRefs, triggerRef } from "vue";
 import { RouterLink } from "vue-router";
+import { format } from "date-fns"
 import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
 import SearchComponent from "../components/SearchComponent.vue";
 import DialogSearch from "../components/DialogSearch.vue";
 import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
-import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, getByIdAPI } from "../apis/material";
+import UploadImage from "../components/UploadImage.vue";
+import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, getByIdAPI, addMaterialOperationAPI, getByBatchAPI } from "../apis/material";
 
 
 // 从后端获取数据
@@ -64,14 +66,16 @@ const loadMore = (status) => {
 };
 
 
-// 记录用于通过搜索组件输入的搜索种类及对应关键词
+// 记录用于通过搜索组件输入的搜索种类及对应关键词 searchComponent
 const search = (title, keyword) => {
   // console.log(title, keyword);
   if (title === "name") name.value = keyword
   if (title === "spec") spec.value = keyword
 
 
-  if (title === "supplier") stockInform.supplier = keyword
+  //弹框内使用
+  if (title === "supplier") stockform.supplier = keyword
+  if (title === "operator") stockform.operator = keyword
 };
 
 // 根据关键字搜索数据库
@@ -120,13 +124,35 @@ const cur = (val) => {
 //新增
 //#region
 const dialog = ref(false)
+const formattedTime = ref()
+const remainingStock = ref(null);
 const addDialog = ref()
 const editDialog = ref()
 const stockInDialog = ref()
+const stockOutDialog = ref()
+const transferDialog = ref()
+const confirmImage = ref(false)
 
 const dialogClose = () => {
   dialog.value = false
+  remainingStock.value = null
 }
+
+const saveImage = () => {
+  confirmImage.value = true
+}
+
+const getDefaultDate = () => {
+  const currentDate = new Date()
+  stockform.operateTime = format(currentDate, 'yyyy-MM-dd') + 'T' + format(currentDate, 'HH:mm:ss')
+}
+
+const remains = computed(() => {
+  if (remainingStock.value == null) {
+    return "请输入数量"
+  }
+  return `本批次余量：${remainingStock.value}`;
+});
 
 //表单数据
 const addform = reactive({
@@ -140,10 +166,11 @@ const updateform = reactive({
   spec: '',
   threshold: ''
 })
-const stockInform
+const stockform
   = reactive({
     name: '',
     spec: '',
+    operation: '',
     batch: '',
     amount: '',
     supplier: '',
@@ -153,6 +180,17 @@ const stockInform
     receipt: '',
   })
 
+watch(
+  stockform,
+  (newVal, oldVal) => {
+    // console.log('uidToFileNameMap changed:');
+    // console.log('New uidToFileNameMap:', newMap);
+
+    // You can perform actions here based on the changes in the uidToFileNameMap
+    formattedTime.value = stockform.supplyTime.substring(0, 10)
+  },
+  { deep: true } // Enable deep monitoring
+);
 
 //编辑相关
 //数据回显API
@@ -166,14 +204,31 @@ const getMaterialByID = async (id) => {
   }
 };
 
+const getMaterialOperationByBatch = async (batch) => {
+  const res = await getByBatchAPI(batch);
+  if (res.code === 1) {
+    stockform.name = res.data.name
+    stockform.spec = res.data.spec
+    stockform.supplier = res.data.supplier
+    stockform.supplyTime = res.data.supplyTime
+    remainingStock.value = res.data.amount
+    updateSearchSuggestion()
+  }
+  console.log(res.data);
+};
+
 // 弹框内输入框搜索相关
 
-
+//DialogSearch组件使用
 const dialogSearchSuggestion = (title, keyword) => {
-  if (title === "name") stockInform.name = keyword
-  if (title === "spec") stockInform.spec = keyword
+  if (title === "name") stockform.name = keyword
+  if (title === "spec") stockform.spec = keyword
+  if (title === "batch") {
+    stockform.batch = keyword
+    getMaterialOperationByBatch(keyword)
+  }
   updateSearchSuggestion()
-  // console.log(stockInform);
+
 }
 
 // #endregion
@@ -262,15 +317,26 @@ watch([dialog, refresh], (val1, val2) => {
 
 // #endregion
 
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//图片上传相关
+//#region 
 
-
-
+const uploadImage = (uidToFileNameMap) => {
+  // console.log("picture uploaded");
+  const allFileNames = computed(() => Object.values(uidToFileNameMap).join('-'));
+  console.log(allFileNames.value);
+  stockform.receipt = allFileNames.value
+  console.log(stockform);
+  confirmImage.value = false
+}
+//#endregion
 </script>
 
 <template>
   <!-- borderbox -->
   <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-    background-color="#4f698794">
+    background-color="#3545659e">
     <!-- body -->
     <el-container class="subNavPage">
       <br />
@@ -303,9 +369,13 @@ watch([dialog, refresh], (val1, val2) => {
             </el-button>
           </span>
           <span>
-            <el-button @click="stockInDialog.dialogVisible = true, dialog = true">入库</el-button>
-            <el-button>出库</el-button>
-            <el-button>转入不良物料 </el-button>
+            <el-button
+              @click="stockInDialog.dialogVisible = true, stockform.operation = '入库', dialog = true, getDefaultDate()">入库</el-button>
+            <el-button
+              @click="stockOutDialog.dialogVisible = true, stockform.operation = '出库', dialog = true, getDefaultDate()">出库</el-button>
+            <el-button
+              @click="transferDialog.dialogVisible = true, stockform.operation = '转入不良物料库', dialog = true, getDefaultDate()">转入不良物料
+            </el-button>
           </span>
         </div>
         <!-- record -->
@@ -378,69 +448,212 @@ watch([dialog, refresh], (val1, val2) => {
         </DialogComponent>
 
         <!-- 入库弹框 -->
-        <DialogComponent ref="stockInDialog" :form="stockInform" dialog-title="物料入库" :refreshFunc="getDataFromAPI"
-          :confirm-func="addMaterialAPI" @dialogClose="dialogClose">
+        <DialogComponent ref="stockInDialog" :form="stockform" dialog-title="物料入库" :refreshFunc="getDataFromAPI"
+          :confirm-func="addMaterialOperationAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="物料名称" prop="name" :rules="[
+                { required: true, message: '请选择物料名称', trigger: 'blur' }]">
+                <DialogSearch :key="renderKey" :wNo="100" search-title="物料名称" :searchContent=stockform.name field="name"
+                  @search="dialogSearchSuggestion" :data="stockform" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="规格型号" prop="spec" :rules="[
+                { required: true, message: '请选择规格型号', trigger: 'blur' }]">
+                <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号" :searchContent=stockform.spec field="spec"
+                  @search="dialogSearchSuggestion" :data="stockform" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-form-item label="供料单位" prop="supplier" :rules="[
+            { required: true, message: '请输入供料单位', trigger: 'blur' },
+            {
+              min: 1, max: 30,
+              message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
+            <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="供料单位"
+              :searchContent=stockform.supplier field="supplier" @search="search" database="materials/operation" />
+          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="入库人员" prop="operator" :rules="[
+                { required: true, message: '请输入操作人员', trigger: 'blur' },
+                {
+                  min: 1, max: 30,
+                  message: '长度必须在1-30之间', trigger: 'blur'
+                }]">
+                <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="入库人员"
+                  :searchContent=stockform.operator field="operator" @search="search" database="materials/operation" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="入库数量" prop="amount" :rules="[
+                { required: true, message: '请输入数量', trigger: 'blur' },
+                { type: 'number', message: '必须是数字', trigger: 'blur' }
+              ]">
+                <el-input v-model.number="stockform.amount" autocomplete="off" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="入库日期" prop="operateTime" :rules="[
+                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+                <el-date-picker v-model="stockform.operateTime" type="datetime" placeholder="选择入库日期"
+                  value-format="YYYY-MM-DDTHH:mm:ss" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="供料日期" prop="supplyTime" :rules="[
+                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+                <el-date-picker v-model="stockform.supplyTime" type="datetime" placeholder="选择供料日期"
+                  value-format="YYYY-MM-DDTHH:mm:ss" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-form-item label="签收凭证" prop="receipt" :rules="[
+            { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
+            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage />
+          </el-form-item>
+        </DialogComponent>
+
+        <!-- 出库弹框 -->
+        <DialogComponent ref="stockOutDialog" :form="stockform" dialog-title="物料出库" :refreshFunc="getDataFromAPI"
+          :confirm-func="addMaterialOperationAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
           <el-row>
             <el-col :span="12">
               <el-form-item label="物料名称" prop="name">
-                <DialogSearch :key="renderKey" :wNo="100" search-title="物料名称" :searchContent=stockInform.name field="name"
-                  @search="dialogSearchSuggestion" :data="stockInform" />
+                <DialogSearch :key="renderKey" :wNo="100" search-title="物料名称" :searchContent=stockform.name field="name"
+                  @search="dialogSearchSuggestion" :data="stockform" database="materials/operation" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="规格型号" prop="spec">
-                <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号" :searchContent=stockInform.spec field="spec"
-                  @search="dialogSearchSuggestion" :data="stockInform" />
+                <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号" :searchContent=stockform.spec field="spec"
+                  @search="dialogSearchSuggestion" :data="stockform" database="materials/operation" />
               </el-form-item>
             </el-col>
           </el-row>
+          <el-form-item label="物料批次" prop="batch" :rules="[
+            { required: true, message: '请选择物料批次', trigger: 'blur' }]">
+            <DialogSearch :key="renderKey" :wNo="100" search-title="物料批次" :searchContent=stockform.batch field="batch"
+              @search="dialogSearchSuggestion" :data="stockform" database="materials/operation" />
+          </el-form-item>
           <el-form-item label="供料单位" prop="supplier">
-            <!-- <DialogSearch :key="renderKey" search-title="供料单位" :searchContent=stockInform.supplier field="supplier"
-              @search="dialogSearchSuggestion" :data="stockInform" database="materials/operation" /> -->
-            <SearchComponent :key="renderKey" search-title="供料单位" :searchContent=stockInform.supplier field="supplier"
-              @search="search" database="materials/operation" />
-
-            <!-- <el-input v-model="stockInform.supplier" autocomplete="off" /> -->
+            <el-input v-model="stockform.supplier" autocomplete="off" />
           </el-form-item>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="入库人员" prop="operator">
-                <el-input v-model="stockInform.operator" autocomplete="off" />
+              <el-form-item label="出库人员" prop="operator" :rules="[
+                { required: true, message: '请输入操作人员', trigger: 'blur' },
+                {
+                  min: 1, max: 30,
+                  message: '长度必须在1-30之间', trigger: 'blur'
+                }]">
+                <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="出库人员"
+                  :searchContent=stockform.operator field="operator" @search="search" database="materials/operation" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="入库数量" prop="amount">
-                <el-input v-model="stockInform.amount" autocomplete="off" />
+              <el-form-item label="出库数量" prop="amount" :rules="[
+                { required: true, message: '请输入数量', trigger: 'blur' },
+                { type: 'number', message: '必须是数字', trigger: 'blur' }
+              ]">
+                <el-input v-model.number="stockform.amount" autocomplete="off" :placeholder="remains" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="入库日期" prop="operateTime">
-                <el-input v-model="stockInform.operationTime" autocomplete="off" />
+              <el-form-item label="出库日期" prop="operateTime" :rules="[
+                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+                <el-date-picker v-model="stockform.operateTime" type="datetime" placeholder="选择出库日期"
+                  value-format="YYYY-MM-DDTHH:mm:ss" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="供料日期" prop="supplierTime">
-                <el-input v-model="stockInform.supplyTime" autocomplete="off" />
+              <el-form-item label="供料日期" prop="supplyTime">
+                <el-input v-model="formattedTime" autocomplete="off" />
               </el-form-item>
             </el-col>
           </el-row>
-          <el-form-item label="签收凭证" prop="receipt">
-            <!-- <el-input v-model="stockInform.receipt" autocomplete="off" /> -->
-            <el-upload v-model:file-list="fileList" class="upload-demo"
-              action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" multiple :on-preview="handlePreview"
-              :on-remove="handleRemove" :before-remove="beforeRemove" :limit="3" :on-exceed="handleExceed">
-              <el-button type="primary">上传</el-button>
-            </el-upload>
+          <el-form-item label="出库凭证" prop="receipt" :rules="[
+            { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
+            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage />
           </el-form-item>
+        </DialogComponent>
 
+        <!-- 转库弹框 -->
+        <DialogComponent ref="transferDialog" :form="stockform" dialog-title="转入不良物料" :refreshFunc="getDataFromAPI"
+          :confirm-func="addMaterialOperationAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="物料名称" prop="name">
+                <DialogSearch :key="renderKey" :wNo="100" search-title="物料名称" :searchContent=stockform.name field="name"
+                  @search="dialogSearchSuggestion" :data="stockform" database="materials/operation" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="规格型号" prop="spec">
+                <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号" :searchContent=stockform.spec field="spec"
+                  @search="dialogSearchSuggestion" :data="stockform" database="materials/operation" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-form-item label="物料批次" prop="batch" :rules="[
+            { required: true, message: '请选择物料批次', trigger: 'blur' }]">
+            <DialogSearch :key="renderKey" :wNo="100" search-title="物料批次" :searchContent=stockform.batch field="batch"
+              @search="dialogSearchSuggestion" :data="stockform" database="materials/operation" />
+          </el-form-item>
+          <el-form-item label="供料单位" prop="supplier">
+            <el-input v-model="stockform.supplier" autocomplete="off" />
+          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="转库人员" prop="operator" :rules="[
+                { required: true, message: '请输入操作人员', trigger: 'blur' },
+                {
+                  min: 1, max: 30,
+                  message: '长度必须在1-30之间', trigger: 'blur'
+                }]">
+                <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="转库人员"
+                  :searchContent=stockform.operator field="operator" @search="search" database="materials/operation" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="转库数量" prop="amount" :rules="[
+                { required: true, message: '请输入数量', trigger: 'blur' },
+                { type: 'number', message: '必须是数字', trigger: 'blur' }
+              ]">
+                <el-input v-model.number="stockform.amount" autocomplete="off" :placeholder="remains" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="转库日期" prop="operateTime" :rules="[
+                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+                <el-date-picker v-model="stockform.operateTime" type="datetime" placeholder="选择转库日期"
+                  value-format="YYYY-MM-DDTHH:mm:ss" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="供料日期" prop="supplyTime">
+                <el-input v-model="formattedTime" autocomplete="off" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-form-item label="转库凭证" prop="receipt" :rules="[
+            { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
+            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage />
+          </el-form-item>
         </DialogComponent>
 
 
-
         <!-- table -->
-        <el-table :data="tableData.value" style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh">
+        <el-table :data="tableData.value" style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh"
+          show-overflow-tooltip>
           <el-table-column type="selection" align="center" />
           <el-table-column label="序号" type="index" align="center" min-width="70vh" />
           <el-table-column prop="name" label="物料名称" align="center" />
@@ -476,6 +689,8 @@ watch([dialog, refresh], (val1, val2) => {
   height: 100%;
   width: 95%;
   margin: 0 auto;
+  /* background-color: #3545659e; */
+  /* 3f536cb0 */
 }
 
 .demo-pagination-block+.demo-pagination-block {

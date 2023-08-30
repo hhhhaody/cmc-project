@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { getDialogSearchSuggestionAPI } from "../apis/material";
+import { ref, onMounted, toRefs } from "vue";
+import { getDialogSearchSuggestionAPI } from "../apis/util";
 
 const props = defineProps({
     searchTitle: { type: String, default: "Material Name" },
@@ -17,7 +17,9 @@ const placeholder = ref("");
 placeholder.value = "请选择" + props.searchTitle.toLowerCase();
 
 const searchResult = ref([]);
-const searchContent = ref(props.searchContent);
+// const searchContent = toRefs(props).searchContent
+const searchContent = ref(props.searchContent)
+
 
 let timeout;
 const querySearchAsync = (queryString, cb) => {
@@ -55,7 +57,6 @@ const loadSuggestion = async () => {
     searchResult.value = res.data
 };
 
-
 onMounted(() => {
     loadSuggestion()
 });
@@ -67,7 +68,7 @@ defineExpose({ searchContent });
 
 <template>
     <el-autocomplete :style="{ width: props.wNo + '%' }" v-model="searchContent" :fetch-suggestions="querySearchAsync"
-        clearable :placeholder="placeholder" @select="handleSelect" @change="check" @focus="focus" @blur="blur" />
+        clearable :placeholder="placeholder" @select="handleSelect" @change="check" />
 </template>
 
 <style scoped></style>

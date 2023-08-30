@@ -9,10 +9,12 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@axihe/snowflake": "^1.0.2",
     "@element-plus/icons-vue": "^2.1.0",
     "@kjgl77/datav-vue3": "^1.6.1",
     "animate.css": "^4.1.1",
     "axios": "^1.4.0",
+    "date-fns": "^2.30.0",
     "echarts": "^5.4.2",
     "element-plus": "^2.3.7",
     "hls": "^0.0.1",

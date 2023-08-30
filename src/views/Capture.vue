@@ -32,7 +32,7 @@ const images = reactive([
 let srcList = reactive(images.map(image => image.url));
 
 // 定义一个ref用于存储分页显示的图片
-let displayedImages = ref([]); 
+let displayedImages = ref([]);
 
 // 定义一个处理表格更新的函数，新的表格数据会被赋值给displayedImages，页面大小会被更新
 const handleTableUpdate = (newTableData) => {
@@ -94,7 +94,7 @@ const gridColumns = computed(() => {
 <template>
     <!-- DvBorderBox1 组件用于创建一个具有边框和背景色的容器 -->
     <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-        background-color="#4f698794">
+        background-color="#3545659e">
 
         <!-- 空行和标题 -->
         <br />
@@ -149,89 +149,134 @@ const gridColumns = computed(() => {
 
 <style scoped>
 .subNavPage {
-    border-radius: 3%; /* 页面的圆角大小 */
-    color: #fff; /* 页面的字体颜色 */
-    height: 100%; /* 页面的高度 */
-    width: 95%; /* 页面的宽度 */
-    margin: 0 auto; /* 页面居中显示 */
-    position: relative; /* 页面的定位方式 */
+    border-radius: 3%;
+    /* 页面的圆角大小 */
+    color: #fff;
+    /* 页面的字体颜色 */
+    height: 100%;
+    /* 页面的高度 */
+    width: 95%;
+    /* 页面的宽度 */
+    margin: 0 auto;
+    /* 页面居中显示 */
+    position: relative;
+    /* 页面的定位方式 */
 }
 
 .el-footer {
-    position: absolute; /* footer的定位方式为绝对定位 */
-    bottom: 0; /* 使footer位于父元素的底部 */
-    width: 100%; /* footer的宽度为父元素的100% */
+    position: absolute;
+    /* footer的定位方式为绝对定位 */
+    bottom: 0;
+    /* 使footer位于父元素的底部 */
+    width: 100%;
+    /* footer的宽度为父元素的100% */
 }
 
 .image-container {
-    display: grid; /* 图片容器的布局方式为网格布局 */
-    grid-template-columns: repeat(5, 1fr); /* 定义了5列，每列占用相同的空间 */
-    grid-row-gap: 0px; /* 定义网格行间的空白大小 */
-    grid-column-gap: -10px; /* 定义网格列间的空白大小 */
-    padding-left: 70px; /* 容器的左内边距 */
-    padding-top: 20px; /* 容器的顶部内边距 */
-    height: 550px; /* 容器的高度 */
-    overflow: auto; /* 如果内容溢出，则显示滚动条 */
-    scrollbar-width: thin; /* 滚动条的宽度 */
-    scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* 滚动条的颜色 */
+    display: grid;
+    /* 图片容器的布局方式为网格布局 */
+    grid-template-columns: repeat(5, 1fr);
+    /* 定义了5列，每列占用相同的空间 */
+    grid-row-gap: 0px;
+    /* 定义网格行间的空白大小 */
+    grid-column-gap: -10px;
+    /* 定义网格列间的空白大小 */
+    padding-left: 70px;
+    /* 容器的左内边距 */
+    padding-top: 20px;
+    /* 容器的顶部内边距 */
+    height: 550px;
+    /* 容器的高度 */
+    overflow: auto;
+    /* 如果内容溢出，则显示滚动条 */
+    scrollbar-width: thin;
+    /* 滚动条的宽度 */
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    /* 滚动条的颜色 */
 }
 
 .image-item {
-    display: flex; /* 图片项目的布局方式为弹性盒布局 */
-    flex-direction: column; /* 子元素的排列方式为垂直方向 */
-    align-items: center; /* 子元素在交叉轴上的对齐方式为居中 */
-    justify-content: center; /* 子元素在主轴上的对齐方式为居中 */
-    font-weight: bold; /* 文字的字体粗细 */
-    max-width: 80%; /* 项目的最大宽度 */
-    max-height: 80%; /* 项目的最大高度 */
+    display: flex;
+    /* 图片项目的布局方式为弹性盒布局 */
+    flex-direction: column;
+    /* 子元素的排列方式为垂直方向 */
+    align-items: center;
+    /* 子元素在交叉轴上的对齐方式为居中 */
+    justify-content: center;
+    /* 子元素在主轴上的对齐方式为居中 */
+    font-weight: bold;
+    /* 文字的字体粗细 */
+    max-width: 80%;
+    /* 项目的最大宽度 */
+    max-height: 80%;
+    /* 项目的最大高度 */
 }
 
 .demo-date-picker {
-    display: flex; /* 日期选择器的布局方式为弹性盒布局 */
-    width: 100%; /* 日期选择器的宽度 */
-    padding: 0; /* 日期选择器的内边距 */
-    flex-wrap: wrap; /* 如果一行上的项目无法容纳，则移动到新行 */
+    display: flex;
+    /* 日期选择器的布局方式为弹性盒布局 */
+    width: 100%;
+    /* 日期选择器的宽度 */
+    padding: 0;
+    /* 日期选择器的内边距 */
+    flex-wrap: wrap;
+    /* 如果一行上的项目无法容纳，则移动到新行 */
 }
 
 .demo-date-picker .block {
-    padding: 30px 0; /* 区块的顶部和底部内边距 */
-    text-align: left; /* 文本的对齐方式 */
-    border-right: solid 1px var(--el-border-color); /* 区块右边的边框 */
-    padding-left: 650px; /* 区块的左内边距 */
-    display: flex; /* 区块的布局方式为弹性盒布局 */
-    align-items: center; /* 子元素在交叉轴上的对齐方式为居中 */
+    padding: 30px 0;
+    /* 区块的顶部和底部内边距 */
+    text-align: left;
+    /* 文本的对齐方式 */
+    border-right: solid 1px var(--el-border-color);
+    /* 区块右边的边框 */
+    padding-left: 650px;
+    /* 区块的左内边距 */
+    display: flex;
+    /* 区块的布局方式为弹性盒布局 */
+    align-items: center;
+    /* 子元素在交叉轴上的对齐方式为居中 */
 }
 
 .demo-date-picker .block:last-child {
-    border-right: none; /* 最后一个区块的右边没有边框 */
+    border-right: none;
+    /* 最后一个区块的右边没有边框 */
 }
 
 .demo-date-picker p {
-    margin-right: 10px; /* 段落右边的外边距 */
+    margin-right: 10px;
+    /* 段落右边的外边距 */
 }
 
 .image-container::-webkit-scrollbar {
-    width: 8px; /* 滚动条的宽度 */
+    width: 8px;
+    /* 滚动条的宽度 */
 }
 
 .image-container::-webkit-scrollbar-track {
-    background: transparent; /* 滚动条轨道的背景颜色 */
+    background: transparent;
+    /* 滚动条轨道的背景颜色 */
 }
 
 .image-container::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2); /* 滚动条的颜色 */
-    border-radius: 4px; /* 滚动条的圆角大小 */
+    background: rgba(0, 0, 0, 0.2);
+    /* 滚动条的颜色 */
+    border-radius: 4px;
+    /* 滚动条的圆角大小 */
 }
 
 .image-container:hover::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2); /* 鼠标悬停时滚动条的颜色 */
+    background: rgba(0, 0, 0, 0.2);
+    /* 鼠标悬停时滚动条的颜色 */
 }
 
 .image-container:hover {
-    scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* 鼠标悬停时滚动条的颜色 */
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    /* 鼠标悬停时滚动条的颜色 */
 }
 
 .button-margin {
-    margin-left: 10px; /* 按钮左边的外边距 */
+    margin-left: 10px;
+    /* 按钮左边的外边距 */
 }
 </style>
