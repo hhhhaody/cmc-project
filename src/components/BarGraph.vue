@@ -12,10 +12,10 @@ const props = defineProps({
   stations: { type: Array},
 });
 
-const x = ref(["方通柱", "地面钢网","方通柱", "地面钢网","方通柱"])
+const x = ref(["C型钢", "L型钢","T型钢"])
 const y = ref([]);
 
-y.value = [5, 20, 36, 10, 10];
+y.value = [50, 70, 40];
 
 //   // console.log(props.station),
 //   {
@@ -113,8 +113,8 @@ watch(
   (newVal) => {
     // console.log(props.station);
     if (props.station === props.stations[0]) {
-      x.value = ["方通柱A", "地面钢网A","方通柱B", "地面钢网B","方通柱C"]
-      y.value = [5, 20, 36, 10, 10]
+      x.value = ["C型钢", "L型钢","T型钢"]
+      y.value = [50, 70, 40]
       // [
       //   {
       //     value:,
@@ -123,8 +123,8 @@ watch(
       // ];
     }
     if (props.station === props.stations[1]) {
-      x.value = ["方通柱A", "地面钢网B"]
-      y.value = [42, 23]
+      x.value = ["网片A", "网片B", "网片C", "网片D"]
+      y.value = [2, 7, 4, 2]
       // [
       //   {
       //     value: ,
@@ -133,8 +133,8 @@ watch(
       // ];
     }
     if (props.station === props.stations[2]) {
-      x.value = ["方通柱A", "地面钢网A","方通柱B"]
-      y.value = [46, 22, 20]
+      x.value = ["方通柱"]
+      y.value = [80]
     //   data.value[0].value = [46, 22, 20, 30, 23, 13]
     //   [
     //     {
@@ -144,8 +144,8 @@ watch(
     //   ];
     }
     if (props.station === props.stations[3]) {
-      x.value = ["方通柱A", "地面钢网A","方通柱B", "地面钢网B"]
-      y.value = [50, 14, 28, 26]
+      x.value = ["模块A", "模块B"]
+      y.value = [2, 1]
     //   data.value[0].value = [
     //     {
     //       value: [50, 14, 28, 26, 42, 21],

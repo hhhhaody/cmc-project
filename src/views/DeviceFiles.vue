@@ -6,34 +6,49 @@ import DialogComponent from "../components/DialogComponent.vue";
 
 const tableData = [
   {
-    name: "焊接机器人维护手册",
-    lastModified: "2023-04-25",
-    creationTime: "2023-04-26",
+    name: "桁架机械手维护手册",
+    lastModified: "2023-08-27",
+    creationTime: "2023-08-26",
+  },
+  {
+    name: "翻转机维护手册",
+    lastModified: "2023-08-27",
+    creationTime: "2023-08-26",
+  },
+  {
+    name: "激光切割机维护手册",
+    lastModified: "2023-08-27",
+    creationTime: "2023-08-26",
+  },
+  {
+    name: "搬运机器人维护手册",
+    lastModified: "2023-08-27",
+    creationTime: "2023-08-26",
+  },
+  {
+    name: "桁架机械手维护手册",
+    lastModified: "2023-08-27",
+    creationTime: "2023-08-26",
+  },
+  {
+    name: "焊接机械臂桁架维护手册",
+    lastModified: "2023-08-27",
+    creationTime: "2023-08-26",
   },
   {
     name: "焊接机器人维护手册",
-    lastModified: "2023-04-25",
-    creationTime: "2023-04-26",
+    lastModified: "2023-08-27",
+    creationTime: "2023-08-26",
   },
   {
-    name: "焊接机器人维护手册",
-    lastModified: "2023-04-25",
-    creationTime: "2023-04-26",
+    name: "焊接夹具维护手册",
+    lastModified: "2023-08-27",
+    creationTime: "2023-08-26",
   },
   {
-    name: "焊接机器人维护手册",
-    lastModified: "2023-04-25",
-    creationTime: "2023-04-26",
-  },
-  {
-    name: "焊接机器人维护手册",
-    lastModified: "2023-04-25",
-    creationTime: "2023-04-26",
-  },
-  {
-    name: "焊接机器人维护手册",
-    lastModified: "2023-04-25",
-    creationTime: "2023-04-26",
+    name: "搬运机器人维护手册",
+    lastModified: "2023-08-27",
+    creationTime: "2023-08-26",
   },
 ];
 

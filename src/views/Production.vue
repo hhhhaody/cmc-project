@@ -5,88 +5,40 @@ import SearchComponent from "../components/SearchComponent.vue";
 
 const tableData = [
   {
-    name: "produc 1",
-    model: "50*30*4500",
-    produceDate: "2023-04-26",
-    produceNo: 30,
-  },
-  {
-    name: "produc 2",
-    model: "50*30*4500",
-    produceDate: "2023-02-21",
-    produceNo: 100,
-  },
-  {
-    name: "produc 3",
-    model: "50*30*4500",
-    produceDate: "2023-04-25",
-    produceNo: 30,
-  },
-  {
-    name: "produc 4",
-    model: "50*30*4500",
-    produceDate: "2023-05-13",
-    produceNo: 210,
-  },
-  {
-    name: "produc 5",
-    model: "50*30*4500",
-    produceDate: "2023-06-27",
-    produceNo: 30,
-  },
-  {
-    name: "produc 6",
-    model: "50*30*4500",
-    produceDate: "2023-04-18",
-    produceNo: 210,
-  },
-  {
-    name: "produc 7",
-    model: "50*30*4500",
-    produceDate: "2023-03-07",
-    produceNo: 100,
-  },
-  {
-    name: "produc 8",
-    model: "50*30*4500",
-    produceDate: "2023-04-26",
-    produceNo: 200,
-  },
-  {
-    name: "produc 9",
-    model: "50*30*4500",
-    produceDate: "2023-02-04",
-    produceNo: 160,
-  },
-  {
-    name: "produc 10",
-    model: "50*30*4500",
-    produceDate: "2023-05-26",
-    produceNo: 90,
-  },
-  {
-    name: "produc 11",
-    model: "50*30*4500",
-    produceDate: "2023-04-16",
-    produceNo: 30,
-  },
-  {
-    name: "produc 12",
-    model: "50*30*4500",
-    produceDate: "2023-04-26",
-    produceNo: 30,
-  },
-  {
-    name: "produc 13",
-    model: "50*30*4500",
-    produceDate: "2023-03-26",
-    produceNo: 70,
-  },
-  {
-    name: "produc 14",
-    model: "50*30*4500",
-    produceDate: "2023-02-12",
+    name: "C型钢",
+    model: "30*40,L=12000",
+    produceDate: "2023-08-22",
     produceNo: 60,
+  },
+  {
+    name: "T型钢",
+    model: "30*40,L=12000",
+    produceDate: "2023-08-22",
+    produceNo: 50,
+  },
+  {
+    name: "L型钢",
+    model: "30*30,L=12000",
+    produceDate: "2023-08-22",
+    produceNo: 50,
+  },
+  {
+    name: "方通柱",
+    model: "200*200*4,L=12000",
+    produceDate: "2023-08-22",
+    produceNo: 30,
+  },
+  {
+    name: "方通柱",
+    model: "200*200*10,L=12000",
+    produceDate: "2023-08-22",
+    produceNo: 30,
+  },
+  {
+    name: "方通柱",
+    model: "10*10*8,L=12000",
+    produceDate: "2023-08-22",
+    produceNo: 20,
   },
 ];
 
@@ -170,14 +122,20 @@ onMounted(() => {
       <!-- main -->
       <el-main style="overflow: hidden">
         <!-- search -->
-        <div>
-          <SearchComponent search-title="Product Name" :load-all-data="loadAllProduct" />
-          <SearchComponent search-title="Model type" :load-all-data="loadAllModel" />
+        <div class="input-row">
+          <SearchComponent search-title="产品名称" :load-all-data="loadAllProduct" />
+          <SearchComponent search-title="规格型号" :load-all-data="loadAllModel" />
+
+          <div>生产时间：
+            <el-date-picker v-model="startDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期"
+              title="日期范围" :default-time="defaultTime1" />
+          </div>
+
           <el-button type="primary" style="margin-left: 10px; width: 7%">
-            <Search style="width: 1em; height: 1em; margin-right: 8px" />Search
+            <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
           </el-button>
           <el-button style="width: 7%">
-            <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />Reset
+            <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />重置
           </el-button>
         </div>
         <br />
@@ -185,7 +143,7 @@ onMounted(() => {
         <div style="display: flex; justify-content: space-between">
           <span>
             <el-button type="primary">
-              <Download style="width: 1em; height: 1em; margin-right: 8px" />Download
+              <Download style="width: 1em; height: 1em; margin-right: 8px" />导出
             </el-button>
           </span>
         </div>
@@ -196,10 +154,10 @@ onMounted(() => {
             style="width: 100%; border-radius: 1vh; margin-top: 1vh" table-layout="fixed" height="50vh">
             <el-table-column type="selection" align="center" />
             <el-table-column type="index" label="Index" align="center" min-width="60vh" />
-            <el-table-column prop="name" label="Name" align="center" />
-            <el-table-column prop="model" label="Model" align="center" />
-            <el-table-column prop="produceDate" label="Produce Date" align="center" />
-            <el-table-column prop="produceNo" label="Produce No." align="center" />
+            <el-table-column prop="name" label="产品名称" align="center" />
+            <el-table-column prop="model" label="规格型号" align="center" />
+            <el-table-column prop="produceDate" label="生产日期" align="center" />
+            <el-table-column prop="produceNo" label="生产数量" align="center" />
           </el-table>
         </div>
       </el-main>
@@ -246,5 +204,13 @@ onMounted(() => {
   border: none;
   width: min-content;
 }
+
+.input-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  margin-left: 200px;
+}
+
 </style>
 
