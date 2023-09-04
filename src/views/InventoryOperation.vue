@@ -4,7 +4,7 @@ import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
 import SearchComponent from "../components/SearchComponent.vue";
 import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
-import { getMaterialOperationAPI, getMaterialOperationByIdAPI, deleteMaterialOperationAPI } from "../apis/material";
+import { getMaterialOperationAPI, getMaterialOperationByIdAPI, deleteMaterialOperationAPI, updateMaterialOperationAPI } from "../apis/material";
 
 
 // 从后端获取数据
@@ -142,11 +142,12 @@ const cur = (val) => {
 //#region
 const dialog = ref(false)
 const formattedTime = ref()
-
+const uploaded = ref(null)
 const editDialog = ref()
 
 const dialogClose = () => {
     dialog.value = false
+    uploaded.value = null
 }
 
 //表单数据
@@ -167,11 +168,9 @@ const updateform
 watch(
     updateform,
     (newVal, oldVal) => {
-        // console.log('uidToFileNameMap changed:');
-        // console.log('New uidToFileNameMap:', newMap);
 
-        // You can perform actions here based on the changes in the uidToFileNameMap
         formattedTime.value = updateform.operateTime.substring(0, 10) + ' ' + updateform.operateTime.substring(11,)
+        // uploaded.value = updateform.receipt
     },
     { deep: true } // Enable deep monitoring
 );
@@ -181,7 +180,7 @@ watch(
 
 const getMaterialOperationByID = async (id) => {
     const res = await getMaterialOperationByIdAPI(id);
-    console.log(res.data);
+    // console.log(res.data);
     if (res.code === 1) {
         updateform.name = res.data.name
         updateform.spec = res.data.spec
@@ -193,7 +192,10 @@ const getMaterialOperationByID = async (id) => {
         updateform.operateTime = res.data.operateTime
         updateform.operator = res.data.operator
         updateform.receipt = res.data.receipt
+        uploaded.value = res.data.receipt
     }
+    // console.log(updateform);
+    // console.log(uploaded);
 };
 
 
@@ -283,7 +285,54 @@ watch([dialog, refresh], (val1, val2) => {
 })
 
 // #endregion
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//图片上传相关
+//#region 
+const confirmImage = ref(false)
+const saveImage = () => {
+    confirmImage.value = true
+}
+const uploadImage = (uidToFileNameMap) => {
+    // console.log("picture uploaded");
+    console.log(JSON.stringify(uidToFileNameMap));
+    if (Object.keys(uidToFileNameMap).length === 0) {
+        console.log("receipt is empty")
+        updateform.receipt = ""
+    }
+    else updateform.receipt = JSON.stringify(uidToFileNameMap);
+    console.log(updateform);
+    confirmImage.value = false
+}
+//#endregion
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//图片详情相关
+//#region
 
+const dialogVisible = ref(false);
+const currentIndex = ref(0);
+const imageUrls = ref([]);
+
+const detail = (receipt) => {
+    const receiptMap = JSON.parse(receipt);
+    imageUrls.value = Object.values(receiptMap).map(url => ("https://cmc.eos-chengdu-1.cmecloud.cn/receipt/" + url));
+    currentIndex.value = 0;
+    dialogVisible.value = true;
+}
+
+const prevImage = () => {
+    if (currentIndex.value > 0) {
+        currentIndex.value--;
+    }
+}
+
+const nextImage = () => {
+    if (currentIndex.value < imageUrls.value.length - 1) {
+        currentIndex.value++;
+    }
+}
+//#endregion
 </script>
 
 <template>
@@ -351,7 +400,7 @@ watch([dialog, refresh], (val1, val2) => {
 
                 <!-- 编辑弹框 -->
                 <DialogComponent ref="editDialog" :form="updateform" dialog-title="操作记录编辑" :refreshFunc="getDataFromAPI"
-                    :confirm-func="addMaterialOperationAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
+                    :confirm-func="updateMaterialOperationAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
                     <el-form-item label="操作" prop="operation">
                         <el-input v-model="updateform.operation" autocomplete="off" disabled />
                     </el-form-item>
@@ -396,7 +445,7 @@ watch([dialog, refresh], (val1, val2) => {
                                 { required: true, message: '请输入数量', trigger: 'blur' },
                                 { type: 'number', message: '必须是数字', trigger: 'blur' }
                             ]">
-                                <el-input v-model.number="updateform.amount" autocomplete="off" :placeholder="remains" />
+                                <el-input v-model.number="updateform.amount" autocomplete="off" />
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -416,7 +465,8 @@ watch([dialog, refresh], (val1, val2) => {
                     </el-row>
                     <el-form-item label="出库凭证" prop="receipt" :rules="[
                         { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
-                        <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage />
+                        <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage
+                            :uploaded="uploaded" />
                     </el-form-item>
                 </DialogComponent>
 
@@ -445,7 +495,13 @@ watch([dialog, refresh], (val1, val2) => {
                             {{ scope.row.supplyTime.substring(0, 10) }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="receipt" label="凭证" align="center" min-width="40vh" />
+                    <el-table-column prop="receipt" label="凭证" align="center" min-width="40vh">
+                        <template #default="scope">
+                            <el-button class="inline_button" @click="detail(scope.row.receipt)">
+                                详情
+                            </el-button>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="operation1" label="业务操作" align="center">
                         <template #default="scope">
                             <el-button class="inline_button"
@@ -466,9 +522,48 @@ watch([dialog, refresh], (val1, val2) => {
             </el-footer>
         </el-container>
     </dv-border-box1>
+    <!-- 图片详情弹框 -->
+    <el-dialog v-model="dialogVisible">
+        <ArrowLeft @click="prevImage" v-if="currentIndex > 0" style="width: 5vh; height: 5vh" class="prev-button" />
+        <img w-full :src="imageUrls[currentIndex]" alt="无图片" class="image" />
+        <ArrowRight @click="nextImage" v-if="currentIndex < imageUrls.length - 1" style="width: 5vh; height: 5vh"
+            class="next-button" />
+
+    </el-dialog>
 </template>
 
 <style scoped>
+.image-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prev-button {
+    position: absolute;
+    left: 20px;
+    /* Adjust the left position as needed */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    color: white
+}
+
+.next-button {
+    position: absolute;
+    right: 20px;
+    /* Adjust the right position as needed */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    color: white
+}
+
+.image {
+    max-width: 100%;
+    max-height: 80vh;
+}
+
 .subNavPage {
     border-radius: 3%;
     color: #fff;

@@ -78,11 +78,17 @@ const router = createRouter({
       path: '/TimeConsuming',
       name: 'TimeConsuming',
       component: () => import('../views/TimeConsuming.vue')
-    }, {
+    },
+    {
       path: '/EnergyConsumption',
       name: 'EnergyConsumption',
       component: () => import('../views/EnergyConsumption.vue')
     },
+    // {
+    //   path: '/Login',
+    //   name: 'login',
+    //   component: () => import('../views/Login.vue')
+    // },
 
 
 
