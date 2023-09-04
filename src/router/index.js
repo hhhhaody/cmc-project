@@ -83,6 +83,18 @@ const router = createRouter({
       path: '/EnergyConsumption',
       name: 'EnergyConsumption',
       component: () => import('../views/EnergyConsumption.vue')
+    }, {
+      path: '/DefectiveMaterial',
+      name: 'DefectiveMaterial',
+      component: () => import('../views/DefectiveMaterial.vue')
+    }, {
+      path: '/ProductManagement',
+      name: 'ProductManagement',
+      component: () => import('../views/ProductManagement.vue')
+    }, {
+      path: '/MaintenanceRecords',
+      name: 'MaintenanceRecords',
+      component: () => import('../views/MaintenanceRecords.vue')
     },
     // {
     //   path: '/Login',

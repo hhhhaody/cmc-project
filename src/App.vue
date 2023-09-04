@@ -57,8 +57,12 @@ const show = () => {
             <el-dropdown-item>
               <RouterLink to="/inventory" @click="hide">物料库存</RouterLink>
             </el-dropdown-item>
-            <el-dropdown-item>不良物料</el-dropdown-item>
-            <el-dropdown-item>产品管理</el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/DefectiveMaterial" @click="hide">不良物料</RouterLink>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/ProductManagement" @click="hide">产品管理</RouterLink>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -73,7 +77,9 @@ const show = () => {
             <el-dropdown-item>
               <RouterLink to="/DeviceStatus" @click="hide">设备运行监测</RouterLink>
             </el-dropdown-item>
-            <el-dropdown-item>故障维修记录</el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/MaintenanceRecords" @click="hide">故障维修记录</RouterLink>
+            </el-dropdown-item>
             <el-dropdown-item>
               <RouterLink to="/MaintenancePlan" @click="hide">设备维护计划</RouterLink>
             </el-dropdown-item>

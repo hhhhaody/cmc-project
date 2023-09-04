@@ -9,63 +9,27 @@ const stations = ref([
     name: "型钢切割工作站",
     tableData: [
       {
-        productNumber: "CXG-20210425-001",
-        productName: "C型钢",
-        productSpec: "50*30*4500",
-        productionTime: "2021-04-25",
-        cuttingTakesTime: "1h",
-        weldingTimeConsumed: "2h",
-        assemblyTimeConsuming: "1h",
+        productionTime: "2023-08-22",
       },
       {
-        productNumber: "CXG-20210425-001",
-        productName: "C型钢",
-        productSpec: "50*30*4500",
-        productionTime: "2021-04-25",
-        cuttingTakesTime: "1h",
-        weldingTimeConsumed: "2h",
-        assemblyTimeConsuming: "1h",
+        productionTime: "2023-08-22",
       },
       {
-        productNumber: "CXG-20210425-001",
-        productName: "C型钢",
-        productSpec: "50*30*4500",
-        productionTime: "2021-04-25",
-        cuttingTakesTime: "1h",
-        weldingTimeConsumed: "2h",
-        assemblyTimeConsuming: "1h",
+        productionTime: "2023-08-22",
       },
     ]
   },
   {
     name: "地面钢网工作站",
     tableData: [
-      {
-        productNumber: "CXG-20210425-001",
-        productName: "T型钢",
-        productSpec: "50*30*4500",
-        productionTime: "2022-04-25",
-        cuttingTakesTime: "1h",
-        weldingTimeConsumed: "2h",
-        assemblyTimeConsuming: "1h",
+    {
+        productionTime: "2021-04-25",
       },
       {
-        productNumber: "CXG-20210425-001",
-        productName: "T型钢",
-        productSpec: "50*30*4500",
         productionTime: "2021-04-25",
-        cuttingTakesTime: "1h",
-        weldingTimeConsumed: "2h",
-        assemblyTimeConsuming: "1h",
       },
       {
-        productNumber: "CXG-20210425-001",
-        productName: "T型钢",
-        productSpec: "50*30*4500",
         productionTime: "2021-04-25",
-        cuttingTakesTime: "1h",
-        weldingTimeConsumed: "2h",
-        assemblyTimeConsuming: "1h",
       },
     ]
   },
@@ -73,31 +37,13 @@ const stations = ref([
     name: "方通组焊工作站",
     tableData: [
       {
-        productNumber: "CXG-20210425-001",
-        productName: "X型钢",
-        productSpec: "50*30*4500",
-        productionTime: "2023-04-25",
-        cuttingTakesTime: "1h",
-        weldingTimeConsumed: "2h",
-        assemblyTimeConsuming: "1h",
+        productionTime: "2021-04-25",
       },
       {
-        productNumber: "CXG-20210425-001",
-        productName: "X型钢",
-        productSpec: "50*30*4500",
         productionTime: "2021-04-25",
-        cuttingTakesTime: "1h",
-        weldingTimeConsumed: "2h",
-        assemblyTimeConsuming: "1h",
       },
       {
-        productNumber: "CXG-20210425-001",
-        productName: "X型钢",
-        productSpec: "50*30*4500",
         productionTime: "2021-04-25",
-        cuttingTakesTime: "1h",
-        weldingTimeConsumed: "2h",
-        assemblyTimeConsuming: "1h",
       },
     ]
   },
@@ -105,31 +51,13 @@ const stations = ref([
     name: "模块总装工作站",
     tableData: [
       {
-        productNumber: "CXG-20210425-001",
-        productName: "Y型钢",
-        productSpec: "50*30*4500",
         productionTime: "2021-04-25",
-        cuttingTakesTime: "1h",
-        weldingTimeConsumed: "2h",
-        assemblyTimeConsuming: "1h",
       },
       {
-        productNumber: "CXG-20210425-001",
-        productName: "Y型钢",
-        productSpec: "50*30*4500",
         productionTime: "2021-04-25",
-        cuttingTakesTime: "1h",
-        weldingTimeConsumed: "2h",
-        assemblyTimeConsuming: "1h",
       },
       {
-        productNumber: "CXG-20210425-001",
-        productName: "Y型钢",
-        productSpec: "50*30*4500",
         productionTime: "2021-04-25",
-        cuttingTakesTime: "1h",
-        weldingTimeConsumed: "2h",
-        assemblyTimeConsuming: "1h",
       },
     ]
   }

@@ -5,20 +5,20 @@ import PaginationComponent from "../components/PaginationComponent.vue";
 
 // 初始化一个reactive的images数组，数组元素包含图片的url和日期
 const images = reactive([
-    { url: '/public/CandidImages/candid1.jpeg', date: '2023-07-31 11:20:33' },
-    { url: '/public/CandidImages/candid2.jpeg', date: '2023-07-31 14:01:56' },
-    { url: '/public/CandidImages/candid3.jpeg', date: '2023-07-29 13:30:23' },
-    { url: '/public/CandidImages/candid4.jpeg', date: '2023-07-28 10:51:08' },
-    { url: '/public/CandidImages/candid5.jpeg', date: '2023-07-27 09:24:45' },
-    { url: '/public/CandidImages/candid6.jpeg', date: '2023-07-26 08:56:05' },
-    { url: '/public/CandidImages/candid7.jpeg', date: '2023-07-26 16:35:09' },
-    { url: '/public/CandidImages/candid8.jpeg', date: '2023-07-26 13:45:54' },
-    { url: '/public/CandidImages/candid9.jpeg', date: '2023-07-24 12:06:18' },
-    { url: '/public/CandidImages/candid10.jpeg', date: '2023-07-24 17:02:19' },
-    { url: '/public/CandidImages/candid11.jpeg', date: '2023-07-24 19:01:36' },
-    { url: '/public/CandidImages/candid12.jpeg', date: '2023-07-14 13:33:44' },
-    { url: '/public/CandidImages/candid13.jpeg', date: '2023-07-23 12:26:46' },
-    { url: '/public/CandidImages/candid14.jpeg', date: '2023-07-22 11:52:57' },
+    { url: '/public/CandidImages/candid1.jpeg', date: '2023-08-20 11:20:33' },
+    { url: '/public/CandidImages/candid2.jpeg', date: '2023-08-20 14:01:56' },
+    { url: '/public/CandidImages/candid3.jpeg', date: '2023-08-21 13:30:23' },
+    { url: '/public/CandidImages/candid4.jpeg', date: '2023-08-22 10:51:08' },
+    { url: '/public/CandidImages/candid5.jpeg', date: '2023-08-23 09:24:45' },
+    { url: '/public/CandidImages/candid6.jpeg', date: '2023-08-24 08:56:05' },
+    { url: '/public/CandidImages/candid7.jpeg', date: '2023-08-24 16:35:09' },
+    { url: '/public/CandidImages/candid8.jpeg', date: '2023-08-25 13:45:54' },
+    { url: '/public/CandidImages/candid9.jpeg', date: '2023-08-25 12:06:18' },
+    { url: '/public/CandidImages/candid10.jpeg', date: '2023-08-25 17:02:19' },
+    { url: '/public/CandidImages/candid11.jpeg', date: '2023-08-25 19:01:36' },
+    { url: '/public/CandidImages/candid12.jpeg', date: '2023-08-26 13:33:44' },
+    { url: '/public/CandidImages/candid13.jpeg', date: '2023-08-27 12:26:46' },
+    { url: '/public/CandidImages/candid14.jpeg', date: '2023-08-28 11:52:57' },
     { url: '/public/CandidImages/candid15.jpeg', date: '2023-06-22 08:35:38' },
     { url: '/public/CandidImages/candid16.jpeg', date: '2023-06-22 07:49:29' },
     { url: '/public/CandidImages/candid17.jpeg', date: '2023-06-20 11:17:30' },
@@ -58,7 +58,7 @@ total.value = images.length;
 let srcList = reactive(images.map(image => image.url));
 
 // 定义一个ref用于存储分页显示的图片
-let displayedImages = ref([]);
+// let displayedImages = ref([]);
 
 // 定义一个处理表格更新的函数，新的表格数据会被赋值给displayedImages，页面大小会被更新
 const handleTableUpdate = (newTableData) => {

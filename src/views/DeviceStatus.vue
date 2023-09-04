@@ -46,49 +46,43 @@ const workstations = reactive([
     {
         name: "型钢切割工作站",
         components: [
-            { name: "滚筒线", status: "normal" },
-            { name: "焊接工装夹具", status: "normal" },
-            { name: "焊接机器人", status: "normal" },
-            { name: "焊机", status: "normal" },
-            { name: "桁架", status: "stopped" },
-            { name: "翻转机1", status: "maintenance" },
-            { name: "翻转机2", status: "alarm" },
+            { name: "桁架机械手", status: "normal" },
+            { name: "翻转机", status: "normal" },
+            { name: "激光切割机", status: "normal" },
+            { name: "搬运机器人", status: "normal" },
         ]
     }, {
         name: "地面钢网工作站",
         components: [
-            { name: "滚筒线", status: "normal" },
-            { name: "焊接工装夹具", status: "stopped" },
+            { name: "桁架机械手", status: "normal" },
+            { name: "焊接机械臂桁架", status: "normal" },
             { name: "焊接机器人", status: "normal" },
-            { name: "焊机", status: "maintenance" },
-            { name: "桁架", status: "stopped" },
-            { name: "翻转机1", status: "alarm" },
-            { name: "反向起拱设备", status: "normal" },
-            { name: "翻转机2", status: "normal" },
-            { name: "打钉设备", status: "normal" },
+            { name: "焊接夹具", status: "normal" },
         ]
     }, {
         name: "方通组焊工作站",
         components: [
-            { name: "前三轴桁架", status: "normal" },
-            { name: "激光切割机", status: "normal" },
-            { name: "折弯机器人", status: "normal" },
-            { name: "焊接工装夹具", status: "normal" },
-            { name: "焊接机器人", status: "normal" },
-            { name: "后三轴桁架", status: "normal" },
-            { name: "打磨工装夹具", status: "normal" },
-            { name: "打磨机器人", status: "normal" },
+            { name: "搬运机器人", status: "normal" },
+            { name: "焊接机台1", status: "normal" },
+            { name: "焊接机台2", status: "normal" },
+            { name: "焊接机台3", status: "normal" },
+            { name: "焊接机台4", status: "normal" },
+            { name: "焊接机器人A", status: "normal" },
+            { name: "焊接机器人B", status: "normal" },
+            { name: "组焊机台", status: "normal" },
+            { name: "桁架机械手", status: "normal" },
+            { name: "入料台", status: "normal" },
+            { name: "出料台", status: "normal" },
         ]
     }, {
         name: "模块总装工作站",
         components: [
-            { name: "滚筒线", status: "normal" },
-            { name: "焊接工装夹具", status: "stopped" },
-            { name: "焊接机器人", status: "maintenance" },
-            { name: "焊机", status: "alarm" },
-            { name: "桁架", status: "normal" },
-            { name: "翻转机1", status: "normal" },
-            { name: "翻转机2", status: "normal" },
+            { name: "移动模台", status: "normal" },
+            { name: "墙面夹具A", status: "normal" },
+            { name: "墙面夹具B", status: "normal" },
+            { name: "机器人桁架", status: "normal" },
+            { name: "焊接机器人A", status: "normal" },
+            { name: "焊接机器人B", status: "normal" },
         ]
     },
 
@@ -108,16 +102,16 @@ const workstations = reactive([
         <!-- 描述每种颜色对应的设备状态的说明部分 -->
         <div class="status-description">
             <span class="status-item">
-                绿色:正常运行
+                绿色：正常运行
             </span>
             <span class="status-item">
-                灰色:停机
+                灰色：停机
             </span>
             <span class="status-item">
-                黄色:检修维护
+                黄色：检修维护
             </span>
             <span class="status-item">
-                红色:报警
+                红色：报警
             </span>
         </div>
 
