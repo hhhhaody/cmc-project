@@ -94,6 +94,10 @@ const router = createRouter({
       path: '/MaintenanceRecords',
       name: 'MaintenanceRecords',
       component: () => import('../views/MaintenanceRecords.vue')
+    }, {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/login.vue')
     },
 
 
@@ -109,13 +113,15 @@ const router = createRouter({
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//   let pid = getQueryVariable('pid')
-//   if (to.name !== 'login' && !isAuthenticated()) next({ name: 'login', query: { pid: pid || '' } })
-//   else next()
-// })
+router.beforeEach((to, from, next) => {
+  // console.log("Router guard triggered");
+  let pid = getQueryVariable('pid')
+  if (to.name !== 'login' && !isAuthenticated()) next({ name: 'login', query: { pid: pid || '' } })
+  else next()
+})
 //判断是否登录
 function isAuthenticated() {
+  
   let setToken = getQueryVariable('token') || '';
   if (setToken) {
     setToken = decodeURIComponent(setToken);
@@ -127,6 +133,8 @@ function isAuthenticated() {
   } else {
     return false
   }
+  
 }
+// console.log("Authenticated:", isAuthenticated());
 
 export default router

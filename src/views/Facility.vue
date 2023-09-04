@@ -12,7 +12,7 @@ const tableData = [
     name: "桁架设备",
     model: "KJ264C-B0",
     purchaseDate: "2023-08-20",
-    supplier: "中科先进",
+    supplier: "*",
     deviceState: "正常使用",
   },
   {
@@ -22,7 +22,7 @@ const tableData = [
     name: "型材翻转设备",
     model: "KJ264C-B1",
     purchaseDate: "2023-08-10",
-    supplier: "中科先进",
+    supplier: "*",
     deviceState: "正常使用",
   },
   {
@@ -32,7 +32,7 @@ const tableData = [
     name: "激光切割设备",
     model: "KJ264C-D0",
     purchaseDate: "2023-08-10",
-    supplier: "中科先进",
+    supplier: "*",
     deviceState: "正常使用",
   },
   {
@@ -42,7 +42,7 @@ const tableData = [
     name: "机械臂下料设备",
     model: "KJ264C-D1",
     purchaseDate: "2023-08-10",
-    supplier: "中科先进",
+    supplier: "*",
     deviceState: "正常使用",
   },
   {
@@ -52,7 +52,7 @@ const tableData = [
     name: "焊接机台设备",
     model: "KJ264C-F0",
     purchaseDate: "2023-08-10",
-    supplier: "中科先进",
+    supplier: "*",
     deviceState: "正常使用",
   },
   {
@@ -62,7 +62,7 @@ const tableData = [
     name: "焊接机台设备",
     model: "KJ264C-F0",
     purchaseDate: "2023-08-10",
-    supplier: "中科先进",
+    supplier: "*",
     deviceState: "正常使用",
   },
   {
@@ -72,7 +72,7 @@ const tableData = [
     name: "焊接机台设备",
     model: "KJ264C-F0",
     purchaseDate: "2023-08-10",
-    supplier: "中科先进",
+    supplier: "*",
     deviceState: "正常使用",
   },
   {
@@ -82,7 +82,7 @@ const tableData = [
     name: "焊接机台设备",
     model: "KJ264C-F0",
     purchaseDate: "2023-08-10",
-    supplier: "中科先进",
+    supplier: "*",
     deviceState: "正常使用",
   },
   {
@@ -92,7 +92,7 @@ const tableData = [
     name: "焊接机台设备",
     model: "KJ264C-F0",
     purchaseDate: "2023-08-10",
-    supplier: "中科先进",
+    supplier: "*",
     deviceState: "正常使用",
   },
   {
@@ -102,7 +102,7 @@ const tableData = [
     name: "桁架设备",
     model: "KJ264C-F0",
     purchaseDate: "2023-08-10",
-    supplier: "中科先进",
+    supplier: "*",
     deviceState: "正常使用",
   },
   {
@@ -112,7 +112,7 @@ const tableData = [
     name: "桁架设备",
     model: "KJ264C-H1",
     purchaseDate: "2023-08-10",
-    supplier: "中科先进",
+    supplier: "*",
     deviceState: "正常使用",
   },
   {
@@ -122,7 +122,7 @@ const tableData = [
     name: "焊接机器人",
     model: "KJ264C-H1",
     purchaseDate: "2023-08-10",
-    supplier: "中科先进",
+    supplier: "*",
     deviceState: "正常使用",
   },
   {
@@ -132,7 +132,7 @@ const tableData = [
     name: "桁架设备",
     model: "KJ264C-H1",
     purchaseDate: "2023-08-10",
-    supplier: "中科先进",
+    supplier: "*",
     deviceState: "正常使用",
   },
   {
@@ -142,7 +142,7 @@ const tableData = [
     name: "总装模台设备",
     model: "KJ264C-H0",
     purchaseDate: "2023-08-10",
-    supplier: "中科先进",
+    supplier: "*",
     deviceState: "正常使用",
   },
   {

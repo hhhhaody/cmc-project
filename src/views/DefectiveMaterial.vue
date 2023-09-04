@@ -18,7 +18,7 @@ const tableData = [
     undesirable: "0",
     reuse: "0",
     scrap: "0",
-    unit: "中科先进",
+    unit: "*",
   },
   {
     batch: "TXG-001",
@@ -27,7 +27,7 @@ const tableData = [
     undesirable: "0",
     reuse: "0",
     scrap: "0",
-    unit: "中科先进",
+    unit: "*",
   },
   {
     batch: "LXG-001",
@@ -36,7 +36,7 @@ const tableData = [
     undesirable: "0",
     reuse: "0",
     scrap: "0",
-    unit: "中科先进",
+    unit: "*",
   },
 ];
 

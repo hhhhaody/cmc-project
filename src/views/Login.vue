@@ -1,5 +1,11 @@
 <template>
     <div class="login" clearfix>
+        <h1>
+            <span>
+                中建科技CMC产线智能化管理系统
+            </span>
+        </h1>
+
         <div v-if="autologin">登录中...</div>
         <div v-if="!autologin" class="login-wrap">
             <el-row type="flex" justify="center">
@@ -26,6 +32,7 @@
 <script>
 import axios from "axios";
 import { getQueryVariable } from '../router/index.js'
+import { loginUser } from "../apis/login";
 export default {
     name: "login",
     data() {
@@ -46,43 +53,28 @@ export default {
         }
     },
     methods: {
-        doLogin() {
-            if (!this.user.username) {
-                this.$message.error("请输入用户名！");
-                return;
-            } else if (!this.user.password) {
-                this.$message.error("请输入密码！");
-                return;
-            } else {
-                //校验用户名和密码是否正确;
-                axios
-                    .post("/api/home/login", {
-                        username: this.user.username,
-                        passwd: this.user.password
-                    })
-                    .then(res => {
-                        if (res.data.code === 200 && res.data.data) {
-                            const token = res.data.data
-                            sessionStorage.setItem("mobile_data_token", token);
-                            if (getQueryVariable('cb')) {
-                                location.href = decodeURIComponent(getQueryVariable('cb'))
-                            } else if (getQueryVariable('pid')) {
-                                if (getQueryVariable('type') == 3) {
-                                    location.href = '/project';
-                                } else if (getQueryVariable('type') == 2) {
-                                    location.href = '/control?pid=' + getQueryVariable('pid') + location.hash
-                                } else {
-                                    location.href = '/?pid=' + getQueryVariable('pid') + location.hash
-                                }
-                            } else {
-                                location.href = '/index'
-                            }
+        async doLogin() {
 
-                        } else {
-                            this.autologin = false;
-                            alert("您输入的用户名或密码错误！");
-                        }
-                    });
+            if (!this.user.username || !this.user.password) {
+                this.$message.error("请输入用户名和密码！");
+                return;
+            }
+
+            try {
+                const res = await loginUser(this.user.username, this.user.password);
+                if (res.status === 200 && res.data) {
+                    // 存储JWT令牌（如果有）
+                    localStorage.setItem('jwt_token', res.data.token);
+                    sessionStorage.setItem("mobile_data_token", res.data.token);
+                    // 跳转到主页
+                    this.$router.push({ name: 'home1' });  // 确保路由名称与您的路由配置一致
+                } else {
+                    this.$message.error("登录失败，用户名或密码不正确。");
+                }
+            }
+            catch (error) {
+                console.error("登录失败：", error);
+                this.$message.error("登录失败，用户名或密码不正确。");
             }
         }
     }
@@ -92,10 +84,15 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .login {
-    width: 100%;
-    height: 740px;
     background-size: cover;
-    overflow: hidden;
+    background-image: url('/src/assets/images/map-2.png');
+    background-position: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
 }
 
 .login-wrap {
@@ -142,5 +139,12 @@ a:hover {
 .loginbtn {
     margin-top: 30px;
     margin-left: 60px;
+}
+
+h1 {
+    text-align: center;
+    color: #fff;
+    font-size: 40px;
+    margin-top: 70px;
 }
 </style>

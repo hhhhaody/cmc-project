@@ -101,7 +101,7 @@ const show = () => {
             <el-dropdown-item>
               <RouterLink to="/production" @click="hide">实际产量记录</RouterLink>
             </el-dropdown-item>
-            
+
             <el-dropdown-item>
               <RouterLink to="/EnergyConsumption" @click="hide">能耗统计记录</RouterLink>
             </el-dropdown-item>
