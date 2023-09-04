@@ -86,3 +86,11 @@ export const deleteMaterialOperationAPI = (id) => {
         method: 'delete'
     })
 }
+
+export const updateMaterialOperationAPI = (data) => {
+    return httpInstance({
+        url: '/materials/operation',
+        method: 'put',
+        data
+    })
+}

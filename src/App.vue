@@ -1,6 +1,8 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import HelloWorld from "./components/HelloWorld.vue";
+import { Decoration5 } from "@kjgl77/datav-vue3";
+
 
 // test API function
 // import { testAPI } from "./apis/home";
@@ -39,6 +41,7 @@ const show = () => {
         <span>
           <!-- <img alt="Our logo" src="@/assets/logo.png" /> -->
           CMC产线智能化管理系统
+          <!-- <Decoration5 :dur="5" style="width:50%;height:40px;margin: auto;" :color="['#5d8cbd', 'white']" /> -->
         </span>
       </h1>
     </header>

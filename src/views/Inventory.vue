@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, reactive, onUnmounted, watch, computed, toRefs, triggerRef } from "vue";
+import { ref, onMounted, reactive, onUnmounted, watch, computed } from "vue";
 import { RouterLink } from "vue-router";
 import { format } from "date-fns"
 import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
@@ -324,9 +324,11 @@ watch([dialog, refresh], (val1, val2) => {
 
 const uploadImage = (uidToFileNameMap) => {
   // console.log("picture uploaded");
-  const allFileNames = computed(() => Object.values(uidToFileNameMap).join('-'));
-  console.log(allFileNames.value);
-  stockform.receipt = allFileNames.value
+  // const allFileNames = computed(() => Object.values(uidToFileNameMap).join('-'));
+  console.log(JSON.stringify(uidToFileNameMap));
+  // console.log(allFileNames.value);
+  // stockform.receipt = allFileNames.value
+  stockform.receipt = JSON.stringify(uidToFileNameMap);
   console.log(stockform);
   confirmImage.value = false
 }

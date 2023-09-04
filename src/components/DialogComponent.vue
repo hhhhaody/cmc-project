@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { ElNotification } from 'element-plus'
+
 const props = defineProps({
     dialogTitle: { type: String, default: "新增物料类型" },
     form: {
@@ -42,7 +43,7 @@ const submitForm = async (form) => {
         if (valid) {
             //向数据库发送增加请求并更新列表
 
-            // console.log('submit!')
+            console.log('submit!')
             push()
             clear()
             if (props.image) emit("saveImage")
