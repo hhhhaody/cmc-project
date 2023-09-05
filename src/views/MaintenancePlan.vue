@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch } from "vue";
 import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
-import MaintenanceForm from "./MaintenanceForm.vue";
+import MaintenanceForm from "../components/MaintenanceForm.vue";
 
 const currentDate = ref(new Date());
 const currentMonth = computed(() => currentDate.value.getMonth());

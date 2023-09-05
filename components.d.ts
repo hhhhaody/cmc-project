@@ -48,6 +48,7 @@ declare module 'vue' {
     IconSupport: typeof import('./src/components/icons/IconSupport.vue')['default']
     IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
     LineGraph: typeof import('./src/components/LineGraph.vue')['default']
+    MaintenanceForm: typeof import('./src/components/MaintenanceForm.vue')['default']
     MaintenanceTask: typeof import('./src/components/MaintenanceTask.vue')['default']
     MyCollapse: typeof import('./src/components/MyCollapse.vue')['default']
     Notification: typeof import('./src/components/Notification.vue')['default']

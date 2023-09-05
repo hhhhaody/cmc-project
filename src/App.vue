@@ -58,10 +58,10 @@ const show = () => {
               <RouterLink to="/inventory" @click="hide">物料库存</RouterLink>
             </el-dropdown-item>
             <el-dropdown-item>
-              <RouterLink to="/DefectiveMaterial" @click="hide">不良物料</RouterLink>
+              <RouterLink to="/defectiveMaterial" @click="hide">不良物料</RouterLink>
             </el-dropdown-item>
             <el-dropdown-item>
-              <RouterLink to="/ProductManagement" @click="hide">产品管理</RouterLink>
+              <RouterLink to="/productManagement" @click="hide">产品管理</RouterLink>
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -75,19 +75,19 @@ const show = () => {
               <RouterLink to="/facility" @click="hide">设备台账管理</RouterLink>
             </el-dropdown-item>
             <el-dropdown-item>
-              <RouterLink to="/DeviceStatus" @click="hide">设备运行监测</RouterLink>
+              <RouterLink to="/deviceStatus" @click="hide">设备运行监测</RouterLink>
             </el-dropdown-item>
             <el-dropdown-item>
-              <RouterLink to="/MaintenanceRecords" @click="hide">故障维修记录</RouterLink>
+              <RouterLink to="/maintenanceRecords" @click="hide">故障维修记录</RouterLink>
             </el-dropdown-item>
             <el-dropdown-item>
-              <RouterLink to="/MaintenancePlan" @click="hide">设备维护计划</RouterLink>
+              <RouterLink to="/maintenancePlan" @click="hide">设备维护计划</RouterLink>
             </el-dropdown-item>
             <el-dropdown-item>
-              <RouterLink to="/DeviceFiles" @click="hide">设备文件管理</RouterLink>
+              <RouterLink to="/deviceFiles" @click="hide">设备文件管理</RouterLink>
             </el-dropdown-item>
             <el-dropdown-item>
-              <RouterLink to="/Compose" @click="hide">产线组成</RouterLink>
+              <RouterLink to="/composition" @click="hide">产线组成</RouterLink>
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -98,7 +98,7 @@ const show = () => {
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>
-              <RouterLink to="/TimeConsuming" @click="hide">生产耗时记录</RouterLink>
+              <RouterLink to="/timeConsumption" @click="hide">生产耗时记录</RouterLink>
             </el-dropdown-item>
 
             <el-dropdown-item>
@@ -106,7 +106,7 @@ const show = () => {
             </el-dropdown-item>
 
             <el-dropdown-item>
-              <RouterLink to="/EnergyConsumption" @click="hide">能耗统计记录</RouterLink>
+              <RouterLink to="/energyConsumption" @click="hide">能耗统计记录</RouterLink>
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>

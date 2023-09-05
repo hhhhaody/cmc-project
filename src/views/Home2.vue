@@ -1,8 +1,4 @@
 <script setup>
-import LineGraph from "../components/LineGraph.vue";
-import UsageForm from "../components/UsageRecord.vue";
-import GaugeGraph from "../components/GaugeGraph.vue";
-import PieGraph from "../components/PieGraph.vue";
 import DeviceStatus from "../components/DeviceStatus.vue";
 import Notification from "../components/Notification.vue";
 import MaintenanceTask from "../components/MaintenanceTask.vue";

@@ -114,7 +114,7 @@ onMounted(() => {
 <template>
     <!-- borderbox -->
     <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-        background-color="#4f698794">
+        background-color="#3545659e">
         <!-- body -->
         <el-container class="subNavPage">
             <br />

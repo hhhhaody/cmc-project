@@ -56,44 +56,44 @@ const router = createRouter({
       name: 'capture',
       component: () => import('../views/Capture.vue')
     }, {
-      path: '/DeviceStatus',
-      name: 'DeviceStatus',
+      path: '/deviceStatus',
+      name: 'deviceStatus',
       component: () => import('../views/DeviceStatus.vue')
     }, {
-      path: '/MaintenancePlan',
-      name: 'MaintenancePlan',
+      path: '/maintenancePlan',
+      name: 'maintenancePlan',
       component: () => import('../views/MaintenancePlan.vue')
     }, {
-      path: '/MaintenancePlan/MaintainList',
+      path: '/maintenancePlan/maintainList',
       component: () => import('../views/MaintainList.vue')
     }, {
-      path: '/DeviceFiles',
-      name: 'DeviceFiles',
+      path: '/deviceFiles',
+      name: 'deviceFiles',
       component: () => import('../views/DeviceFiles.vue')
     }, {
-      path: '/Compose',
-      name: 'compose',
-      component: () => import('../views/Compose.vue')
+      path: '/composition',
+      name: 'composition',
+      component: () => import('../views/Composition.vue')
     }, {
-      path: '/TimeConsuming',
-      name: 'TimeConsuming',
-      component: () => import('../views/TimeConsuming.vue')
+      path: '/timeConsumption',
+      name: 'timeConsumption',
+      component: () => import('../views/TimeConsumption.vue')
     },
     {
-      path: '/EnergyConsumption',
-      name: 'EnergyConsumption',
+      path: '/energyConsumption',
+      name: 'energyConsumption',
       component: () => import('../views/EnergyConsumption.vue')
     }, {
-      path: '/DefectiveMaterial',
-      name: 'DefectiveMaterial',
+      path: '/defectiveMaterial',
+      name: 'defectiveMaterial',
       component: () => import('../views/DefectiveMaterial.vue')
     }, {
-      path: '/ProductManagement',
-      name: 'ProductManagement',
+      path: '/productManagement',
+      name: 'productManagement',
       component: () => import('../views/ProductManagement.vue')
     }, {
-      path: '/MaintenanceRecords',
-      name: 'MaintenanceRecords',
+      path: '/maintenanceRecords',
+      name: 'maintenanceRecords',
       component: () => import('../views/MaintenanceRecords.vue')
     },
     // {

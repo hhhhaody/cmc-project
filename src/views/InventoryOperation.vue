@@ -606,6 +606,11 @@ const nextImage = () => {
     color: #fff !important;
 }
 
+:deep .el-breadcrumb__inner.is-link {
+    color: #fff !important;
+    text-shadow: 1px 1px 15px #a3ccf9;
+}
+
 :deep .el-date-editor {
     height: 33px !important;
 }
