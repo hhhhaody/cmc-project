@@ -1,5 +1,6 @@
 //axios encapsulation
 import axios from "axios";
+import { ElNotification } from "element-plus";
 
 const _axiosPromiseArr = []
 
@@ -15,9 +16,20 @@ httpInstance.interceptors.request.use(function (config) {
     config.cancelToken = new axios.CancelToken(cancel => {
         _axiosPromiseArr.push({ cancel })
     })
+    const token = sessionStorage.getItem("jwtToken");
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+        // console.log(config);
+    }
     return config;
 }, function (error) {
     // 对请求错误做些什么
+    ElNotification({
+        title: '失败',
+        message: '请重试或联系管理员',
+        duration: 2000,
+        type: "error"
+    })
     return Promise.reject(error);
 });
 
@@ -38,6 +50,22 @@ httpInstance.interceptors.response.use(function (response) {
 }, function (error) {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
+    if (error.response.status === 500) {
+        ElNotification({
+            title: '失败',
+            message: '连接数据库失败，请联系管理员',
+            duration: 2000,
+            type: "error"
+        })
+    }
+    else {
+        ElNotification({
+            title: '失败',
+            message: '操作失败请重试',
+            duration: 2000,
+            type: "error"
+        })
+    }
     return Promise.reject(error);
 });
 

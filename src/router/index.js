@@ -100,13 +100,6 @@ const router = createRouter({
       name: 'login',
       component: () => import('../views/login.vue')
     },
-    // {
-    //   path: '/Login',
-    //   name: 'login',
-    //   component: () => import('../views/Login.vue')
-    // },
-
-
 
     {
       path: '/about',
@@ -127,7 +120,7 @@ router.beforeEach((to, from, next) => {
 })
 //判断是否登录
 function isAuthenticated() {
-  
+
   let setToken = getQueryVariable('token') || '';
   if (setToken) {
     setToken = decodeURIComponent(setToken);
@@ -139,7 +132,7 @@ function isAuthenticated() {
   } else {
     return false
   }
-  
+
 }
 // console.log("Authenticated:", isAuthenticated());
 

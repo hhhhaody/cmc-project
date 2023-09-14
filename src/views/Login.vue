@@ -30,7 +30,6 @@
 </template>
  
 <script>
-import axios from "axios";
 import { getQueryVariable } from '../router/index.js'
 import { loginUser } from "../apis/login";
 export default {
@@ -62,10 +61,10 @@ export default {
 
             try {
                 const res = await loginUser(this.user.username, this.user.password);
-                if (res.status === 200 && res.data) {
+                if (res != null) {
                     // 存储JWT令牌（如果有）
-                    localStorage.setItem('jwt_token', res.data.token);
-                    sessionStorage.setItem("mobile_data_token", res.data.token);
+                    localStorage.setItem('jwt_token', res.token);
+                    sessionStorage.setItem("mobile_data_token", res.token);
                     // 跳转到主页
                     this.$router.push({ name: 'home1' });  // 确保路由名称与您的路由配置一致
                 } else {
@@ -96,12 +95,12 @@ export default {
 }
 
 .login-wrap {
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(255, 255, 255, 0.3);
     width: 400px;
     height: 300px;
-    margin: 215px auto;
+    margin: 30vh auto;
     overflow: hidden;
-    padding-top: 10px;
+    padding-top: 40px;
     line-height: 40px;
     border-radius: 2vh;
 }
@@ -111,8 +110,9 @@ export default {
 }
 
 h3 {
-    color: #729fd0;
-    font-size: 24px;
+    color: #ffffff;
+    font-size: 26px;
+    /* line-height: 30px; */
     text-align: center;
 }
 
@@ -121,15 +121,6 @@ hr {
     margin: 20px auto;
 }
 
-a {
-    text-decoration: none;
-    color: #aaa;
-    font-size: 15px;
-}
-
-a:hover {
-    color: coral;
-}
 
 .el-button {
     width: 80%;
@@ -142,9 +133,21 @@ a:hover {
 }
 
 h1 {
+    position: relative;
     text-align: center;
-    color: #fff;
+    color: #ffffff9c;
     font-size: 40px;
-    margin-top: 70px;
+    top: 5vh;
+}
+
+:deep .el-form-item__label {
+    color: #fff !important;
+    text-shadow: 1px 1px 5px #b2c8e1;
+
+}
+
+:deep .el-button--primary {
+    --el-button-bg-color: #33496169 !important;
+    --el-button-border-color: #828d99 !important
 }
 </style>
