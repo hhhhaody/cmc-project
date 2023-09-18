@@ -24,6 +24,7 @@
 <script>
 import { ElCollapse, ElCollapseItem } from 'element-plus';
 import { ref, reactive, onMounted, nextTick } from 'vue'
+import { getVideoStreamAPI } from '../apis/video';
 
 export default {
   components: {
@@ -79,29 +80,34 @@ export default {
     // 并发射两个事件，分别是'stream-changed'和'default-streams'
     onMounted(async () => {
       await nextTick();
+      const defaultIndexCodes = []; // 创建一个数组来保存默认的 indexCodes
       // 设定每个工作站的第一个视频流为默认显示（高亮）
       options.forEach(option => {
         const firstStreamKey = Object.keys(option.streams)[0];
         option.streams[firstStreamKey] = true;
         emit('stream-changed', { stream: streamMap[firstStreamKey], index: 0 });
+
+        defaultIndexCodes.push(streamMap[firstStreamKey]); // 将每个工作站的第一个视频流的 indexCode 添加到数组中
       });
       // 流的映射，键是流的名字，值是流的URL
       // 这是一个用于查找流URL的对象
-      const defaultStreams = options.map(option => streamMap[Object.keys(option.streams)[0]]);
-      emit('default-streams', defaultStreams);
+      // const defaultStreams = options.map(option => streamMap[Object.keys(option.streams)[0]]);
+      emit('default-streams', defaultIndexCodes);
+
     });
 
 
-    const streamMap = {
-      '监控点位1': 'http://113.106.166.37:7086/live/cameraid/1000022%240/substream/2.m3u8',
-      '监控点位2': 'http://113.106.166.37:7086/live/cameraid/1000018%240/substream/2.m3u8',
-      '监控点位3': 'http://113.106.166.37:7086/live/cameraid/1000004%240/substream/2.m3u8',
-      '监控点位4': 'http://113.106.166.37:7086/live/cameraid/1000015%240/substream/2.m3u8',
-      '监控点位5': 'http://113.106.166.37:7086/live/cameraid/1000014%240/substream/2.m3u8',
-      '监控点位6': 'http://113.106.166.37:7086/live/cameraid/1000008%240/substream/2.m3u8',
-      '监控点位7': 'http://113.106.166.37:7086/live/cameraid/1000005%240/substream/2.m3u8',
-      '监控点位8': 'http://113.106.166.37:7086/live/cameraid/1000004%240/substream/2.m3u8',
-    }
+    const streamMap = reactive({
+      '监控点位1': '5363b5f5880b49c29dcbfa199ce3f11f',
+      '监控点位2': '8f4800455a984875b4a2f8e670879f8b',
+      '监控点位3': '7e37741ff6954cbebbbc60d6608d36e1',
+      '监控点位4': '301790102285474c873196aa8a32bfa2',
+      '监控点位5': 'c8c0ba638ecd446a9778f1b72d9e5770',
+      '监控点位6': 'e897fed708ec4c66a7488ed605d82d68',
+      '监控点位7': '01a78a827d564de89244eb9c080caffe',
+      '监控点位8': 'b11f232628cc4838968af8ab3291ccaa',
+    });
+
 
     // 切换流的函数，当用户点击一个流时，会调用这个函数
     // 这个函数会将当前工作站的所有流设置为未选中状态，然后将被点击的流设置为选中状态
@@ -111,6 +117,9 @@ export default {
         option.streams[key] = false;
       }
       option.streams[stream] = true;
+      const indexCode = streamMap[stream]; // 获取对应的indexCode
+      emit('point-selected', { indexCode, index }); // 发出事件
+
       emit('stream-changed', { stream: streamMap[stream], index });
     };
 
@@ -120,6 +129,7 @@ export default {
       handleChange,
       options,
       toggleStream,
+      // streamUrls
     }
   }
 };
@@ -129,8 +139,8 @@ export default {
 <style scoped>
 /* 每个折叠项标题的背景和文本颜色 */
 ::v-deep .el-collapse-item__header {
-  background-color: #415F88;
-  color: #070707;
+  background-color: rgb(245, 245, 245);
+  color: rgb(96, 98, 102);
   font-weight: 600;
   height: 50px;
   padding: 0 20px;
@@ -139,7 +149,7 @@ export default {
 
 /* 每个折叠项内容的背景和文本颜色 */
 ::v-deep .el-collapse-item__content {
-  background-color: #617EA8;
+  background-color: rgb(249, 249, 249);
   color: #070707;
   font-weight: 500;
   height: 80px;
@@ -155,7 +165,7 @@ export default {
   height: 16px;
   margin-right: 5px;
   border-radius: 50%;
-  background: white;
+  background: rgb(220, 222, 225);
   vertical-align: middle;
   position: relative;
   cursor: pointer;
