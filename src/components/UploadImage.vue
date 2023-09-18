@@ -164,7 +164,7 @@ watch([() => props.dialog, () => props.confirmImage], async ([dialogValue, confi
 
         for (const uid in uidToFileNameMap.value) {
             //不删除开启弹框前已有的图片
-            if (!original.value.hasOwnProperty(uid)) {
+            if (!original.value || !original.value.hasOwnProperty(uid)) {
                 const fileName = uidToFileNameMap.value[uid];
                 const params = {
                     Bucket: 'cmc/receipt',

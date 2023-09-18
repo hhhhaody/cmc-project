@@ -211,6 +211,5 @@ onMounted(() => {
   margin-bottom: 12px;
   margin-left: 200px;
 }
-
 </style>
 

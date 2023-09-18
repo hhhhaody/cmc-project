@@ -104,12 +104,24 @@ const reset = () => {
     search3.value.searchContent = "";
 
     if (show.value) {
+        time.value = "";
+
         search5.value.searchContent = "";
         search6.value.searchContent = "";
     }
 
     getDataFromAPI()
 };
+
+//日期组件清空时默认为null，改为空字符串
+watch(
+    time,
+    (newVal, oldVal) => {
+        if (newVal == null) {
+            time.value = ""
+        }
+    }
+);
 
 // #endregion
 
@@ -210,7 +222,19 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 
 const del = async (id) => {
     const res = await deleteMaterialOperationAPI(id);
-    if (res.code === 1) getDataFromAPI();
+    if (res.code === 1) {
+        getDataFromAPI();
+        ElMessage({
+            type: 'success',
+            message: '删除成功',
+        })
+    }
+    else {
+        ElMessage({
+            type: 'error',
+            message: '删除失败',
+        })
+    }
 };
 
 const deleteConfirm = (id) => {
@@ -229,10 +253,7 @@ const deleteConfirm = (id) => {
             refresh.value = true
             // console.log(id);
             del(id)
-            ElMessage({
-                type: 'success',
-                message: '删除成功',
-            })
+
         })
         .catch(() => {
             refresh.value = true
@@ -430,7 +451,7 @@ const nextImage = () => {
                     </el-form-item>
                     <el-row>
                         <el-col :span="12">
-                            <el-form-item label="出库人员" prop="operator" :rules="[
+                            <el-form-item label="操作人员" prop="operator" :rules="[
                                 { required: true, message: '请输入操作人员', trigger: 'blur' },
                                 {
                                     min: 1, max: 30,
@@ -441,7 +462,7 @@ const nextImage = () => {
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                            <el-form-item label="出库数量" prop="amount" :rules="[
+                            <el-form-item label="操作数量" prop="amount" :rules="[
                                 { required: true, message: '请输入数量', trigger: 'blur' },
                                 { type: 'number', message: '必须是数字', trigger: 'blur' }
                             ]">
@@ -463,7 +484,7 @@ const nextImage = () => {
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-form-item label="出库凭证" prop="receipt" :rules="[
+                    <el-form-item label="操作凭证" prop="receipt" :rules="[
                         { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
                         <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage
                             :uploaded="uploaded" />
@@ -477,14 +498,14 @@ const nextImage = () => {
                     show-overflow-tooltip height="48vh">
                     <el-table-column type="selection" align="center" min-width="20vh" />
                     <el-table-column label="序号" type="index" align="center" min-width="40vh" />
-                    <el-table-column prop="batch" label="物料批次" align="center" />
+                    <el-table-column prop="batch" label="物料批次" align="center" min-width="120vh" />
                     <el-table-column prop="name" label="物料名称" align="center" />
                     <el-table-column prop="spec" label="规格型号" align="center" />
-                    <el-table-column prop="amount" label="数量" align="center" />
+                    <el-table-column prop="amount" label="数量" align="center" min-width="50vh" />
                     <el-table-column prop="operation" label="操作" align="center" min-width="40vh" />
-                    <el-table-column prop="operateTime" label="操作时间" align="center">
+                    <el-table-column prop="operateTime" label="操作时间" align="center" min-width="120vh">
                         <template #default="scope">
-                            {{ scope.row.operateTime.substring(0, 10) }}
+                            {{ scope.row.operateTime.substring(0, 10) }} {{ scope.row.operateTime.substring(11,) }}
                         </template>
                     </el-table-column>
 
@@ -523,7 +544,7 @@ const nextImage = () => {
         </el-container>
     </dv-border-box1>
     <!-- 图片详情弹框 -->
-    <el-dialog v-model="dialogVisible">
+    <el-dialog v-model="dialogVisible" style="width: fit-content;border-radius: 1vh;">
         <ArrowLeft @click="prevImage" v-if="currentIndex > 0" style="width: 5vh; height: 5vh" class="prev-button" />
         <img w-full :src="imageUrls[currentIndex]" alt="无图片" class="image" />
         <ArrowRight @click="nextImage" v-if="currentIndex < imageUrls.length - 1" style="width: 5vh; height: 5vh"
@@ -561,7 +582,7 @@ const nextImage = () => {
 
 .image {
     max-width: 100%;
-    max-height: 80vh;
+    max-height: 60vh;
 }
 
 .subNavPage {

@@ -242,7 +242,19 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 
 const del = async (id) => {
   const res = await deleteMaterialAPI(id);
-  if (res.code === 1) getDataFromAPI();
+  if (res.code === 1) {
+    getDataFromAPI();
+    ElMessage({
+      type: 'success',
+      message: '删除成功',
+    })
+  }
+  else {
+    ElMessage({
+      type: 'error',
+      message: '删除失败',
+    })
+  }
 };
 
 const deleteConfirm = (id) => {
@@ -261,10 +273,6 @@ const deleteConfirm = (id) => {
       refresh.value = true
       // console.log(id);
       del(id)
-      ElMessage({
-        type: 'success',
-        message: '删除成功',
-      })
     })
     .catch(() => {
       refresh.value = true
