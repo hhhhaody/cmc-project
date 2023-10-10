@@ -9,6 +9,7 @@ import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
 import UploadImage from "../components/UploadImage.vue";
 import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, getByIdAPI, addMaterialOperationAPI, getByBatchAPI } from "../apis/material";
+import ExportButton from "@/components/ExportButton.vue";
 
 
 // 从后端获取数据
@@ -24,6 +25,28 @@ const getDataFromAPI = async () => {
 };
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+//导出组件相关
+const selectedRows = ref([]);
+const handleSelectionChange = (selected) => {
+  // console.log('Handling selection change:', selected);
+  selectedRows.value = selected;
+  // console.log('selectedRows after update:', selectedRows.value);
+};
+const headers = ref([
+  { key: 'id', title: 'ID' },
+  { key: 'name', title: '物料名称' },
+  { key: 'spec', title: '规格型号' },
+  { key: 'amount', title: '库存数量' },
+  { key: 'threshold', title: '低库存阈值' },
+]);
+const filterExportData = (data) => {
+  // 过滤或转换数据的逻辑
+  return data; // 示例：返回原始数据，不做任何处理
+};
+
+
 
 //搜索组件相关
 //#region
@@ -374,9 +397,8 @@ const uploadImage = (uidToFileNameMap) => {
               <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增物料
             </el-button>
 
-            <el-button type="primary">
-              <Download style="width: 1em; height: 1em; margin-right: 8px" />导出
-            </el-button>
+            <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value" fileName="物料库存信息.xlsx"
+              :filterFunction="filterExportData" buttonLabel="导出" />
           </span>
           <span>
             <el-button
@@ -662,8 +684,8 @@ const uploadImage = (uidToFileNameMap) => {
 
 
         <!-- table -->
-        <el-table :data="tableData.value" style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh"
-          show-overflow-tooltip>
+        <el-table :data="tableData.value" @selection-change="handleSelectionChange"
+          style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh" show-overflow-tooltip>
           <el-table-column type="selection" align="center" />
           <el-table-column label="序号" type="index" align="center" min-width="70vh" />
           <el-table-column prop="name" label="物料名称" align="center" />
