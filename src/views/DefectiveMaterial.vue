@@ -8,6 +8,7 @@ import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
 import UploadImage from "../components/UploadImage.vue";
 import { getDefectiveAPI, getByBatchAPI, addDefectiveOperationAPI, getDefectiveOperationListByBatchAPI } from "../apis/defective"
+import ExportButton from "@/components/ExportButton.vue";
 
 // 从后端获取数据
 const tableData = reactive([]);
@@ -21,6 +22,31 @@ const getDataFromAPI = async () => {
 };
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
+
+//导出组件相关
+const selectedRows = ref([]);
+const handleSelectionChange = (selected) => {
+  // console.log('Handling selection change:', selected);
+  selectedRows.value = selected;
+  // console.log('selectedRows after update:', selectedRows.value);
+};
+const headers = ref([
+  { key: 'id', title: 'ID' },
+  { key: 'batch', title: '物料批次' },
+  { key: 'name', title: '物料名称' },
+  { key: 'spec', title: '规格型号' },
+  { key: 'defectiveAmount', title: '不良数量' },
+  { key: 'returnedAmount', title: '返用数量' },
+  { key: 'scrappedAmount', title: '报废数量' },
+  { key: 'supplier', title: '供料单位' },
+  { key: 'createTime', title: '创建时间' },
+]);
+const filterExportData = (data) => {
+  // 过滤或转换数据的逻辑
+  return data; // 示例：返回原始数据，不做任何处理
+};
+
+
 
 //搜索组件相关
 //#region
@@ -337,9 +363,8 @@ const nextImage = () => {
         <!-- operation -->
         <div style="display: flex; justify-content: space-between">
           <span>
-            <el-button type="primary">
-              <Download style="width: 1em; height: 1em; margin-right: 8px" />导出
-            </el-button>
+            <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value" fileName="物料库存信息.xlsx"
+              :filterFunction="filterExportData" buttonLabel="导出" />
           </span>
           <span>
             <el-button type="primary"
@@ -468,8 +493,8 @@ const nextImage = () => {
 
 
         <!-- table -->
-        <el-table :data="tableData.value" style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh"
-          show-overflow-tooltip>
+        <el-table :data="tableData.value" @selection-change="handleSelectionChange"
+          style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh" show-overflow-tooltip>
           <el-table-column type="selection" align="center" />
           <el-table-column label="序号" type="index" align="center" min-width="70vh" />
           <el-table-column prop="batch" label="物料批次" align="center" />
