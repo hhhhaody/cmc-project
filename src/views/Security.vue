@@ -93,7 +93,7 @@ const setupVideoJs = (videoEl, index) => {
 
   // 初始化 video.js
   const player = videojs(videoEl, videoJsOptions);
-  players.push(player); 
+  players.push(player);
 
   // 设置视频源
   if (state.currentStreams[index]) {
@@ -147,9 +147,9 @@ async function handlePointSelected({ indexCode, index }) {
       // 等待下一个Vue的DOM更新周期
       await nextTick();
 
-    // 确保 video 元素存在
-    const videoEl = videoRefs.value[index];
-    if (videoEl) {
+      // 确保 video 元素存在
+      const videoEl = videoRefs.value[index];
+      if (videoEl) {
         setupVideoJs(videoEl, index);
       } else {
         console.error('Video element not found.');
@@ -237,7 +237,7 @@ const state = reactive({
 .video-box {
   background-color: rgb(242, 242, 242);
   border: 2px solid rgb(242, 242, 242);
-  border-radius: 4px;
+  border-radius: 1vh;
   overflow: hidden;
   position: relative;
   width: 100%;
@@ -252,7 +252,7 @@ const state = reactive({
   z-index: 10;
   width: 100%;
   height: 270%;
-  border-radius: 4px;
+  border-radius: 1vh;
 }
 
 .video-js video {
@@ -266,7 +266,7 @@ const state = reactive({
   margin-left: 37px;
   position: relative;
   background-color: white;
-  border-radius: 7px;
+  border-radius: 1vh;
   margin-top: 10px;
   display: flex;
   justify-content: center;
@@ -305,5 +305,4 @@ const state = reactive({
 .selected {
   border: 2px solid rgb(102, 102, 102);
 }
-
 </style>

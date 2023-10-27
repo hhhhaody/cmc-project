@@ -185,6 +185,7 @@ watch(
   (newVal, oldVal) => {
     // console.log('uidToFileNameMap changed:');
     // console.log('New uidToFileNameMap:', newMap);
+    console.log(newVal);
 
     // You can perform actions here based on the changes in the uidToFileNameMap
     formattedTime.value = stockform.supplyTime.substring(0, 10)
@@ -412,7 +413,7 @@ const uploadImage = (uidToFileNameMap) => {
               min: 1, max: 30,
               message: '长度必须在1-30之间', trigger: 'blur'
             }]">
-            <el-input v-model="addform.name" autocomplete="off" />
+            <el-input v-model="addform.name" autocomplete="off" placeholder="请输入物料名称" />
           </el-form-item>
           <el-form-item label="规格型号" prop="spec" :rules="[
             { required: true, message: '请输入规格型号', trigger: 'blur' },
@@ -420,13 +421,13 @@ const uploadImage = (uidToFileNameMap) => {
               min: 1, max: 30,
               message: '长度必须在1-30之间', trigger: 'blur'
             }]">
-            <el-input v-model="addform.spec" autocomplete="off" />
+            <el-input v-model="addform.spec" autocomplete="off" placeholder="请输入规格型号" />
           </el-form-item>
           <el-form-item label="低库存阈值" prop="threshold" :rules="[
             { required: true, message: '请输入阈值', trigger: 'blur' },
             { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
           ]">
-            <el-input v-model.number="addform.threshold" autocomplete="off" />
+            <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入低库存阈值" />
           </el-form-item>
         </DialogComponent>
 
@@ -551,7 +552,7 @@ const uploadImage = (uidToFileNameMap) => {
               @search="dialogSearchSuggestion" :data="stockform" database="materials/operation" />
           </el-form-item>
           <el-form-item label="供料单位" prop="supplier">
-            <el-input v-model="stockform.supplier" autocomplete="off" />
+            <el-input v-model="stockform.supplier" autocomplete="off" placeholder="请输入供料单位" />
           </el-form-item>
           <el-row>
             <el-col :span="12">
@@ -617,7 +618,7 @@ const uploadImage = (uidToFileNameMap) => {
               @search="dialogSearchSuggestion" :data="stockform" database="materials/operation" />
           </el-form-item>
           <el-form-item label="供料单位" prop="supplier">
-            <el-input v-model="stockform.supplier" autocomplete="off" />
+            <el-input v-model="stockform.supplier" autocomplete="off" placeholder="请输入供料单位" />
           </el-form-item>
           <el-row>
             <el-col :span="12">

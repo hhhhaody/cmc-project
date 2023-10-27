@@ -36,18 +36,18 @@ const querySearchAsync = (queryString, cb) => {
 
 const createFilter = (queryString) => {
     return (searchFrom) => {
-        return (
-            searchFrom.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-        );
+        return searchFrom.value.toLowerCase().includes(queryString.toLowerCase());
     };
 };
 
 const handleSelect = (item) => {
+    console.log(item);
     emit("search", props.field, item.value);
 };
 
 const check = (val) => {
-    emit("search", props.field, val);
+    console.log(val);
+    if (!val) emit("search", props.field, val);
 
 }
 

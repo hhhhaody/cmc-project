@@ -39,6 +39,12 @@ export const getStationsAPI = (section) => {
     })
 }
 
+export const getStationsIdsAPI = (section) => {
+    return httpInstance({
+        url: '/productionLine/' + section + '/ids',
+    })
+}
+
 export const updateStationsAPI = (data) => {
     return httpInstance({
         url: '/productionLine',
