@@ -35,9 +35,7 @@ const querySearchAsync = (queryString, cb) => {
 
 const createFilter = (queryString) => {
   return (searchFrom) => {
-    return (
-      searchFrom.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-    );
+    return searchFrom.value.toLowerCase().includes(queryString.toLowerCase());
   };
 };
 

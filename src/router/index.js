@@ -83,19 +83,29 @@ const router = createRouter({
       path: '/energyConsumption',
       name: 'energyConsumption',
       component: () => import('../views/EnergyConsumption.vue')
-    }, {
+    },
+    {
       path: '/defectiveMaterial',
       name: 'defectiveMaterial',
       component: () => import('../views/DefectiveMaterial.vue')
-    }, {
-      path: '/productManagement',
-      name: 'productManagement',
-      component: () => import('../views/ProductManagement.vue')
-    }, {
+    },
+    {
+      path: '/product',
+      name: 'product',
+      component: () => import('../views/Product.vue')
+    },
+    {
+
+      path: '/product/operation',
+      component: () => import('../views/ProductOperation.vue')
+
+    },
+    {
       path: '/maintenanceRecords',
       name: 'maintenanceRecords',
       component: () => import('../views/MaintenanceRecords.vue')
-    }, {
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('../views/login.vue')
@@ -104,7 +114,6 @@ const router = createRouter({
       name: 'FolderDetails',
       component: () => import('../views/FolderDetails.vue')
     },
-
     {
       path: '/about',
       name: 'about',

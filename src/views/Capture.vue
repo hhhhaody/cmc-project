@@ -141,14 +141,15 @@ const handleDateChange = (newDates) => {
                     </el-button>
                 </div>
                 <br />
+                <div style="background-color: white; padding: 4vh;border-radius: 1vh;">
+                    <div class="calendar-container">
+                        <div class="image-container" v-for="(url, index) in imageUrls" :key="url">
+                            <el-image :src="url" :preview-src-list="[url]" alt="Image"
+                                style="width: 85%; height: auto; border-radius: 1vh;">
+                            </el-image>
 
-                <div class="calendar-container">
-                    <div class="image-container" v-for="(url, index) in imageUrls" :key="url">
-                        <el-image :src="url" :preview-src-list="[url]" alt="Image"
-                            style="width: 85%; height: auto; border-radius: 7px;">
-                        </el-image>
-
-                        <p class="image-label">{{ formattedFileNames[index] }}</p>
+                            <p class="image-label">{{ formattedFileNames[index] }}</p>
+                        </div>
                     </div>
                 </div>
 
@@ -173,20 +174,21 @@ const handleDateChange = (newDates) => {
 }
 
 .calendar-container {
+
     width: 100%;
-    height: 500px;
+    height: 100%;
     margin-left: 0px;
     position: relative;
     background-color: white;
-    border-radius: 7px;
+    border-radius: 1vh;
     margin-top: 10px;
     justify-content: center;
     align-items: center;
     overflow-y: auto;
-
+    align-content: space-evenly;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-gap: 8px;
+    grid-gap: 2vh;
 }
 
 .image-container {

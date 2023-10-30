@@ -65,7 +65,7 @@ const push = async () => {
             ElNotification({
                 title: '成功',
                 message: res.data,
-                duration: 0,
+                duration: 3000,
                 type: "success"
             })
         }

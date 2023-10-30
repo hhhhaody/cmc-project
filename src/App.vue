@@ -61,7 +61,7 @@ const show = () => {
               <RouterLink to="/defectiveMaterial" @click="hide">不良物料</RouterLink>
             </el-dropdown-item>
             <el-dropdown-item>
-              <RouterLink to="/productManagement" @click="hide">产品管理</RouterLink>
+              <RouterLink to="/product" @click="hide">产品库存</RouterLink>
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
