@@ -29,8 +29,12 @@ export default {
     methods: {
         exportData() {
             try {
+                // 确保 modelValue 和 tableData 始终是数组
+                const modelData = this.modelValue || [];
+                const tableData = this.tableData || [];
+
                 // 使用选中的行数据（如果有的话）或全部表格数据
-                let data = this.modelValue.length > 0 ? this.modelValue : this.tableData;
+                let data = modelData.length > 0 ? modelData : tableData;
 
                 // 如果没有要导出的数据，给出提示并中止导出
                 if (data.length === 0) {
