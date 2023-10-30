@@ -14,7 +14,8 @@ const props = defineProps({
     }, //表单数据
     image: { type: Boolean, default: false },
     refreshFunc: { type: Function }, //刷新方程
-    confirmFunc: { type: Function } //提交方程
+    confirmFunc: { type: Function }, //提交方程
+    hideFooter: { type: Boolean, default: false }
 });
 
 const emit = defineEmits(["dialogClose", "saveImage"]);
@@ -84,7 +85,7 @@ defineExpose({ dialogVisible })
             style="padding-right: 4vh;">
             <slot></slot>
         </el-form>
-        <template #footer>
+        <template v-if="!props.hideFooter" #footer>
             <span class="dialog-footer">
                 <el-button @click="clear">取消</el-button>
                 <el-button type="primary" @click="submitForm(formRef)">

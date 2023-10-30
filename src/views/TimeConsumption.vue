@@ -2,247 +2,169 @@
 import { ref, onMounted, reactive } from "vue";
 import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
 import SearchComponent from "../components/SearchComponent.vue";
-import DialogComponent from "../components/DialogComponent.vue";
+import PaginationComponent from "../components/PaginationComponent.vue";
+import { getProductionTimeAPI } from "../apis/productionTime";
+import ExportButton from "@/components/ExportButton.vue";
 
-const stations = ref([
-  {
-    name: "型钢切割工作站",
-    tableData: [
-      {
-        productNumber: "CXG-20230825-001",
-        productName: "C型钢",
-        productSpec: "30*40,L=12000",
-        productionTime: "2023-08-25",
-        cuttingTakesTime: "12s",
-        weldingTimeConsumed: "15s",
-        assemblyTimeConsuming: "18s",
-      },
-      {
-        productNumber: "CXG-20230826-001",
-        productName: "T型钢",
-        productSpec: "30*40,L=12000",
-        productionTime: "2023-08-26",
-        cuttingTakesTime: "14s",
-        weldingTimeConsumed: "15s",
-        assemblyTimeConsuming: "18s",
-      },
-      {
-        productNumber: "CXG-20230826-002",
-        productName: "L型钢",
-        productSpec: "30*30,L=12000",
-        productionTime: "2023-08-26",
-        cuttingTakesTime: "16s",
-        weldingTimeConsumed: "18s",
-        assemblyTimeConsuming: "18s",
-      },
-    ]
-  },
-  {
-    name: "地面钢网工作站",
-    tableData: [
-      {
-        productNumber: "CXG-20210425-001",
-        productName: "C型钢",
-        productSpec: "200",
-        productionTime: "2021-04-25",
-        cuttingTakesTime: "2s",
-        weldingTimeConsumed: "5s",
-        assemblyTimeConsuming: "8s",
-      },
-      {
-        productNumber: "CXG-20210425-001",
-        productName: "C型钢",
-        productSpec: "200",
-        productionTime: "2021-04-25",
-        cuttingTakesTime: "2s",
-        weldingTimeConsumed: "5s",
-        assemblyTimeConsuming: "8s",
-      },
-      {
-        productNumber: "CXG-20210425-001",
-        productName: "C型钢",
-        productSpec: "200",
-        productionTime: "2021-04-25",
-        cuttingTakesTime: "2s",
-        weldingTimeConsumed: "5s",
-        assemblyTimeConsuming: "8s",
-      },
-    ]
-  },
-  {
-    name: "方通组焊工作站",
-    tableData: [
-      {
-        productNumber: "CXG-20210425-001",
-        productName: "C型钢",
-        productSpec: "200",
-        productionTime: "2021-04-25",
-        cuttingTakesTime: "2s",
-        weldingTimeConsumed: "5s",
-        assemblyTimeConsuming: "8s",
-      },
-      {
-        productNumber: "CXG-20210425-001",
-        productName: "C型钢",
-        productSpec: "200",
-        productionTime: "2021-04-25",
-        cuttingTakesTime: "2s",
-        weldingTimeConsumed: "5s",
-        assemblyTimeConsuming: "8s",
-      },
-      {
-        productNumber: "CXG-20210425-001",
-        productName: "C型钢",
-        productSpec: "200",
-        productionTime: "2021-04-25",
-        cuttingTakesTime: "2s",
-        weldingTimeConsumed: "5s",
-        assemblyTimeConsuming: "8s",
-      },
-    ]
-  },
-  {
-    name: "模块总装工作站",
-    tableData: [
-      {
-        productNumber: "CXG-20210425-001",
-        productName: "C型钢",
-        productSpec: "200",
-        productionTime: "2021-04-25",
-        cuttingTakesTime: "2s",
-        weldingTimeConsumed: "5s",
-        assemblyTimeConsuming: "8s",
-      },
-      {
-        productNumber: "CXG-20210425-001",
-        productName: "C型钢",
-        productSpec: "200",
-        productionTime: "2021-04-25",
-        cuttingTakesTime: "2s",
-        weldingTimeConsumed: "5s",
-        assemblyTimeConsuming: "8s",
-      },
-      {
-        productNumber: "CXG-20210425-001",
-        productName: "C型钢",
-        productSpec: "200",
-        productionTime: "2021-04-25",
-        cuttingTakesTime: "2s",
-        weldingTimeConsumed: "5s",
-        assemblyTimeConsuming: "8s",
-      },
-    ]
-  }
-]);
+// 定义工作站名称
+const sections = ["型钢切割工作站", "地面钢网工作站", "方通组焊工作站", "模块总装工作站"];
+const selectedSection = ref(sections[0]); // 默认选中的工作站
+const stationData = ref([]);  // 用于保存工位数据
 
-const selectedStation = ref(stations.value[0]);
-
-const changeStation = (station) => {
-  selectedStation.value = station;
-};
-
-const getCurrentTableData = () => {
-  return selectedStation.value.tableData;
-};
-
-const getCurrentTableDataLength = () => {
-  return getCurrentTableData().length;
-};
-
-const addform = reactive({
-  folder: '', //文件夹名称
-})
-
-// 从后端获取数据
-// const tableData = reactive([]);
-const total = ref(0)
-const getDataFromAPI = async () => {
-  // const res = await getMaterialAPI(currentPage.value, pageSize.value, name.value, spec.value);
-  // console.log(res.data);
-  tableData.value = res.data.data;
-  total.value = res.data.total
-  updateSearchSuggestion()
-
-};
-
-
-//弹框相关
-//新增
-//#region
-const dialog = ref(false)
-const addDialog = ref()
-const editDialog = ref()
-
-const dialogClose = () => {
-  dialog.value = false
-}
-
-const tableShown = reactive([]);
-
-const loadAllProduct = () => {
-  return [
-    { value: "product 1", link: "https://github.com/vuejs/vue" },
-    { value: "product 2", link: "https://github.com/ElemeFE/element" },
-    { value: "product 3", link: "https://github.com/ElemeFE/cooking" },
-    { value: "product 4", link: "https://github.com/ElemeFE/mint-ui" },
-    { value: "product 5", link: "https://github.com/vuejs/vuex" },
-    { value: "product 6", link: "https://github.com/vuejs/vue-router" },
-  ];
-};
-
-const loadAllModel = () => {
-  return [
-    { value: "50*30*4500", link: "https://github.com/vuejs/vue" },
-    { value: "30*30*4500", link: "https://github.com/ElemeFE/element" },
-    { value: "30*30*5000", link: "https://github.com/ElemeFE/cooking" },
-  ];
-};
-
-const createFilter = (queryString) => {
-  return (tableData) => {
-    return (
-      tableData.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-    );
-  };
-};
-
-const handleSelect = (item) => {
-  console.log(item);
-};
-
-const currentPage = ref(1);
-const pageSize = ref(10);
-const small = ref(false);
-const background = ref(true);
-const disabled = ref(false);
-
-const handleSizeChange = (val) => {
-  pageSize.value = val;
-  tableShown.value = getCurrentTableData().slice(
-    (currentPage.value - 1) * pageSize.value,
-    currentPage.value * pageSize.value
-  );
-};
-const handleCurrentChange = (val) => {
-  // console.log(`current page: ${val}`);
-  currentPage.value = val;
-  tableShown.value = getCurrentTableData().slice(
-    (currentPage.value - 1) * pageSize.value,
-    currentPage.value * pageSize.value
-  );
-};
-
-
-onMounted(() => {
-  tableShown.value = getCurrentTableData().slice(
-    (currentPage.value - 1) * pageSize.value,
-    currentPage.value * pageSize.value
-  );
+//保存后端数据
+const tableData = reactive({  
+  total: 0,
+  data: []
 });
 
+//从后端获取数据
+const fetchTableData = async (section) => {
+  const res = await getProductionTimeAPI(currentPage.value, pageSize.value, null, itemName.value, itemModel.value, section, startDate.value, endDate.value);
+  if (res.code === 1) {
+    tableData.data = res.data.data;
+    tableData.total = res.data.total;
+
+    // 提取当前分页数据中的所有工位名称
+    let allStations = new Set();
+    for (let item of tableData.data) {
+      for (let station of item.stationTimes) {
+        allStations.add(station.stationName);
+      }
+    }
+    stationData.value = [...allStations].map(name => ({ stationName: name }));
+  } else {
+    stationData.value = [];
+  }
+  updateSearchSuggestion();
+}
+
+// 更新日期范围
+const updateDates = () => {
+  startDate.value = dateRange.value[0];
+  endDate.value = dateRange.value[1];
+};
+
+// 搜索处理函数
+const handleSearch = async () => {
+  await fetchTableData(selectedSection.value, startDate.value, endDate.value, itemName.value, itemModel.value);
+};
+
+//重置功能
+const reset = async () => {
+  itemName.value = '';
+  itemModel.value = '';
+  dateRange.value = [null, null];
+  startDate.value = null;
+  endDate.value = null;
+  currentPage.value = 1; // 设置为第一页
+
+  // 获取数据
+  await fetchTableData(selectedSection.value);
+};
+
+// 获取工位时间
+const getStationTime = (stationTimes, stationName) => {
+  const station = stationTimes.find(st => st.stationName === stationName);
+  return station ? `${station.timeSpent}s` : '';
+}
+
+// 格式化日期
+const formatDate = (dateString) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toISOString().split('T')[0];
+}
+
+// 切换工作站
+const changeSection = async (section) => {
+  selectedSection.value = section;
+  await fetchTableData(section);
+};
+
+// 导出功能相关
+const selectedRows = ref([]);
+const handleSelectionChange = (selected) => {
+  selectedRows.value = selected;
+};
+const headers = ref([
+  { key: 'itemCode', title: '产品编号' },
+  { key: 'itemName', title: '产品名称' },
+  { key: 'itemModel', title: '规格型号' },
+  { key: 'productionDate', title: '生产日期' },
+  { key: 'stationInfo', title: '工位耗时信息' },
+]);
+const filterExportData = (data) => {
+  // 过滤或转换数据的逻辑
+  return data; // 示例：返回原始数据，不做任何处理
+};
+
+// 搜索功能相关
+const search1 = ref();
+const search2 = ref();
+const renderKey = ref(0)
+const updateSearchSuggestion = () => {
+  renderKey.value = renderKey.value + 1
+}
+
+// 控制数据刷新
+const refresh = ref(true)
+const edit = (val) => {
+  if (val) {
+    loadMore(false)
+  }
+  else {
+    loadMore(true)
+  }
+};
+const isLoading = ref(false);
+const loadMore = (status) => {
+  if (isLoading.value) {
+    return;
+  }
+  isLoading.value = true;
+  refresh.value = status;
+
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 1000);
+};
+
+// 更新搜索条件
+const search = (title, keyword) => {
+  console.log(title, keyword);
+  if (title === "itemName") itemName.value = keyword
+  if (title === "itemModel") itemModel.value = keyword
+};
+
+// 初始化引用和数据
+const itemName = ref('');
+const itemModel = ref('');
 const startDate = ref(null); // 起始日期
 const endDate = ref(null);   // 结束日期
+const dateRange = ref([null, null]);
 
+//分页组件相关
+//#region
+const currentPage = ref(1);
+const pageSize = ref(10);
+
+//分页器回传的每页条数
+const size = (val) => {
+  pageSize.value = val;
+  fetchTableData(selectedSection.value);
+};
+
+//分页器回传的当前页
+const cur = (val) => {
+  currentPage.value = val;
+  fetchTableData(selectedSection.value);
+};
+
+
+// 页面加载后，获取默认数据
+onMounted(async () => {
+  await fetchTableData(selectedSection.value, startDate.value, endDate.value);
+});
 </script>
 <template>
   <!-- borderbox -->
@@ -256,18 +178,20 @@ const endDate = ref(null);   // 结束日期
       <el-main style="overflow: hidden">
         <!-- search -->
         <div class="input-row">
-          <SearchComponent search-title="产品名称" :load-all-data="loadAllProduct" />
-          <SearchComponent search-title="规格型号" :load-all-data="loadAllProduct" />
+          <SearchComponent :key="renderKey" search-title="产品名称" :searchContent=itemName ref="search1" field="itemName"
+            @search="search" @edit="edit" database="productionTime" />
+          <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=itemModel ref="search2" field="itemModel"
+            @search="search" @edit="edit" database="productionTime" />
 
           <div>时间：
-            <el-date-picker v-model="startDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期"
-              title="日期范围" :default-time="defaultTime1" />
+            <el-date-picker v-model="dateRange" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期"
+              title="日期范围" @change="updateDates" />
           </div>
 
-          <el-button type="primary" style="margin-left: 10px; width: 7%">
+          <el-button type="primary" style="margin-left: 10px; width: 7%" @click="handleSearch">
             <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
           </el-button>
-          <el-button style="width: 7%">
+          <el-button style="width: 7%" @click="reset">
             <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />重置
           </el-button>
         </div>
@@ -275,15 +199,14 @@ const endDate = ref(null);   // 结束日期
         <!-- operation -->
         <div style="display: flex; justify-content: space-between">
           <span>
-            <el-button type="primary">
-              <Download style="width: 1em; height: 1em; margin-right: 8px" />导出
-            </el-button>
+            <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.data" fileName="生产耗时记录.xlsx"
+              :filterFunction="filterExportData" buttonLabel="导出" />
 
             <el-dropdown class="tab">
-              <span class="el-dropdown-link"> {{ selectedStation.name }} </span>
+              <span class="el-dropdown-link"> {{ selectedSection }} </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item v-for="station in stations" :key="station.name" @click="changeStation(station)">{{ station.name
+                  <el-dropdown-item v-for="section in sections" :key="section" @click="changeSection(section)">{{ section
                   }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -292,28 +215,34 @@ const endDate = ref(null);   // 结束日期
         </div>
 
         <div>
-          <el-table :data="getCurrentTableData()" show-overflow-tooltip
+          <el-table :data="tableData.data" @selection-change="handleSelectionChange" show-overflow-tooltip
             style="width: 100%; border-radius: 1vh; margin-top: 1vh" table-layout="fixed" height="50vh">
             <el-table-column type="selection" align="center" />
             <el-table-column type="index" label="序号" align="center" min-width="60vh" />
-            <el-table-column prop="productNumber" label="产品编号" align="center" />
-            <el-table-column prop="productName" label="产品名称" align="center" />
-            <el-table-column prop="productSpec" label="规格型号" align="center" />
-            <el-table-column prop="productionTime" label="生产日期" align="center" />
-            <el-table-column prop="cuttingTakesTime" label="切割工位耗时" align="center" />
-            <el-table-column prop="weldingTimeConsumed" label="焊接工位耗时" align="center" />
-            <el-table-column prop="assemblyTimeConsuming" label="组装工位耗时" align="center" />
-
+            <el-table-column prop="itemCode" label="产品编号" align="center" />
+            <el-table-column prop="itemName" label="产品名称" align="center" />
+            <el-table-column prop="itemModel" label="规格型号" align="center" />
+            <el-table-column prop="productionDate" label="生产日期" align="center"
+              :formatter="row => formatDate(row.productionDate)">
+            </el-table-column>
+            <el-table-column v-for="station in stationData" :key="station.stationName" :label="`${station.stationName}`"
+              align="center">
+              <template #default="scope">
+                {{ getStationTime(scope.row.stationTimes, station.stationName) }}
+              </template>
+            </el-table-column>
           </el-table>
         </div>
       </el-main>
       <!-- pagination -->
       <el-footer style="display: flex; justify-content: center">
         <div class="demo-pagination-block">
-          <el-pagination class="el_total-color" v-model:current-page="currentPage" v-model:page-size="pageSize"
+          <!-- <el-pagination class="el_total-color" v-model:current-page="currentPage" v-model:page-size="pageSize"
             :page-sizes="[10, 20, 50, 100]" :small="small" :disabled="disabled" :background="background"
-            layout="total, sizes, prev, pager, next, jumper" :total="getCurrentTableData().length" @size-change="handleSizeChange"
-            @current-change="handleCurrentChange" />
+            layout="total, sizes, prev, pager, next, jumper" :total="tableData.total" @size-change="handleSizeChange"
+            @current-change="handleCurrentChange" /> -->
+
+            <PaginationComponent :total="tableData.total" @size="size" @cur="cur" />
         </div>
       </el-footer>
     </el-container>
@@ -377,7 +306,8 @@ const endDate = ref(null);   // 结束日期
   cursor: pointer;
   font-size: medium;
   color: #606266;
-  border: 1px solid #fff; /* 添加白色边框 */
+  border: 1px solid #fff;
+  /* 添加白色边框 */
   padding: 5px 10px;
   border-radius: 4px;
   background-color: white;

@@ -120,6 +120,10 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../views/login.vue')
+    }, {
+      path: '/folder-details/:folderId/:folderName',
+      name: 'FolderDetails',
+      component: () => import('../views/FolderDetails.vue')
     },
     {
       path: '/about',

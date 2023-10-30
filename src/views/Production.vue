@@ -1,116 +1,183 @@
 <script setup>
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, computed } from "vue";
 import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
 import SearchComponent from "../components/SearchComponent.vue";
+import PaginationComponent from "../components/PaginationComponent.vue";
+import { getProductionRecordAPI } from "../apis/productionRecord";
+import ExportButton from "@/components/ExportButton.vue";
 
-const tableData = [
-  {
-    name: "C型钢",
-    model: "30*40,L=12000",
-    produceDate: "2023-08-22",
-    produceNo: 60,
-  },
-  {
-    name: "T型钢",
-    model: "30*40,L=12000",
-    produceDate: "2023-08-22",
-    produceNo: 50,
-  },
-  {
-    name: "L型钢",
-    model: "30*30,L=12000",
-    produceDate: "2023-08-22",
-    produceNo: 50,
-  },
-  {
-    name: "方通柱",
-    model: "200*200*4,L=12000",
-    produceDate: "2023-08-22",
-    produceNo: 30,
-  },
-  {
-    name: "方通柱",
-    model: "200*200*10,L=12000",
-    produceDate: "2023-08-22",
-    produceNo: 30,
-  },
-  {
-    name: "方通柱",
-    model: "10*10*8,L=12000",
-    produceDate: "2023-08-22",
-    produceNo: 20,
-  },
-];
+// 数据定义
+const tableData = reactive({ value: [] });
 
-const tableShown = reactive([]);
+// 搜索条件初始化
+const name = ref('');
+const spec = ref('');
+const productionQuantity = ref(0);
+const startDate = ref(null);
+const datePickerKey = ref(0);
 
-const loadAllProduct = () => {
-  return [
-    { value: "product 1", link: "https://github.com/vuejs/vue" },
-    { value: "product 2", link: "https://github.com/ElemeFE/element" },
-    { value: "product 3", link: "https://github.com/ElemeFE/cooking" },
-    { value: "product 4", link: "https://github.com/ElemeFE/mint-ui" },
-    { value: "product 5", link: "https://github.com/vuejs/vuex" },
-    { value: "product 6", link: "https://github.com/vuejs/vue-router" },
-  ];
+// 格式化日期
+const formatDate = (date) => {
+  if (date) {
+    return new Date(date).toISOString().split('T')[0];
+  }
+  return null;
 };
 
-const loadAllModel = () => {
-  return [
-    { value: "50*30*4500", link: "https://github.com/vuejs/vue" },
-    { value: "30*30*4500", link: "https://github.com/ElemeFE/element" },
-    { value: "30*30*5000", link: "https://github.com/ElemeFE/cooking" },
-  ];
-};
-
-const createFilter = (queryString) => {
-  return (tableData) => {
-    return (
-      tableData.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-    );
+// 计算属性：格式化日期范围
+const formattedStartDateRange = computed(() => {
+  return {
+    start: formatDate(startDateRange.value.start),
+    end: formatDate(startDateRange.value.end)
   };
+});
+
+// 计算属性：开始和结束日期
+const startDateRange = computed(() => {
+  if (startDate.value && startDate.value.length === 2) {
+    return {
+      start: startDate.value[0],
+      end: startDate.value[1]
+    };
+  }
+  return { start: null, end: null };
+});
+
+// API调用：获取生产记录
+const fetchProductionRecords = async (params) => {
+  try {
+    const res = await getProductionRecordAPI(params.page, params.size, params.name, params.spec, params.productionQuantity, params.start, params.end);
+    return res.data;
+  } catch (error) {
+    return null;
+  }
 };
 
-const handleSelect = (item) => {
-  console.log(item);
+// 获取并处理API返回数据
+const getDataFromAPI = async (page = currentPage.value, size = pageSize.value) => {
+  const responseData = await fetchProductionRecords({
+    page,
+    size,
+    name: name.value,
+    spec: spec.value,
+    productionQuantity: productionQuantity.value,
+    start: formattedStartDateRange.value.start,
+    end: formattedStartDateRange.value.end
+  });
+
+  if (responseData && responseData.data && Array.isArray(responseData.data)) {
+    tableData.value = [...responseData.data];
+    total.value = responseData.total;
+  }
+  else if (responseData && Array.isArray(responseData)) {
+    tableData.value = [...responseData];
+    total.value = responseData.length;
+  }
+  else {
+    tableData.value = [];
+    total.value = 0;
+  }
+
+  updateSearchSuggestion();
 };
 
+// 导出功能相关
+const selectedRows = ref([]);
+const handleSelectionChange = (selected) => {
+  selectedRows.value = selected;
+};
+const headers = ref([
+  // { key: 'id', title: '序号' },
+  { key: 'name', title: '产品名称' },
+  { key: 'spec', title: '规格型号' },
+  { key: 'productionDate', title: '生产日期' },
+  { key: 'productionQuantity', title: '生产数量' },
+]);
+const filterExportData = (data) => {
+  // 过滤或转换数据的逻辑
+  return data; // 示例：返回原始数据，不做任何处理
+};
+
+
+// 搜索功能相关
+const search1 = ref();
+const search2 = ref();
+const renderKey = ref(0)
+const updateSearchSuggestion = () => {
+  renderKey.value = renderKey.value + 1
+}
+
+// 控制数据刷新
+const refresh = ref(true)
+const edit = (val) => {
+  if (val) {
+    loadMore(false)
+  }
+  else {
+    loadMore(true)
+  }
+};
+const isLoading = ref(false);
+const loadMore = (status) => {
+  if (isLoading.value) {
+    return;
+  }
+  isLoading.value = true;
+  refresh.value = status;
+
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 1000);
+};
+
+// 更新搜索条件
+const search = (title, keyword) => {
+  console.log(title, keyword);
+  if (title === "name") name.value = keyword
+  if (title === "spec") spec.value = keyword
+};
+
+// 重新加载数据
+const update = () => {
+  refresh.value = true;
+  getDataFromAPI();
+};
+
+// 重置搜索条件并重新加载数据
+const reset = () => {
+    refresh.value = true;
+    name.value = "";
+    spec.value = "";
+    startDate.value = null;
+    search1.value.searchContent = "";
+    search2.value.searchContent = "";
+    getDataFromAPI();
+};
+
+//分页组件相关
+//#region
 const currentPage = ref(1);
 const pageSize = ref(10);
-const small = ref(false);
-const background = ref(true);
-const disabled = ref(false);
+const total = ref(0);
 
-const handleSizeChange = (val) => {
-  // console.log(`${val} items per page`);
+//分页器回传的每页条数
+const size = (val) => {
   pageSize.value = val;
-  tableShown.value = tableData.slice(
-    (currentPage.value - 1) * pageSize.value,
-    currentPage.value * pageSize.value
-  );
+  getDataFromAPI();
 };
-const handleCurrentChange = (val) => {
-  // console.log(`current page: ${val}`);
+
+//分页器回传的当前页
+const cur = (val) => {
   currentPage.value = val;
-  tableShown.value = tableData.slice(
-    (currentPage.value - 1) * pageSize.value,
-    currentPage.value * pageSize.value
-  );
+  getDataFromAPI();
 };
 
-// const selectable = () => {};
-
-onMounted(() => {
-  //   sections.value = loadAllSection();
-  //   models.value = loadAllModel();
-  //   devices.value = loadAllDevice();
-  //   suppliers.value = loadAllSupplier();
-  tableShown.value = tableData.slice(
-    (currentPage.value - 1) * pageSize.value,
-    currentPage.value * pageSize.value
-  );
+// 组件挂载后的操作
+onMounted(async () => {
+  await getDataFromAPI();
 });
 </script>
+
 <template>
   <!-- borderbox -->
   <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
@@ -123,51 +190,52 @@ onMounted(() => {
       <el-main style="overflow: hidden">
         <!-- search -->
         <div class="input-row">
-          <SearchComponent search-title="产品名称" :load-all-data="loadAllProduct" />
-          <SearchComponent search-title="规格型号" :load-all-data="loadAllModel" />
+          <SearchComponent :key="renderKey" search-title="产品名称" :searchContent=name ref="search1" field="name"
+            @search="search" @edit="edit" database="productionRecord" />
+          <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=spec ref="search2" field="spec"
+            @search="search" @edit="edit" database="productionRecord" />
 
           <div>生产时间：
-            <el-date-picker v-model="startDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期"
-              title="日期范围" :default-time="defaultTime1" />
+            <el-date-picker :key="datePickerKey" v-model="startDate" type="daterange" start-placeholder="开始日期"
+              end-placeholder="结束日期" title="日期范围" />
           </div>
 
-          <el-button type="primary" style="margin-left: 10px; width: 7%">
+          <el-button type="primary" style="margin-left: 10px; width: 7%" @click="update">
             <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
           </el-button>
-          <el-button style="width: 7%">
-            <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />重置
+          <el-button style="width: 7%" @click="reset">
+            <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px"/>重置
           </el-button>
         </div>
         <br />
         <!-- operation -->
         <div style="display: flex; justify-content: space-between">
           <span>
-            <el-button type="primary">
-              <Download style="width: 1em; height: 1em; margin-right: 8px" />导出
-            </el-button>
+            <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value" fileName="实际产量记录.xlsx"
+              :filterFunction="filterExportData" buttonLabel="导出" />
           </span>
         </div>
 
         <!-- table -->
-        <div>
-          <el-table :data="tableShown.value" show-overflow-tooltip
-            style="width: 100%; border-radius: 1vh; margin-top: 1vh" table-layout="fixed" height="50vh">
-            <el-table-column type="selection" align="center" />
-            <el-table-column type="index" label="Index" align="center" min-width="60vh" />
-            <el-table-column prop="name" label="产品名称" align="center" />
-            <el-table-column prop="model" label="规格型号" align="center" />
-            <el-table-column prop="produceDate" label="生产日期" align="center" />
-            <el-table-column prop="produceNo" label="生产数量" align="center" />
-          </el-table>
-        </div>
+        <el-table :data="tableData.value" @selection-change="handleSelectionChange" show-overflow-tooltip
+          style="width: 100%; border-radius: 1vh; margin-top: 1vh" table-layout="fixed" height="48vh">
+          <el-table-column type="selection" align="center" />
+          <el-table-column type="index" label="序号" align="center" min-width="60vh" />
+          <el-table-column prop="name" label="产品名称" align="center" />
+          <el-table-column prop="spec" label="规格型号" align="center" />
+          <el-table-column prop="productionDate" label="生产日期" align="center" />
+          <el-table-column prop="productionQuantity" label="生产数量" align="center" />
+        </el-table>
+
       </el-main>
       <!-- pagination -->
       <el-footer style="display: flex; justify-content: center">
         <div class="demo-pagination-block">
-          <el-pagination class="el_total-color" v-model:current-page="currentPage" v-model:page-size="pageSize"
+          <!-- <el-pagination class="el_total-color" v-model:current-page="currentPage" v-model:page-size="pageSize"
             :page-sizes="[10, 20, 50, 100]" :small="small" :disabled="disabled" :background="background"
-            layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" @size-change="handleSizeChange"
-            @current-change="handleCurrentChange" />
+            layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
+            @current-change="handleCurrentChange" /> -->
+            <PaginationComponent :total="total" @size="size" @cur="cur" />
         </div>
       </el-footer>
     </el-container>

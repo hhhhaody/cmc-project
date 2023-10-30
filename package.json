@@ -17,6 +17,7 @@
     "date-fns": "^2.30.0",
     "echarts": "^5.4.2",
     "element-plus": "^2.3.7",
+    "font-awesome": "^4.7.0",
     "hls": "^0.0.1",
     "hls.js": "^1.4.10",
     "pinia": "^2.1.3",
