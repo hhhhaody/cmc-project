@@ -7,3 +7,49 @@ export const addFacilityAPI = (data) => {
         data
     })
 }
+
+
+export const getFacilityAPI = (page, pageSize, name, spec, section, status, supplier) => {
+    return httpInstance({
+        url: '/facilities',
+        params: {
+            page,
+            pageSize,
+            name,
+            spec,
+            section,
+            status,
+            supplier
+        }
+    })
+}
+
+
+export const updateFacilityAPI = (data) => {
+    return httpInstance({
+        url: '/facilities',
+        method: 'put',
+        data
+    })
+}
+
+export const updateFacilityStatusAPI = (id) => {
+    return httpInstance({
+        url: '/facilities/'+id,
+        method: 'put'
+    })
+}
+
+export const deleteFacilityAPI = (id) => {
+    return httpInstance({
+        url: '/facilities/' + id,
+        method: 'delete'
+    })
+}
+
+
+export const getByIdAPI = (id) => {
+    return httpInstance({
+        url: '/facilities/' + id
+    })
+}

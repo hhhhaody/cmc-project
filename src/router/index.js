@@ -47,7 +47,18 @@ const router = createRouter({
       path: '/facility',
       name: 'facility',
       component: () => import('../views/Facility.vue')
-    }, {
+    },
+    {
+      path: '/facility/status',
+      name: 'facilityStatus',
+      component: () => import('../views/FacilityStatus.vue')
+    },
+    {
+      path: '/facility/detail',
+      name: 'facilityDetail',
+      component: () => import('../views/FacilityDetail.vue')
+    },
+    {
       path: '/security',
       name: 'security',
       component: () => import('../views/Security.vue')
