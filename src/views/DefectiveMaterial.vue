@@ -363,7 +363,7 @@ const nextImage = () => {
         <!-- operation -->
         <div style="display: flex; justify-content: space-between">
           <span>
-            <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value" fileName="物料库存信息.xlsx"
+            <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value" fileName="不良物料库存信息.xlsx"
               :filterFunction="filterExportData" buttonLabel="导出" />
           </span>
           <span>

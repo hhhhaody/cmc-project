@@ -21,6 +21,35 @@ const getDataFromAPI = async () => {
 };
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
+//导出组件相关
+//#region
+const selectedRows = ref([]);
+const handleSelectionChange = (selected) => {
+    // console.log('Handling selection change:', selected);
+    selectedRows.value = selected;
+    // console.log('selectedRows after update:', selectedRows.value);
+};
+const headers = ref([
+    { key: 'id', title: 'ID' },
+    { key: 'batch', title: '产品批次' },
+    { key: 'name', title: '产品名称' },
+    { key: 'spec', title: '规格型号' },
+    { key: 'amount', title: '数量' },
+    { key: 'operation', title: '操作' },
+    { key: 'operateTime', title: '操作时间' },
+    { key: 'operator', title: '操作人员' },
+    { key: 'quality', title: '质量情况' },
+    { key: 'produceTime', title: '生产日期' },
+    { key: 'receipt', title: '凭证' },
+    { key: 'detail', title: '情况说明' }
+]);
+const filterExportData = (data) => {
+    // 过滤或转换数据的逻辑
+    return data; // 示例：返回原始数据，不做任何处理
+};
+//#endregion
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------
 
 //搜索组件相关
 //#region
@@ -409,9 +438,8 @@ const nextImage = () => {
                 <!-- operation -->
                 <div style="display: flex; justify-content: space-between">
                     <span>
-                        <el-button type="primary">
-                            <Download style="width: 1em; height: 1em; margin-right: 8px" />导出
-                        </el-button>
+                        <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value"
+                            fileName="产品操作信息.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
                     </span>
                 </div>
                 <div style="
@@ -502,8 +530,8 @@ const nextImage = () => {
 
 
                 <!-- table -->
-                <el-table :data="tableData.value" style="width: 100%; border-radius: 1vh" table-layout="fixed"
-                    show-overflow-tooltip height="48vh">
+                <el-table :data="tableData.value" @selection-change="handleSelectionChange"
+                    style="width: 100%; border-radius: 1vh" table-layout="fixed" show-overflow-tooltip height="48vh">
                     <el-table-column type="selection" align="center" min-width="20vh" />
                     <el-table-column label="序号" type="index" align="center" min-width="40vh" />
                     <el-table-column prop="batch" label="产品批次" align="center" min-width="120vh" />
