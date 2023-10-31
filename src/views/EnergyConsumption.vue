@@ -207,10 +207,17 @@ watch([startDate, endDate], getDataFromAPI);
           :dialogVisible.sync="showDialog" :form="yourFormObject" :confirmFunc="yourConfirmFunction"
           :refreshFunc="refreshFunction" hideFooter="true" @close="showDialog = false">
           <div class="graphs-container">
-            <LineGraph :station="selectedSection.name" :stations="sections.map(s => s.name)" width="280px"
-              height="280px" />
-            <PowerGraph :station="selectedSection.name" :stations="sections.map(s => s.name)" width="280px"
-              height="280px" />
+            <div class="graph-block">
+              <h3 class="graph-title">能耗</h3>
+              <LineGraph :station="selectedSection.name" :stations="sections.map(s => s.name)" width="280px"
+                height="280px" />
+            </div>
+
+            <div class="graph-block">
+              <h3 class="graph-title">功率</h3>
+              <PowerGraph :station="selectedSection.name" :stations="sections.map(s => s.name)" width="280px"
+                height="280px" />
+            </div>
           </div>
         </DialogComponent>
 
@@ -281,7 +288,11 @@ watch([startDate, endDate], getDataFromAPI);
   --el-dialog-padding-primary: 3vh;
   --el-dialog-border-radius: 1vh;
   background-color: #729fd0;
-  padding-left: 50px;
+}
+
+.graph-title {
+  padding-left: 10px;
+  align-items: center;
 }
 
 :deep .el-overlay {
@@ -296,16 +307,24 @@ watch([startDate, endDate], getDataFromAPI);
 }
 
 .graphs-container {
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
-/* .graph {
-  flex: 1;
-  margin: 0 10px;
-  padding-left: 100px;
-  padding-bottom: 10px;
-} */
+.graph-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    margin: 0 10px;
+}
+
+.graph-title {
+    margin-bottom: 15px;
+}
 
 .tab {
   display: inline-block;
