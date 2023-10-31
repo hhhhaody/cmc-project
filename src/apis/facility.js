@@ -35,7 +35,7 @@ export const updateFacilityAPI = (data) => {
 
 export const updateFacilityStatusAPI = (id) => {
     return httpInstance({
-        url: '/facilities/'+id,
+        url: '/facilities/' + id,
         method: 'put'
     })
 }
@@ -51,5 +51,21 @@ export const deleteFacilityAPI = (id) => {
 export const getByIdAPI = (id) => {
     return httpInstance({
         url: '/facilities/' + id
+    })
+}
+
+export const getFacilityStatusAPI = (page, pageSize, section, name, spec, updateTimeStart, updateTimeEnd, serialNo) => {
+    return httpInstance({
+        url: '/facilities/status',
+        params: {
+            page,
+            pageSize,
+            section,
+            name,
+            spec,
+            updateTimeStart,
+            updateTimeEnd,
+            serialNo
+        }
     })
 }

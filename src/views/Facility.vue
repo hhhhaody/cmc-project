@@ -37,10 +37,14 @@ const handleSelectionChange = (selected) => {
 };
 const headers = ref([
   { key: 'id', title: 'ID' },
-  { key: 'name', title: '物料名称' },
+  { key: 'serialNo', title: '设备编号' },
+  { key: 'name', title: '设备名称' },
   { key: 'spec', title: '规格型号' },
-  { key: 'amount', title: '库存数量' },
-  { key: 'threshold', title: '低库存阈值' },
+  { key: 'section', title: '工段名称' },
+  { key: 'station', title: '工位名称' },
+  { key: 'purchaseTime', title: '购买日期' },
+  { key: 'supplier', title: '供应商' },
+  { key: 'status', title: '设备状态' },
 ]);
 const filterExportData = (data) => {
   // 过滤或转换数据的逻辑

@@ -466,7 +466,7 @@ const uploadImage = (uidToFileNameMap) => {
         <DialogComponent ref="addDialog" :form="addform" dialog-title="新增产品类型" :refreshFunc="getDataFromAPI"
           :confirm-func="addProductAPI" @dialogClose="dialogClose">
           <el-form-item label="产品名称" prop="name" :rules="[
-            { required: true, message: '请输入物料名称', trigger: 'blur' },
+            { required: true, message: '请输入产品名称', trigger: 'blur' },
             {
               min: 1, max: 30,
               message: '长度必须在1-30之间', trigger: 'blur'
@@ -562,7 +562,7 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="产品名称" prop="name" :rules="[
-                { required: true, message: '请选择物料名称', trigger: 'blur' }]">
+                { required: true, message: '请选择产品名称', trigger: 'blur' }]">
                 <DialogSearch :key="renderKey" :wNo="100" search-title="产品名称" :searchContent=stockform.name field="name"
                   @search="dialogSearchSuggestion" :data="stockform" database="products" />
               </el-form-item>
@@ -586,7 +586,7 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="入库人员" prop="operator" :rules="[
-                { required: true, message: '请输入操作人员', trigger: 'blur' },
+                { required: true, message: '请输入入库人员', trigger: 'blur' },
                 {
                   min: 1, max: 30,
                   message: '长度必须在1-30之间', trigger: 'blur'
@@ -607,14 +607,14 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="入库日期" prop="operateTime" :rules="[
-                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+                { required: true, message: '请输入入库日期', trigger: 'blur' }]">
                 <el-date-picker v-model="stockform.operateTime" type="datetime" placeholder="选择入库日期"
                   value-format="YYYY-MM-DDTHH:mm:ss" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="生产日期" prop="produceTime" :rules="[
-                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+                { required: true, message: '请输入选择生产日期', trigger: 'blur' }]">
                 <el-date-picker v-model="stockform.produceTime" type="datetime" placeholder="选择生产日期"
                   value-format="YYYY-MM-DDTHH:mm:ss" />
               </el-form-item>
@@ -658,7 +658,7 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="出库人员" prop="operator" :rules="[
-                { required: true, message: '请输入操作人员', trigger: 'blur' },
+                { required: true, message: '请输入出库人员', trigger: 'blur' },
                 {
                   min: 1, max: 30,
                   message: '长度必须在1-30之间', trigger: 'blur'
@@ -679,7 +679,7 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="出库日期" prop="operateTime" :rules="[
-                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+                { required: true, message: '请输入出库日期', trigger: 'blur' }]">
                 <el-date-picker v-model="stockform.operateTime" type="datetime" placeholder="选择出库日期"
                   value-format="YYYY-MM-DDTHH:mm:ss" />
               </el-form-item>

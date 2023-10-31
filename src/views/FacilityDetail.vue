@@ -7,7 +7,7 @@ import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
 import { getMaterialOperationAPI, getMaterialOperationByIdAPI, deleteMaterialOperationAPI, updateMaterialOperationAPI } from "../apis/material";
 import ExportButton from "@/components/ExportButton.vue";
-import { getByIdAPI, } from "../apis/facility";
+import { getByIdAPI, getFacilityStatusAPI } from "../apis/facility";
 
 
 
@@ -15,7 +15,7 @@ import { getByIdAPI, } from "../apis/facility";
 const tableData = reactive([]);
 const total = ref(0)
 const getDataFromAPI = async () => {
-    const res = await getMaterialOperationAPI(currentPage.value, pageSize.value, operation.value, name.value, spec.value, time.value[0], time.value[1], supplier.value, operator.value);
+    const res = await getFacilityStatusAPI(currentPage.value, pageSize.value, '', '', '', time.value[0], time.value[1], addform.serialNo);
     // console.log(res.data);
     tableData.value = res.data.data;
     total.value = res.data.total
@@ -118,24 +118,25 @@ const update = () => {
 // 清空搜索组件的关键字搜索，并初始化表格展示数据
 const reset = () => {
     refresh.value = true
-    operation.value = "";
-    name.value = "";
-    spec.value = "";
+    // operation.value = "";
+    // name.value = "";
+    // spec.value = "";
     time.value = "";
-    supplier.value = "";
-    operator.value = "";
-    search1.value.searchContent = "";
-    search2.value.searchContent = "";
-    search3.value.searchContent = "";
-
-    if (show.value) {
-        time.value = "";
-
-        search5.value.searchContent = "";
-        search6.value.searchContent = "";
-    }
-
     getDataFromAPI()
+
+    // supplier.value = "";
+    // operator.value = "";
+    // search1.value.searchContent = "";
+    // search2.value.searchContent = "";
+    // search3.value.searchContent = "";
+
+    // if (show.value) {
+    //     time.value = "";
+
+    //     search5.value.searchContent = "";
+    //     search6.value.searchContent = "";
+    // }
+
 };
 
 //日期组件清空时默认为null，改为空字符串
@@ -188,25 +189,7 @@ const dialogClose = () => {
 }
 
 const addform = reactive({
-    // name: '',
-    // spec: '',
-    // station: '',
-    // section: '',
-    // purchaseTime: '',
-    // supplier: '',
-    // contact: '',
-    // contactNo: '',
-    // warranty: '',
-    // warrantyNo: '',
-    // warrantyUnit: '月',
-    // dailyMaintenance: false,
-    // firstLevelMaintenance: '',
-    // firstLevelMaintenanceNo: '',
-    // firstLevelMaintenanceUnit: '月',
-    // secondLevelMaintenance: '',
-    // secondLevelMaintenanceNo: '',
-    // secondLevelMaintenanceUnit: '月',
-    // attachment: '',
+
 })
 
 //表单数据
@@ -256,6 +239,7 @@ const getFacilityByID = async (id) => {
         addform.dailyMaintenance = res.data.dailyMaintenance
         addform.firstLevelMaintenance = res.data.firstLevelMaintenance
         addform.secondLevelMaintenance = res.data.secondLevelMaintenance
+        getDataFromAPI()
     }
 };
 
@@ -343,7 +327,7 @@ onUnmounted(() => {
 
 onMounted(() => {
     //初始化表格展示数据，数据需从后端获取
-    getDataFromAPI()
+    // getDataFromAPI()
 
     //开始实时更新
     if (timer.value) clearInterval(timer.value)
@@ -485,92 +469,13 @@ getFacilityByID(id)
 
 
                 </div>
-                <br />
                 <!-- operation -->
-                <div style="display: flex; justify-content: space-between">
+                <div style="display: flex; justify-content: space-between; margin-top: 1vh;">
                     <!-- <span>
                         <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value"
                             fileName="物料操作信息.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
                     </span> -->
                 </div>
-                <!-- 弹框区 -->
-
-                <!-- 编辑弹框 -->
-                <DialogComponent ref="editDialog" :form="updateform" dialog-title="操作记录编辑" :refreshFunc="getDataFromAPI"
-                    :confirm-func="updateMaterialOperationAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
-                    <el-form-item label="操作" prop="operation">
-                        <el-input v-model="updateform.operation" autocomplete="off" disabled />
-                    </el-form-item>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="物料名称" prop="name">
-                                <el-input v-model="updateform.name" autocomplete="off" disabled />
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="规格型号" prop="spec">
-                                <el-input v-model="updateform.spec" autocomplete="off" disabled />
-
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-form-item label="物料批次" prop="batch">
-                        <el-input v-model="updateform.batch" autocomplete="off" disabled />
-                    </el-form-item>
-                    <el-form-item label="供料单位" prop="supplier" :rules="[
-                        { required: true, message: '请输入供料单位', trigger: 'blur' },
-                        {
-                            min: 1, max: 30,
-                            message: '长度必须在1-30之间', trigger: 'blur'
-                        }]
-                        ">
-                        <el-input v-model="updateform.supplier" autocomplete="off" />
-                    </el-form-item>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="操作人员" prop="operator" :rules="[
-                                { required: true, message: '请输入操作人员', trigger: 'blur' },
-                                {
-                                    min: 1, max: 30,
-                                    message: '长度必须在1-30之间', trigger: 'blur'
-                                }]
-                                ">
-                                <el-input v-model="updateform.operator" autocomplete="off" />
-
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="操作数量" prop="amount" :rules="[
-                                { required: true, message: '请输入数量', trigger: 'blur' },
-                                { type: 'number', message: '必须是数字', trigger: 'blur' }
-                            ]
-                                ">
-                                <el-input v-model.number="updateform.amount" autocomplete="off" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="操作日期" prop="operateTime">
-                                <el-input v-model="formattedTime" autocomplete="off" disabled />
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="供料日期" prop="supplyTime" :rules="[
-                                { required: true, message: '请输入供料日期', trigger: 'blur' }]
-                                ">
-                                <el-date-picker v-model="updateform.supplyTime" type="datetime" placeholder="选择供料日期"
-                                    value-format="YYYY-MM-DDTHH:mm:ss" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-form-item label="操作凭证" prop="receipt" :rules="[
-                        { required: true, message: '请上传签收凭证', trigger: 'blur' }]
-                        ">
-                        <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage
-                            :uploaded="uploaded" />
-                    </el-form-item>
-                </DialogComponent>
 
 
 
@@ -579,9 +484,13 @@ getFacilityByID(id)
                     style="width: 100%; border-radius: 1vh;" table-layout="fixed" show-overflow-tooltip height="36vh">
                     <el-table-column type="selection" align="center" min-width="20vh" />
                     <el-table-column label="序号" type="index" align="center" min-width="40vh" />
-                    <el-table-column prop="updateTime" label="更新时间" align="center" min-width="120vh" />
-                    <el-table-column prop="before" label="更新前状态" align="center" />
-                    <el-table-column prop="after" label="更新后状态" align="center" />
+                    <el-table-column prop="updateTime" label="更新时间" align="center" min-width="120vh">
+                        <template #default="scope">
+                            {{ scope.row.updateTime.substring(0, 10) }} {{ scope.row.updateTime.substring(11,) }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="beforeStatus" label="更新前状态" align="center" />
+                    <el-table-column prop="afterStatus" label="更新后状态" align="center" />
                     <!-- <el-table-column prop="amount" label="数量" align="center" min-width="50vh" />
                     <el-table-column prop="operation" label="操作" align="center" min-width="40vh" />
                     <el-table-column prop="operateTime" label="操作时间" align="center" min-width="120vh">

@@ -7,6 +7,7 @@ import PaginationComponent from "../components/PaginationComponent.vue";
 import 'font-awesome/css/font-awesome.min.css';
 import { useRouter } from 'vue-router';
 import { createFolderAPI, renameItemAPI, deleteItemAPI, getAllFolderAPI } from "../apis/files";
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 // 初始化变量和响应式数据
 const router = useRouter();

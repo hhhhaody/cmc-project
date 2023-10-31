@@ -414,8 +414,8 @@ const nextImage = () => {
                         <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />清空
                     </el-button>
                 </div>
-                <div style="margin-top: 1vh" v-if="show">
-                    <div style="display: inline-block; position: relative;top: 2px; padding-right: 2vh;">时间：
+                <div style="margin-top: 1vh;position:absolute;left: 15%;" v-if="show">
+                    <div style="display: inline-block; position: relative;top: 2px; padding-right: 1vh;">时间：
                         <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期"
                             :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
                     </div>

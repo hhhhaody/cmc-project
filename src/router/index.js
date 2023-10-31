@@ -112,9 +112,9 @@ const router = createRouter({
 
     },
     {
-      path: '/maintenanceRecords',
-      name: 'maintenanceRecords',
-      component: () => import('../views/MaintenanceRecords.vue')
+      path: '/troubleshooting',
+      name: 'troubleshooting',
+      component: () => import('../views/Troubleshooting.vue')
     },
     {
       path: '/login',

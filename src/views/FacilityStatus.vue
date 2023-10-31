@@ -6,12 +6,14 @@ import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
 import { getMaterialOperationAPI, getMaterialOperationByIdAPI, deleteMaterialOperationAPI, updateMaterialOperationAPI } from "../apis/material";
 import ExportButton from "@/components/ExportButton.vue";
+import { getFacilityStatusAPI } from "../apis/facility";
+
 
 // 从后端获取数据
 const tableData = reactive([]);
 const total = ref(0)
 const getDataFromAPI = async () => {
-    const res = await getMaterialOperationAPI(currentPage.value, pageSize.value, operation.value, name.value, spec.value, time.value[0], time.value[1], supplier.value, operator.value);
+    const res = await getFacilityStatusAPI(currentPage.value, pageSize.value, section.value, name.value, spec.value, time.value[0], time.value[1], '');
     // console.log(res.data);
     tableData.value = res.data.data;
     total.value = res.data.total
@@ -31,10 +33,14 @@ const handleSelectionChange = (selected) => {
 };
 const headers = ref([
     { key: 'id', title: 'ID' },
-    { key: 'name', title: '物料名称' },
+    { key: 'serialNo', title: '设备编号' },
+    { key: 'name', title: '设备名称' },
     { key: 'spec', title: '规格型号' },
-    { key: 'amount', title: '库存数量' },
-    { key: 'supplyTime', title: '操作时间' },
+    { key: 'section', title: '工段名称' },
+    { key: 'station', title: '工位名称' },
+    { key: 'updateTime', title: '更新时间' },
+    { key: 'beforeStatus', title: '更新前状态' },
+    { key: 'afterStatus', title: '更新后状态' },
 ]);
 const filterExportData = (data) => {
     // 过滤或转换数据的逻辑
@@ -50,7 +56,7 @@ const search3 = ref();
 // const search4 = ref();
 const search5 = ref();
 const search6 = ref();
-const operation = ref("")
+const section = ref("")
 const name = ref("")
 const spec = ref("")
 const time = ref("")
@@ -98,11 +104,11 @@ const loadMore = (status) => {
 // 记录用于通过搜索组件输入的搜索种类及对应关键词
 const search = (title, keyword) => {
     console.log(title, keyword);
-    if (title === "operation") operation.value = keyword
+    if (title === "section") section.value = keyword
     if (title === "name") name.value = keyword
     if (title === "spec") spec.value = keyword
-    if (title === "supplier") supplier.value = keyword
-    if (title === "operator") operator.value = keyword
+    // if (title === "supplier") supplier.value = keyword
+    // if (title === "operator") operator.value = keyword
 };
 
 // 根据关键字搜索数据库
@@ -114,12 +120,12 @@ const update = () => {
 // 清空搜索组件的关键字搜索，并初始化表格展示数据
 const reset = () => {
     refresh.value = true
-    operation.value = "";
+    section.value = "";
     name.value = "";
     spec.value = "";
     time.value = "";
-    supplier.value = "";
-    operator.value = "";
+    // supplier.value = "";
+    // operator.value = "";
     search1.value.searchContent = "";
     search2.value.searchContent = "";
     search3.value.searchContent = "";
@@ -127,8 +133,8 @@ const reset = () => {
     if (show.value) {
         time.value = "";
 
-        search5.value.searchContent = "";
-        search6.value.searchContent = "";
+        // search5.value.searchContent = "";
+        // search6.value.searchContent = "";
     }
 
     getDataFromAPI()
@@ -398,12 +404,12 @@ const nextImage = () => {
             <el-main style="overflow: hidden">
                 <!-- search -->
                 <div>
-                    <SearchComponent :key="renderKey" search-title="操作" :searchContent=operation ref="search1"
-                        field="operation" database="materials/operation" @search="search" @edit="edit" />
+                    <SearchComponent :key="renderKey" search-title="工段名称" :searchContent=section ref="search1"
+                        field="section" database="facilities/status" @search="search" @edit="edit" />
                     <SearchComponent :key="renderKey" search-title="物料名称" :searchContent=name ref="search2" field="name"
-                        @search="search" database="materials/operation" @edit="edit" />
+                        @search="search" database="facilities/status" @edit="edit" />
                     <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=spec ref="search3" field="spec"
-                        @search="search" database="materials/operation" @edit="edit" />
+                        @search="search" database="facilities/status" @edit="edit" />
                     <el-button style="margin-left: 10px; width: 7%" @click="show = !show">
                         <ArrowDown style="width: 1em; height: 1em; margin-right: 8px" />更多
                     </el-button>
@@ -414,22 +420,18 @@ const nextImage = () => {
                         <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />清空
                     </el-button>
                 </div>
-                <div style="margin-top: 1vh" v-if="show">
-                    <div style="display: inline-block; position: relative;top: 2px; padding-right: 2vh;">时间：
+                <div style="margin-top: 1vh;position:absolute;left: 30%;" v-if="show">
+                    <div style="display: inline-block; position: relative;top: 2px; padding-right: 1vh;">更新时间：
                         <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期"
                             :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
                     </div>
-                    <SearchComponent :key="renderKey" search-title="供料单位" :searchContent=supplier ref="search5"
-                        field="supplier" database="materials/operation" @search="search" @edit="edit" />
-                    <SearchComponent :key="renderKey" search-title="操作人员" :searchContent=operator ref="search6"
-                        field="operator" database="materials/operation" @search="search" @edit="edit" />
                 </div>
                 <br />
                 <!-- operation -->
                 <div style="display: flex; justify-content: space-between">
                     <span>
                         <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value"
-                            fileName="物料操作信息.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
+                            fileName="设备状态信息.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
                     </span>
                 </div>
                 <div style="
@@ -518,20 +520,20 @@ const nextImage = () => {
                     style="width: 100%; border-radius: 1vh" table-layout="fixed" show-overflow-tooltip height="48vh">
                     <el-table-column type="selection" align="center" min-width="20vh" />
                     <el-table-column label="序号" type="index" align="center" min-width="40vh" />
-                    <el-table-column prop="batch" label="物料批次" align="center" min-width="120vh" />
-                    <el-table-column prop="name" label="物料名称" align="center" />
+                    <el-table-column prop="serialNo" label="设备编号" align="center" min-width="120vh" />
+                    <el-table-column prop="name" label="设备名称" align="center" />
                     <el-table-column prop="spec" label="规格型号" align="center" />
-                    <el-table-column prop="amount" label="数量" align="center" min-width="50vh" />
-                    <el-table-column prop="operation" label="操作" align="center" min-width="40vh" />
-                    <el-table-column prop="operateTime" label="操作时间" align="center" min-width="120vh">
+                    <el-table-column prop="section" label="工段名称" align="center" />
+                    <el-table-column prop="station" label="工位名称" align="center" />
+                    <el-table-column prop="updateTime" label="更新时间" align="center" min-width="120vh">
                         <template #default="scope">
-                            {{ scope.row.operateTime.substring(0, 10) }} {{ scope.row.operateTime.substring(11,) }}
+                            {{ scope.row.updateTime.substring(0, 10) }} {{ scope.row.updateTime.substring(11,) }}
                         </template>
                     </el-table-column>
 
-                    <el-table-column prop="operator" label="操作人员" align="center" />
-                    <el-table-column prop="supplier" label="供料单位" align="center" />
-                    <el-table-column prop="supplyTime" label="供料日期" align="center">
+                    <el-table-column prop="beforeStatus" label="更新前状态" align="center" />
+                    <el-table-column prop="afterStatus" label="更新后状态" align="center" />
+                    <!-- <el-table-column prop="supplyTime" label="供料日期" align="center">
                         <template #default="scope">
                             {{ scope.row.supplyTime.substring(0, 10) }}
                         </template>
@@ -553,7 +555,7 @@ const nextImage = () => {
                                 删除
                             </el-button>
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
 
                 </el-table>
             </el-main>

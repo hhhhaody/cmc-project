@@ -7,6 +7,7 @@ import SearchComponent from "../components/SearchComponent.vue";
 import UploadFile from "../components/UploadFile.vue";
 import DialogComponent from "../components/DialogComponent.vue";
 import PaginationComponent from "../components/PaginationComponent.vue";
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 // 初始化变量和响应式数据
 const route = useRoute();
@@ -198,30 +199,30 @@ const cur = (val) => {
 const search1 = ref();
 const renderKey = ref(0)
 const updateSearchSuggestion = () => {
-  renderKey.value = renderKey.value + 1
+    renderKey.value = renderKey.value + 1
 }
 
 // 控制数据刷新
 const refresh = ref(true)
 const edit = (val) => {
-  if (val) {
-    loadMore(false)
-  }
-  else {
-    loadMore(true)
-  }
+    if (val) {
+        loadMore(false)
+    }
+    else {
+        loadMore(true)
+    }
 };
 const isLoading = ref(false);
 const loadMore = (status) => {
-  if (isLoading.value) {
-    return;
-  }
-  isLoading.value = true;
-  refresh.value = status;
+    if (isLoading.value) {
+        return;
+    }
+    isLoading.value = true;
+    refresh.value = status;
 
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 1000);
+    setTimeout(() => {
+        isLoading.value = false;
+    }, 1000);
 };
 
 // 搜索处理函数
@@ -231,15 +232,15 @@ const handleSearch = async () => {
 
 // 更新搜索条件
 const search = (title, keyword) => {
-  console.log(title, keyword);
-  if (title === "fileName") {
-    searchKeyword.value = keyword;  // 使用searchKeyword存储搜索关键字
-  }
+    console.log(title, keyword);
+    if (title === "fileName") {
+        searchKeyword.value = keyword;  // 使用searchKeyword存储搜索关键字
+    }
 };
 
 const resetSearch = () => {
-  searchKeyword.value = "";  // 重置搜索关键字
-  fetchFilesInFolder(currentPage.value, pageSize.value, "");  // 获取所有数据
+    searchKeyword.value = "";  // 重置搜索关键字
+    fetchFilesInFolder(currentPage.value, pageSize.value, "");  // 获取所有数据
 };
 
 // 生命周期钩子函数
