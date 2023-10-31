@@ -8,6 +8,7 @@ import DialogSearch from "../components/DialogSearch.vue";
 import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
 import UploadImage from "../components/UploadImage.vue";
+import ExportButton from "@/components/ExportButton.vue";
 import { getStationsIdsAPI } from "../apis/productionLine"
 import { getProductAPI, addProductAPI, getByIdAPI, deleteProductAPI, updateProductAPI, addProductOperationAPI, getByBatchAPI } from "../apis/product"
 
@@ -23,6 +24,28 @@ const getDataFromAPI = async () => {
   updateSearchSuggestion()
 
 };
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//导出组件相关
+//#region
+const selectedRows = ref([]);
+const handleSelectionChange = (selected) => {
+  // console.log('Handling selection change:', selected);
+  selectedRows.value = selected;
+  // console.log('selectedRows after update:', selectedRows.value);
+};
+const headers = ref([
+  { key: 'id', title: 'ID' },
+  { key: 'name', title: '产品名称' },
+  { key: 'spec', title: '规格型号' },
+  { key: 'qualified', title: '合格品库存数量' },
+  { key: 'discarded', title: '废品库存数量' },
+]);
+const filterExportData = (data) => {
+  // 过滤或转换数据的逻辑
+  return data; // 示例：返回原始数据，不做任何处理
+};
+//#endregion
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -187,7 +210,7 @@ watch(
   stockform,
   (newVal, oldVal) => {
     formattedTime.value = stockform.produceTime.substring(0, 10)
-    console.log(stockform)
+    // console.log(stockform)
   },
   { deep: true } // Enable deep monitoring
 );
@@ -413,9 +436,8 @@ const uploadImage = (uidToFileNameMap) => {
               <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增产品类型
             </el-button>
 
-            <el-button type="primary">
-              <Download style="width: 1em; height: 1em; margin-right: 8px" />导出
-            </el-button>
+            <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value" fileName="产品库存信息.xlsx"
+              :filterFunction="filterExportData" buttonLabel="导出" />
           </span>
           <span>
             <el-button
@@ -681,8 +703,8 @@ const uploadImage = (uidToFileNameMap) => {
 
 
         <!-- table -->
-        <el-table :data="tableData.value" style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh"
-          show-overflow-tooltip>
+        <el-table :data="tableData.value" @selection-change="handleSelectionChange"
+          style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh" show-overflow-tooltip>
           <el-table-column type="selection" align="center" />
           <el-table-column label="序号" type="index" align="center" min-width="70vh" />
           <el-table-column prop="name" label="产品名称" align="center" />
