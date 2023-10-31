@@ -3,12 +3,21 @@ import DeviceStatus from "../components/DeviceStatus.vue";
 import Notification from "../components/Notification.vue";
 import MaintenanceTask from "../components/MaintenanceTask.vue";
 import RemoteMonitor from "../components/RemoteMonitor.vue";
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const navigate = (routeName) => {
+  router.push({ name: routeName });
+};
 </script>
 
 <template>
   <main class="layout">
     <span class="g4 animate__animated animate__fadeInRight">
-      <i>维保任务</i>
+      <i>
+        <span @click="navigate('maintenancePlan')">维保任务</span>
+      </i>
 
       <MaintenanceTask />
       <!-- <LineGraph /> -->
@@ -19,12 +28,16 @@ import RemoteMonitor from "../components/RemoteMonitor.vue";
       <Notification />
     </span>
     <span class="g2 animate__animated animate__fadeInRight">
-      <i>远程监控</i>
+      <i>
+        <span @click="navigate('security')">远程监控</span>
+      </i>
 
       <RemoteMonitor />
     </span>
     <span class="g1 animate__animated animate__fadeInLeft">
-      <i>监测设备统计</i>
+      <i>
+        <span @click="navigate('deviceStatus')">监测设备统计</span>
+      </i>
       <DeviceStatus />
 
       <!-- <PieGraph class="graph" :online="1000" :offline="130" /> -->

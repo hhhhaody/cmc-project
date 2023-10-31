@@ -6,12 +6,18 @@ import RadarGraph from "../components/RadarGraph.vue";
 import UsageRecord from "../components/UsageRecord.vue";
 // import GaugeGraph from "../components/GaugeGraph.vue";
 import { ref } from "vue";
+import { useRouter } from 'vue-router';
 
 const stations = ref(["型钢切割工作站", "地面钢网工作站", "方通组焊工作站", "模块总装工作站"]);
 const radar = ref(stations.value[0]); //耗时统计图形组件
 const bar = ref(stations.value[0]); //产品生产情况图形组件
 const usage = ref(stations.value[0]); //原材料使用情况图形组件
 const line = ref(stations.value[0]);  //能耗统计图形组件
+const router = useRouter();
+
+const navigate = (routeName) => {
+  router.push({ name: routeName });
+};
 
 // console.log(stations.value[0]);
 // radar.value = "station1";
@@ -50,7 +56,8 @@ const changeStation = (type, val) => {
 <template>
   <main class="layout">
     <span class="g4 animate__animated animate__fadeInRight">
-      <i>能耗统计
+      <i>
+        <span @click="navigate('inventory')">能耗统计</span>
         <el-dropdown class="tab">
           <span class="el-dropdown-link"> {{ line }} </span>
           <template #dropdown>
@@ -66,7 +73,8 @@ const changeStation = (type, val) => {
       <LineGraph class="graph" :station="line" :stations="stations" />
     </span>
     <span class="g3 animate__animated animate__fadeInLeft">
-      <i>产品生产情况
+      <i>
+        <span @click="navigate('product')">产品生产情况</span>
         <el-dropdown class="tab">
           <span class="el-dropdown-link"> {{ bar }} </span>
           <template #dropdown>
@@ -83,7 +91,8 @@ const changeStation = (type, val) => {
       <BarGraph class="graph" :station="bar" :stations="stations" />
     </span>
     <span class="g2 animate__animated animate__fadeInRight">
-      <i>耗时统计
+      <i>
+        <span @click="navigate('timeConsumption')">耗时统计</span>
         <el-dropdown class="tab">
           <span class="el-dropdown-link"> {{ radar }} </span>
           <template #dropdown>
@@ -100,7 +109,8 @@ const changeStation = (type, val) => {
       <RadarGraph class="graph" :station="radar" :stations="stations" />
     </span>
     <span class="g1 animate__animated animate__fadeInLeft">
-      <i>原材料使用情况
+      <i>
+        <span @click="navigate('inventory')">原材料使用情况</span>
         <el-dropdown class="tab">
           <span class="el-dropdown-link"> {{ usage }} </span>
           <template #dropdown>
