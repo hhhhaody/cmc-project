@@ -703,8 +703,8 @@ const uploadImage = (uidToFileNameMap) => {
           <el-form-item prop="attachment" label="附件" :rules="[
             { required: true, message: '请关联附件', trigger: 'blur' },
             {
-              min: 1, max: 30,
-              message: '长度必须在1-30之间', trigger: 'blur'
+              min: 1, max: 999,
+              message: '长度必须在1-999之间', trigger: 'blur'
             }]">
             <div style="
             text-decoration: underline;
@@ -906,8 +906,8 @@ const uploadImage = (uidToFileNameMap) => {
           <el-form-item prop="attachment" label="附件" :rules="[
             { required: true, message: '请关联附件', trigger: 'blur' },
             {
-              min: 1, max: 30,
-              message: '长度必须在1-30之间', trigger: 'blur'
+              min: 1, max: 999,
+              message: '长度必须在1-999之间', trigger: 'blur'
             }]">
             <div style="
             text-decoration: underline;
