@@ -292,7 +292,7 @@ const getTodayPlan = async (day) => {
   }
 };
 
-getTodayPlan(Date.now())
+getTodayPlan(selectedDate.value)
 
 const getDailyPlan = async () => {
   const res = await getFacilityAPI(currentPage.value, 99999, '', '', '', '', '', true);
@@ -381,7 +381,7 @@ const dialogSearchSuggestion = (title, keyword) => {
 //确认删除
 //#region
 
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 
 const del = async (id) => {
   const res = await deleteFacilityAPI(id);
@@ -427,7 +427,31 @@ const deleteConfirm = (id) => {
     })
 }
 // #endregion
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------
 
+// 检修维护系统提示
+
+const maintenance = async (id) => {
+  const res = await updateMaintenancePlanStatusAPI(id);
+  if (res.code === 1) {
+    console.log(res);
+    if (res.data != '更新成功') {
+      ElNotification({
+        title: '失败',
+        message: res.data,
+        duration: 3000,
+        type: "error"
+      })
+    }
+
+    dialogVisible.value = false
+    props.refreshFunc()
+  }
+  // console.log(res);
+  getTodayPlan(selectedDate.value)
+
+};
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //定时器 实时刷新数据相关
@@ -440,7 +464,9 @@ const startTimer = () => {
   timer.value = setInterval(() => {
     console.log("实时刷新中");
     //FIXME: 调试时修改此处
-    getDataFromAPI()
+    // getDataFromAPI()
+    getTodayPlan(selectedDate.value)
+
   }, 5000)
 }
 
@@ -803,7 +829,7 @@ const dealMyDate = (v) => {
             </el-form-item>
           </el-form>
           <el-button v-if="!item.ongoing" class=" inline_button" style="color:#ff9a02a0"
-            @click="updateMaintenancePlanStatusAPI(item.id), getDataFromAPI()">
+            @click="maintenance(item.id), getDataFromAPI()">
             检修维护
           </el-button>
           <el-button v-else class="inline_button" :disabled="item.completeTime !== null"

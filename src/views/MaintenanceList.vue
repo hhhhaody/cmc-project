@@ -333,7 +333,7 @@ const dialogSearchSuggestion = (title, keyword) => {
 //确认删除
 //#region
 
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 
 const del = async (id) => {
   const res = await deleteFacilityAPI(id);
@@ -379,6 +379,31 @@ const deleteConfirm = (id) => {
     })
 }
 // #endregion
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------
+
+// 检修维护系统提示
+
+const maintenance = async (id) => {
+  const res = await updateMaintenancePlanStatusAPI(id);
+  if (res.code === 1) {
+    console.log(res);
+    if (res.data != '更新成功') {
+      ElNotification({
+        title: '失败',
+        message: res.data,
+        duration: 3000,
+        type: "error"
+      })
+    }
+
+    dialogVisible.value = false
+    props.refreshFunc()
+  }
+  // console.log(res);
+};
+
+
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -716,10 +741,10 @@ const uploadImage = (uidToFileNameMap) => {
           <el-table-column prop="operation" label="操作" align="center" min-width="110vh">
             <template #default="scope">
               <el-button v-if="!scope.row.ongoing" class=" inline_button" style="color:#ff9a02a0"
-                @click="updateMaintenancePlanStatusAPI(scope.row.id), getDataFromAPI()">
+                @click="maintenance(scope.row.id), getDataFromAPI()">
                 检修维护
               </el-button>
-              <el-button class="inline_button" :disabled="scope.row.completeTime !== null"
+              <el-button v-else class="inline_button" :disabled="scope.row.completeTime !== null"
                 @click="getMaintenancePlanByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, stockform.id = scope.row.id">
                 记录
               </el-button>
