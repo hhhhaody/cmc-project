@@ -70,13 +70,18 @@ const router = createRouter({
       path: '/deviceStatus',
       name: 'deviceStatus',
       component: () => import('../views/DeviceStatus.vue')
-    }, {
+    },
+    {
       path: '/maintenancePlan',
       name: 'maintenancePlan',
       component: () => import('../views/MaintenancePlan.vue')
+    },
+    {
+      path: '/maintenancePlan/maintenanceCalendar',
+      component: () => import('../views/maintenanceCalendar.vue')
     }, {
-      path: '/maintenancePlan/maintainList',
-      component: () => import('../views/MaintainList.vue')
+      path: '/maintenancePlan/maintenanceList',
+      component: () => import('../views/MaintenanceList.vue')
     }, {
       path: '/deviceFiles',
       name: 'deviceFiles',

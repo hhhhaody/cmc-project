@@ -9,7 +9,7 @@ export const addFacilityAPI = (data) => {
 }
 
 
-export const getFacilityAPI = (page, pageSize, name, spec, section, status, supplier) => {
+export const getFacilityAPI = (page, pageSize, name, spec, section, status, supplier, dailyMaintenance) => {
     return httpInstance({
         url: '/facilities',
         params: {
@@ -19,7 +19,8 @@ export const getFacilityAPI = (page, pageSize, name, spec, section, status, supp
             spec,
             section,
             status,
-            supplier
+            supplier,
+            dailyMaintenance
         }
     })
 }
@@ -36,6 +37,13 @@ export const updateFacilityAPI = (data) => {
 export const updateFacilityStatusAPI = (id) => {
     return httpInstance({
         url: '/facilities/' + id,
+        method: 'put'
+    })
+}
+
+export const updateFacilityDailyStatusAPI = (serialNo) => {
+    return httpInstance({
+        url: '/facilities/daily/' + serialNo,
         method: 'put'
     })
 }

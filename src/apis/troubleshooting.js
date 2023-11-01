@@ -17,10 +17,24 @@ export const getTroubleshootingRecordAPI = (page, pageSize, section, name, spec,
     })
 }
 
-export const addTroubleshootingRecorAPI = (data) => {
+export const addTroubleshootingRecordAPI = (data) => {
     return httpInstance({
         url: '/troubleshooting',
         method: 'post',
+        data
+    })
+}
+
+export const getByIdAPI = (id) => {
+    return httpInstance({
+        url: '/troubleshooting/' + id
+    })
+}
+
+export const updateTroubleshootingRecordAPI = (data) => {
+    return httpInstance({
+        url: '/troubleshooting',
+        method: 'put',
         data
     })
 }
