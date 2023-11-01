@@ -189,8 +189,13 @@ const dialogClose = () => {
 }
 
 const addform = reactive({
-
+    attachment: 'example.txt',
 })
+
+const downloadAttachment = () => {
+    const downloadUrl = `https://cmc.eos-chengdu-1.cmecloud.cn/devicefile/${addform.attachment}`;
+    window.open(downloadUrl, '_blank');
+};
 
 //表单数据
 const updateform
@@ -462,7 +467,11 @@ getFacilityByID(id)
 
                         <el-descriptions-item label="联系人">{{ addform.contact }}</el-descriptions-item>
                         <el-descriptions-item label="联系方式">{{ addform.contactNo }}</el-descriptions-item>
-                        <el-descriptions-item label="附件">{{ addform.attachment }}</el-descriptions-item>
+                        <el-descriptions-item label="附件">
+                            {{ addform.attachment }}
+                            <el-button type="primary" @click="downloadAttachment"
+                                style="margin-left: 10px;  align-items: center; justify-content: center;">下载</el-button>
+                        </el-descriptions-item>
 
                         <el-descriptions-item label="二级保养">{{ addform.secondLevelMaintenance }}</el-descriptions-item>
                     </el-descriptions>

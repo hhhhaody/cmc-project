@@ -11,6 +11,7 @@ import UploadImage from "../components/UploadImage.vue";
 import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, addMaterialOperationAPI, getByBatchAPI } from "../apis/material";
 import { addFacilityAPI, getFacilityAPI, deleteFacilityAPI, getByIdAPI, updateFacilityAPI, updateFacilityStatusAPI } from "../apis/facility";
 import ExportButton from "@/components/ExportButton.vue";
+import { getAllFolderAPI, getAllFilesInFolderAPI } from "../apis/files";
 
 
 // 从后端获取数据
@@ -186,6 +187,7 @@ const linkClose = () => {
   updateSearchSuggestion()
   showCheckbox.value = false
   linkDialog.value = false
+  getFolderList();
   // ElMessageBox.confirm('Are you sure to close this dialog?')
   //   .then(() => {
   //     done()
@@ -195,16 +197,21 @@ const linkClose = () => {
   //   })
 }
 
-const getFolderList = () => {
-  //TODO:查询文件夹名称
-  folderList.value = ['a', 'b', 'c', 'd']
-}
+const getFolderList = async (keyword = "") => {
+  const response = await getAllFolderAPI(1, 10, keyword); 
+  console.log("Folder API Response:", response);
+  if (response.code === 1 && response.data) {
+    folderList.value = response.data.data;
+  }
+};
 
-const updateFileList = () => {
-  //TODO: 根据文件夹名更新文件名
-  fileList.value = ['桁架机械手维护手册', '翻转机维护手册', '激光切割机维护手册', '搬运机器人维护手册', '焊接机械臂桁架维护手册', '焊接机器人维护手册', '焊接夹具维护手册']
-
-}
+const updateFileList = async (folderId) => {
+  const response = await getAllFilesInFolderAPI(folderId); 
+  console.log("Files API Response:", response); // 打印API的响应
+  if (response.code === 1) {
+    fileList.value = response.data.data.map(file => file.fileName);
+  }
+};
 
 const dialogClose = () => {
   dialog.value = false
@@ -704,7 +711,7 @@ const uploadImage = (uidToFileNameMap) => {
             color: #729fd0;
             width: fit-content;
             cursor: pointer" @click="linkDialog = true, getFolderList()">关联文件</div>
-
+            <div style="margin-left: 20px;">{{ addform.attachment }}</div>
           </el-form-item>
         </DialogComponent>
 
@@ -712,12 +719,12 @@ const uploadImage = (uidToFileNameMap) => {
         <el-dialog v-model="linkDialog" title="关联文件" width="40%" :before-close="linkClose">
 
           <SearchComponent :wNo="75" :key="renderKey" search-title="文件名称" :searchContent=fileName field="name"
-            @search="search" database="materials/operation" />
+            @search="search" database="deviceFiles" />
           <div style="margin:2vh">
             <div v-for="(item, index) in folderList" style="display:flex;flex-wrap:wrap;text-decoration: underline;
             color: #729fd0;
             width: fit-content;
-            cursor: pointer" @click="showCheckbox = true, updateFileList()">{{ item }}</div>
+            cursor: pointer" @click="showCheckbox = true, updateFileList(item.folderId)">{{ item.folderName }}</div>
             <div v-if="showCheckbox">
               <el-checkbox-group v-model="checkList" style="display:flex;flex-wrap:wrap">
                 <el-checkbox v-for="(item, index) in fileList" :key="index" :label="item" />
@@ -729,7 +736,7 @@ const uploadImage = (uidToFileNameMap) => {
           <template #footer>
             <span>
               <el-button @click="linkClose">取消</el-button>
-              <el-button type="primary" @click="addform.attachment = checkList.join(','), linkClose()">
+              <el-button type="primary" @click="addform.attachment = checkList.join(',  '), linkClose()">
                 确定
               </el-button>
             </span>
@@ -907,7 +914,7 @@ const uploadImage = (uidToFileNameMap) => {
             color: #729fd0;
             width: fit-content;
             cursor: pointer" @click="linkDialog = true, getFolderList()">关联文件</div>
-
+            <div style="margin-left: 20px;">{{ addform.attachment }}</div>
           </el-form-item>
         </DialogComponent>
 
