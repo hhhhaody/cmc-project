@@ -42,7 +42,7 @@ onMounted(() => {
 const tableData = reactive([]);
 const total = ref(0)
 const getDataFromAPI = async () => {
-    const res = await getMaintenancePlanAPI(currentPage.value, pageSize.value, name.value, spec.value, section.value, status.value, maintenanceman.value,null);
+    const res = await getMaintenancePlanAPI(currentPage.value, pageSize.value, name.value, spec.value, section.value, status.value, maintenanceman.value, null);
     console.log(res.data);
     tableData.value = res.data.data;
     total.value = res.data.total

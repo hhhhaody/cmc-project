@@ -198,7 +198,7 @@ const linkClose = () => {
 }
 
 const getFolderList = async (keyword = "") => {
-  const response = await getAllFolderAPI(1, 10, keyword); 
+  const response = await getAllFolderAPI(1, 10, keyword);
   console.log("Folder API Response:", response);
   if (response.code === 1 && response.data) {
     folderList.value = response.data.data;
@@ -206,7 +206,7 @@ const getFolderList = async (keyword = "") => {
 };
 
 const updateFileList = async (folderId) => {
-  const response = await getAllFilesInFolderAPI(folderId); 
+  const response = await getAllFilesInFolderAPI(folderId);
   console.log("Files API Response:", response); // 打印API的响应
   if (response.code === 1) {
     fileList.value = response.data.data.map(file => file.fileName);
@@ -428,7 +428,7 @@ const startTimer = () => {
   timer.value = setInterval(() => {
     console.log("实时刷新中");
     //FIXME: 调试时修改此处
-    // getDataFromAPI()
+    getDataFromAPI()
   }, 5000)
 }
 
