@@ -53,9 +53,9 @@ const tableData = reactive([]);
 const total = ref(0)
 const getDataFromAPI = async () => {
   const res = await getMaintenancePlanAPI(currentPage.value, pageSize.value, name.value, spec.value, section.value, status.value, maintenanceman.value, null);
-  console.log(res.data);
+  // console.log(res.data);
   tableData.value = res.data.data;
-  console.log(tableData.value);
+  // console.log(tableData.value);
 
   total.value = res.data.total
   updateSearchSuggestion()
@@ -286,7 +286,7 @@ const dailyConfirm = async () => {
 const getTodayPlan = async (day) => {
   todayList.value = []
   const res = await getMaintenancePlanAPI(currentPage.value, 9999, '', '', '', '', '', new Date(day));
-  console.log(res.data);
+  // console.log(res.data);
   for (const obj of res.data.data) {
     todayList.value.push(obj);
   }
@@ -465,7 +465,7 @@ const startTimer = () => {
     console.log("实时刷新中");
     //FIXME: 调试时修改此处
     // getDataFromAPI()
-    getTodayPlan(selectedDate.value)
+    // getTodayPlan(selectedDate.value)
 
   }, 5000)
 }
@@ -495,14 +495,21 @@ watch([dialog, refresh], (val1, val2) => {
 // #endregion
 
 const dealMyDate = (v) => {
+  const res = ref([])
 
+  console.log(v);
   for (const index in tableData.value) {
-    const item = tableData.value[index];
-    if (item.plannedTime.substring(0, 10) == v) {
-      return item.name + "-" + item.type + "-" + item.status
+    const item = ref(tableData.value[index]);
+    if (item.value.plannedTime.substring(0, 10) == v) {
+      // return item.name + "-" + item.type + "-" + item.status
+      console.log(item);
+      res.value.push(item)
     }
   }
+  return res
 }
+
+
 
 </script>
 
@@ -566,8 +573,21 @@ const dealMyDate = (v) => {
               <!-- {{ data.isSelected ? '已选' : '' }} -->
             </p>
             <div>
-              <i v-for="(item, index) in dealMyDate(data.day)" :key="index" style="color:black;width:100%">
-                {{ item }}
+              <i v-for="(item, index) in dealMyDate(data.day).value" :key="index"
+                style="color:black;width:100%;font-size: 12px;">
+                <div v-if="index < 2">
+                  <div v-if="item.value.status === '逾期完成'" style="color: #e26237ab;">{{ item.value.name }}-{{
+                    item.value.type }}</div>
+                  <div v-if="item.value.status === '待完成'" style="color: #ff9a02a0;">{{ item.value.name }}-{{
+                    item.value.type
+                  }}</div>
+                  <div v-if="item.value.status === '已完成'" style="color: #339a528b;">{{ item.value.name }}-{{
+                    item.value.type
+                  }}</div>
+                </div>
+                <div v-else style="color: #729fd0;">
+                  ...
+                </div>
               </i>
             </div>
           </div>

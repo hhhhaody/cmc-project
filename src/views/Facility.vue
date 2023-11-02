@@ -198,7 +198,7 @@ const linkClose = () => {
 }
 
 const getFolderList = async (keyword = "") => {
-  const response = await getAllFolderAPI(1, 10, keyword);
+  const response = await getAllFolderAPI(1, 99999, keyword);
   console.log("Folder API Response:", response);
   if (response.code === 1 && response.data) {
     folderList.value = response.data.data;
@@ -219,7 +219,7 @@ const dialogClose = () => {
   addform.warrantyUnit = '月'
   addform.firstLevelMaintenanceUnit = '月'
   addform.secondLevelMaintenanceUnit = '月'
-  addform.dailyMaintenance = '0'
+  addform.dailyMaintenance = false
 }
 
 const saveImage = () => {
@@ -293,7 +293,7 @@ watch(
   (newVal, oldVal) => {
     // console.log('uidToFileNameMap changed:');
     // console.log('New uidToFileNameMap:', newMap);
-    // console.log(newVal);
+    console.log(newVal);
     addform.warranty = addform.warrantyNo + addform.warrantyUnit
     addform.firstLevelMaintenance = addform.firstLevelMaintenanceNo + addform.firstLevelMaintenanceUnit
     addform.secondLevelMaintenance = addform.secondLevelMaintenanceNo + addform.secondLevelMaintenanceUnit
@@ -428,7 +428,7 @@ const startTimer = () => {
   timer.value = setInterval(() => {
     console.log("实时刷新中");
     //FIXME: 调试时修改此处
-    getDataFromAPI()
+    // getDataFromAPI()
   }, 5000)
 }
 
@@ -654,7 +654,8 @@ const uploadImage = (uidToFileNameMap) => {
           </el-row>
 
           <el-form-item label="保养周期" prop="dailyMaintenance" :rules="[
-            { required: true, message: '请输入保养周期', trigger: 'blur' }]">
+            { required: true, message: '请输入保养周期', trigger: 'blur' },
+            { type: 'boolean' }]">
             日常保养
             <el-switch v-model="addform.dailyMaintenance" />
           </el-form-item>
