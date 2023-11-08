@@ -1,6 +1,6 @@
 import httpInstance from "../utils/http";
 
-export const getMaintenancePlanAPI = (page, pageSize, name, spec, section, status, maintenanceman, plannedTime) => {
+export const getMaintenancePlanAPI = (page, pageSize, name, spec, section, status, maintenanceman, plannedTime, calendar) => {
     return httpInstance({
         url: '/maintenance',
         params: {
@@ -11,7 +11,8 @@ export const getMaintenancePlanAPI = (page, pageSize, name, spec, section, statu
             section,
             status,
             maintenanceman,
-            plannedTime
+            plannedTime,
+            calendar
         }
     })
 }

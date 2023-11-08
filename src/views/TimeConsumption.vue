@@ -12,7 +12,7 @@ const selectedSection = ref(sections[0]); // 默认选中的工作站
 const stationData = ref([]);  // 用于保存工位数据
 
 //保存后端数据
-const tableData = reactive({  
+const tableData = reactive({
   total: 0,
   data: []
 });
@@ -192,7 +192,7 @@ onMounted(async () => {
             <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
           </el-button>
           <el-button style="width: 7%" @click="reset">
-            <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />重置
+            <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />清空
           </el-button>
         </div>
         <br />
@@ -202,16 +202,20 @@ onMounted(async () => {
             <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.data" fileName="生产耗时记录.xlsx"
               :filterFunction="filterExportData" buttonLabel="导出" />
 
-            <el-dropdown class="tab">
+
+          </span>
+          <el-button>
+            <el-dropdown>
               <span class="el-dropdown-link"> {{ selectedSection }} </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item v-for="section in sections" :key="section" @click="changeSection(section)">{{ section
+                  <el-dropdown-item v-for="section in sections" :key="section" @click="changeSection(section)">{{
+                    section
                   }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
-          </span>
+          </el-button>
         </div>
 
         <div>
@@ -242,7 +246,7 @@ onMounted(async () => {
             layout="total, sizes, prev, pager, next, jumper" :total="tableData.total" @size-change="handleSizeChange"
             @current-change="handleCurrentChange" /> -->
 
-            <PaginationComponent :total="tableData.total" @size="size" @cur="cur" />
+          <PaginationComponent :total="tableData.total" @size="size" @cur="cur" />
         </div>
       </el-footer>
     </el-container>
@@ -304,7 +308,7 @@ onMounted(async () => {
   text-align: center;
   vertical-align: middle;
   cursor: pointer;
-  font-size: medium;
+  font-size: 14px;
   color: #606266;
   border: 1px solid #fff;
   /* 添加白色边框 */

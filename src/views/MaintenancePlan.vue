@@ -51,8 +51,8 @@ import { getMaintenancePlanAPI, addMaintenancePlanAPI, getByIdAPI, updateMainten
 // 从后端获取数据
 const tableData = reactive([]);
 const total = ref(0)
-const getDataFromAPI = async () => {
-  const res = await getMaintenancePlanAPI(currentPage.value, pageSize.value, name.value, spec.value, section.value, status.value, maintenanceman.value, null);
+const getDataFromAPI = async (day) => {
+  const res = await getMaintenancePlanAPI(currentPage.value, 9999, name.value, spec.value, section.value, status.value, maintenanceman.value, day, 'calendar');
   // console.log(res.data);
   tableData.value = res.data.data;
   // console.log(tableData.value);
@@ -285,7 +285,7 @@ const dailyConfirm = async () => {
 
 const getTodayPlan = async (day) => {
   todayList.value = []
-  const res = await getMaintenancePlanAPI(currentPage.value, 9999, '', '', '', '', '', new Date(day));
+  const res = await getMaintenancePlanAPI(currentPage.value, 9999, '', '', '', '', '', new Date(day),);
   // console.log(res.data);
   for (const obj of res.data.data) {
     todayList.value.push(obj);
@@ -479,7 +479,7 @@ onUnmounted(() => {
 
 onMounted(() => {
   //初始化表格展示数据，数据需从后端获取
-  getDataFromAPI()
+  getDataFromAPI(new Date())
   //开始实时更新
   if (timer.value) clearInterval(timer.value)
   startTimer()
@@ -497,12 +497,12 @@ watch([dialog, refresh], (val1, val2) => {
 const dealMyDate = (v) => {
   const res = ref([])
 
-  console.log(v);
+  // console.log(v);
   for (const index in tableData.value) {
     const item = ref(tableData.value[index]);
     if (item.value.plannedTime.substring(0, 10) == v) {
       // return item.name + "-" + item.type + "-" + item.status
-      console.log(item);
+      // console.log(item);
       res.value.push(item)
     }
   }
@@ -518,7 +518,7 @@ const dealMyDate = (v) => {
     background-color="#3545659e">
     <br />
     <h1 style="font-size:21px">设备维护计划</h1>
-    <div style="display: flex; justify-content: space-between;margin-left:5vh;width:90%;position:absolute;top:4vh">
+    <div style="display: flex; justify-content: space-between;margin-left:4vh;width:91%;position:absolute;top:4vh">
       <span>
         <el-button type="primary" @click="addDialog.dialogVisible = true, dialog = true">
           <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增
@@ -554,17 +554,19 @@ const dealMyDate = (v) => {
       <el-calendar class="custom-calendar" v-model="currentDate">
         <template #header>
           <div class="custom-header">
-            <span class="calendar-nav-btn" @click="addYear(-1)">&lt;&lt;</span>
-            <span class="calendar-nav-btn" @click="addMonth(-1)">&lt;</span>
-            <span class="calendar-nav-btn" @click="goToToday">{{ currentDate.getFullYear() }}年{{ currentDate.getMonth() +
-              1 }}月</span>
-            <span class="calendar-nav-btn" @click="addMonth(1)">&gt;</span>
-            <span class="calendar-nav-btn" @click="addYear(1)">&gt;&gt;</span>
+            <span class="calendar-nav-btn" @click="addYear(-1), getDataFromAPI(currentDate)">&lt;&lt;</span>
+            <span class="calendar-nav-btn" @click="addMonth(-1), getDataFromAPI(currentDate)">&lt;</span>
+            <span class="calendar-nav-btn" @click="goToToday(), getDataFromAPI(currentDate)">{{ currentDate.getFullYear()
+            }}年{{ currentDate.getMonth() +
+  1 }}月</span>
+            <span class="calendar-nav-btn" @click="addMonth(1), getDataFromAPI(currentDate)">&gt;</span>
+            <span class="calendar-nav-btn" @click="addYear(1), getDataFromAPI(currentDate)">&gt;&gt;</span>
           </div>
         </template>
 
         <template #date-cell="{ data }">
-          <div class="date-cell-wrapper" @click="selectedDate = new Date(data.day), getTodayPlan(data.day)">
+          <div class="date-cell-wrapper"
+            @click="selectedDate = new Date(data.day), getTodayPlan(data.day), getDataFromAPI(new Date(data.day))">
             <p class="date-number" :class="[
               data.isSelected ? 'is-selected' : '',
               new Date(data.day).getMonth() === currentMonth ? 'current-month' : 'is-other-month'

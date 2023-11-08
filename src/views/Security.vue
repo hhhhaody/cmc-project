@@ -194,7 +194,7 @@ const state = reactive({
   <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
     background-color="#3545659e">
     <br />
-    <h1>远程视频监控</h1>
+    <h1 style="font-size:21px">远程视频监控</h1>
     <div class="calendar-container">
       <div class="video-grid">
         <div v-for="(stream, index) in state.currentStreams" :key="index" class="video-box">

@@ -231,7 +231,7 @@ onMounted(async () => {
             <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
           </el-button>
           <el-button style="width: 7%" @click="resetSearch">
-            <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />重置
+            <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />清空
           </el-button>
         </div>
         <br />

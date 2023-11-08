@@ -178,7 +178,7 @@ watch([startDate, endDate], getDataFromAPI);
             <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
           </el-button>
           <el-button @click="resetFilters" style="width: 7%">
-            <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />重置
+            <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />清空
           </el-button>
         </div>
         <br />
@@ -190,7 +190,10 @@ watch([startDate, endDate], getDataFromAPI);
                 fileName="能耗统计记录.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
             </el-button>
 
-            <el-dropdown class="tab">
+
+          </span>
+          <el-button>
+            <el-dropdown>
               <span class="el-dropdown-link"> {{ selectedSection.name }} </span>
               <template #dropdown>
                 <el-dropdown-menu>
@@ -200,7 +203,7 @@ watch([startDate, endDate], getDataFromAPI);
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
-          </span>
+          </el-button>
         </div>
 
         <DialogComponent ref="dialogComponentRef" :dataForDate="dataForSelectedDate" dialogTitle="能耗详情"
@@ -301,29 +304,33 @@ watch([startDate, endDate], getDataFromAPI);
 
 .input-row {
   display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
   align-items: center;
   margin-bottom: 12px;
-  margin-left: 33%;
+  /* margin-left: 5%; */
+  position: relative;
 }
 
 .graphs-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .graph-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    margin: 0 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  margin: 0 10px;
 }
 
 .graph-title {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .tab {

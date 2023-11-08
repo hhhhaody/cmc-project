@@ -145,13 +145,13 @@ const update = () => {
 
 // 重置搜索条件并重新加载数据
 const reset = () => {
-    refresh.value = true;
-    name.value = "";
-    spec.value = "";
-    startDate.value = null;
-    search1.value.searchContent = "";
-    search2.value.searchContent = "";
-    getDataFromAPI();
+  refresh.value = true;
+  name.value = "";
+  spec.value = "";
+  startDate.value = null;
+  search1.value.searchContent = "";
+  search2.value.searchContent = "";
+  getDataFromAPI();
 };
 
 //分页组件相关
@@ -204,7 +204,7 @@ onMounted(async () => {
             <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
           </el-button>
           <el-button style="width: 7%" @click="reset">
-            <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px"/>重置
+            <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />清空
           </el-button>
         </div>
         <br />
@@ -235,7 +235,7 @@ onMounted(async () => {
             :page-sizes="[10, 20, 50, 100]" :small="small" :disabled="disabled" :background="background"
             layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
             @current-change="handleCurrentChange" /> -->
-            <PaginationComponent :total="total" @size="size" @cur="cur" />
+          <PaginationComponent :total="total" @size="size" @cur="cur" />
         </div>
       </el-footer>
     </el-container>

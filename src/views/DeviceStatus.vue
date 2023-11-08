@@ -95,44 +95,49 @@ const workstations = reactive([
          其颜色属性设置了边界的颜色，背景颜色属性设置了背景的颜色 -->
     <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
         background-color="#3545659e">
-        <br />
-        <!-- 标题显示为"设备运行监测" -->
-        <h1>设备运行监测</h1>
+        <el-container class="subNavPage">
 
-        <!-- 描述每种颜色对应的设备状态的说明部分 -->
-        <div class="status-description">
-            <span class="status-item">
-                绿色：正常运行
-            </span>
-            <span class="status-item">
-                灰色：停机
-            </span>
-            <span class="status-item">
-                黄色：检修维护
-            </span>
-            <span class="status-item">
-                红色：报警
-            </span>
-        </div>
+            <br />
+            <!-- 标题显示为"设备运行监测" -->
+            <h1>设备运行监测</h1>
+            <el-main style="overflow: hidden">
 
-        <!-- 用于显示所有工作站的容器 -->
-        <div class="workstations">
+                <!-- 描述每种颜色对应的设备状态的说明部分 -->
+                <div class="status-description">
+                    <span class="status-item">
+                        绿色：正常运行
+                    </span>
+                    <span class="status-item">
+                        灰色：停机
+                    </span>
+                    <span class="status-item">
+                        黄色：检修维护
+                    </span>
+                    <span class="status-item">
+                        红色：报警
+                    </span>
+                </div>
 
-            <!-- 使用v-for指令来遍历工作站数组并为每个工作站创建一个工作站元素，元素的key是工作站的名字 -->
-            <div class="workstation" v-for="workstation in workstations" :key="workstation.name">
+                <!-- 用于显示所有工作站的容器 -->
+                <div class="workstations">
 
-                <!-- 显示工作站的名称 -->
-                <div class="workstation-header">{{ workstation.name }}</div>
-                <ul>
-                    <!-- 再次使用v-for指令来遍历工作站的组件数组，为每个组件创建一个列表元素，元素的key是组件的名字，类名是组件的状态，
+                    <!-- 使用v-for指令来遍历工作站数组并为每个工作站创建一个工作站元素，元素的key是工作站的名字 -->
+                    <div class="workstation" v-for="workstation in workstations" :key="workstation.name">
+
+                        <!-- 显示工作站的名称 -->
+                        <div class="workstation-header">{{ workstation.name }}</div>
+                        <ul>
+                            <!-- 再次使用v-for指令来遍历工作站的组件数组，为每个组件创建一个列表元素，元素的key是组件的名字，类名是组件的状态，
                          这可以用来通过CSS改变不同状态的组件的颜色 -->
-                    <li v-for="component in workstation.components" :key="component.name" :class="component.status">
-                        <!-- 显示组件的名称 -->
-                        {{ component.name }}
-                    </li>
-                </ul>
-            </div>
-        </div>
+                            <li v-for="component in workstation.components" :key="component.name" :class="component.status">
+                                <!-- 显示组件的名称 -->
+                                {{ component.name }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </el-main>
+        </el-container>
 
     </dv-border-box1>
 </template>

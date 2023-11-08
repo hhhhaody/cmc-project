@@ -137,7 +137,7 @@ const handleDateChange = (newDates) => {
                         <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
                     </el-button>
                     <el-button @click="resetSearch" style="width: 7%">
-                        <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />重置
+                        <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />清空
                     </el-button>
                 </div>
                 <br />
@@ -203,9 +203,13 @@ const handleDateChange = (newDates) => {
 
 .input-row {
     display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
     align-items: center;
     margin-bottom: 12px;
-    margin-left: 35%;
+    /* margin-left: 5%; */
+    position: relative;
 }
 
 :deep .el_total-color {

@@ -19,12 +19,12 @@ const router = createRouter({
     {
       path: '/',
       name: 'home1',
-      component: Home1
+      component: Home2
     },
     {
       path: '/home',
       name: 'home',
-      component: Home2
+      component: Home1
     },
     {
       path: '/inventory',
@@ -75,6 +75,11 @@ const router = createRouter({
       path: '/maintenancePlan',
       name: 'maintenancePlan',
       component: () => import('../views/MaintenancePlan.vue')
+    },
+    {
+      path: '/deviceMonitor',
+      name: 'deviceMonitor',
+      component: () => import('../views/DeviceMonitor.vue')
     },
     {
       path: '/maintenancePlan/maintenanceCalendar',
