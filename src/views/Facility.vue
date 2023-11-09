@@ -12,6 +12,8 @@ import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, a
 import { addFacilityAPI, getFacilityAPI, deleteFacilityAPI, getByIdAPI, updateFacilityAPI, updateFacilityStatusAPI } from "../apis/facility";
 import ExportButton from "@/components/ExportButton.vue";
 import { getAllFolderAPI, getAllFilesInFolderAPI } from "../apis/files";
+import { getSearchSuggestionAPI, getDialogSearchSuggestionAPI } from "../apis/util";
+
 
 
 // 从后端获取数据
@@ -114,6 +116,7 @@ const search = (title, keyword) => {
   //弹框内使用
   if (title === "supplier") stockform.supplier = keyword
   if (title === "operator") stockform.operator = keyword
+  if (title === "fileName") fileName.value = keyword
 };
 
 // 根据关键字搜索数据库
@@ -175,7 +178,6 @@ const addDialog = ref()
 const linkDialog = ref(false)
 const editDialog = ref()
 const confirmImage = ref(false)
-const showCheckbox = ref(false)
 const folderList = ref([])
 const fileList = ref([])
 const checkList = ref([])
@@ -185,7 +187,6 @@ const linkClose = () => {
   checkList.value = []
   fileList.value = []
   updateSearchSuggestion()
-  showCheckbox.value = false
   linkDialog.value = false
   getFolderList();
   // ElMessageBox.confirm('Are you sure to close this dialog?')
@@ -284,6 +285,26 @@ watch(
 
     // You can perform actions here based on the changes in the uidToFileNameMap
     formattedTime.value = stockform.supplyTime.substring(0, 10)
+  },
+  { deep: true } // Enable deep monitoring
+);
+
+watch(
+  fileName,
+  async (newVal, oldVal) => {
+    // console.log('uidToFileNameMap changed:');
+    // console.log('New uidToFileNameMap:', newMap);
+    // console.log(newVal);
+    if (newVal) {
+      console.log(newVal);
+      // const res = await getSearchSuggestionAPI('deviceFiles', 'fileName')
+      const res = await getDialogSearchSuggestionAPI('deviceFiles', 'file_name', { fileId: null, folderId: null, fileName: newVal, fileSize: null, uploadedAt: null, updatedAt: null })
+      console.log(res.data);
+      fileList.value = res.data.map(file => file.value)
+    }
+
+    // You can perform actions here based on the changes in the uidToFileNameMap
+    // formattedTime.value = stockform.supplyTime.substring(0, 10)
   },
   { deep: true } // Enable deep monitoring
 );
@@ -719,19 +740,20 @@ const uploadImage = (uidToFileNameMap) => {
         <!-- 关联弹窗 -->
         <el-dialog v-model="linkDialog" title="关联文件" width="40%" :before-close="linkClose">
 
-          <SearchComponent :wNo="75" :key="renderKey" search-title="文件名称" :searchContent=fileName field="name"
+          <SearchComponent :wNo="75" :key="renderKey" search-title="文件名称" :searchContent=fileName field="fileName"
             @search="search" database="deviceFiles" />
-          <div style="margin:2vh">
-            <div v-for="(item, index) in folderList" style="display:flex;flex-wrap:wrap;text-decoration: underline;
+          <div style="margin:2vh;display:flex;flex-wrap:wrap;justify-content:space-evenly">
+            <div v-for="(item, index) in folderList" style="text-decoration: underline;
             color: #729fd0;
-            width: fit-content;
-            cursor: pointer" @click="showCheckbox = true, updateFileList(item.folderId)">{{ item.folderName }}</div>
-            <div v-if="showCheckbox">
-              <el-checkbox-group v-model="checkList" style="display:flex;flex-wrap:wrap">
-                <el-checkbox v-for="(item, index) in fileList" :key="index" :label="item" />
-              </el-checkbox-group>
-            </div>
+            width: 20vh;
+            cursor: pointer" @click="updateFileList(item.folderId)">{{ item.folderName }}</div>
 
+
+          </div>
+          <div style="margin:2vh">
+            <el-checkbox-group v-model="checkList" style="display:flex;flex-wrap:wrap">
+              <el-checkbox v-for="(item, index) in fileList" :key="index" :label="item" />
+            </el-checkbox-group>
           </div>
 
           <template #footer>

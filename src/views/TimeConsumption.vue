@@ -295,9 +295,13 @@ onMounted(async () => {
 
 .input-row {
   display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
   align-items: center;
   margin-bottom: 12px;
-  margin-left: 200px;
+  /* margin-left: 5%; */
+  position: relative;
 }
 
 .tab {

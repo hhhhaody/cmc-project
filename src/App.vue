@@ -126,8 +126,9 @@ const show = () => {
         </template>
       </el-dropdown>
 
-      <RouterLink class="link" to="/" @click="show"></RouterLink>
       <RouterLink class="link" to="/home" @click="show"></RouterLink>
+
+      <RouterLink class="link" to="/" @click="show"></RouterLink>
     </nav>
     <!-- <header>
     <img
