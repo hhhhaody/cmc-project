@@ -125,6 +125,28 @@ const update = () => {
   getDataFromAPI()
 };
 
+//手机号规范限制，采用正则表达式
+const validatePhoneNumber = (rule, value, callback) => {
+  if (!value) {
+    return callback(new Error('手机号码不能为空'));
+  }
+  if (!/^[0-9]{10,11}$/.test(value)) {
+    callback(new Error('请输入有效的手机号码'));
+  } else {
+    callback();
+  }
+};
+
+// 判断购买日期是否应该被禁用
+const disabledDate = (time) => {
+  // 获取今天的日期，不包括时间
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // 禁用所有在今天之后的日期
+  return time.getTime() > today.getTime();
+};
+
 // 清空搜索组件的关键字搜索，并初始化表格展示数据
 const reset = () => {
   refresh.value = true
@@ -630,7 +652,7 @@ const uploadImage = (uidToFileNameMap) => {
                   message: '长度必须在1-30之间', trigger: 'blur'
                 }]">
                 <el-date-picker v-model="addform.purchaseTime" type="datetime" placeholder="选择购买日期"
-                  value-format="YYYY-MM-DDTHH:mm:ss" />
+                  value-format="YYYY-MM-DDTHH:mm:ss" :disabled-date="disabledDate"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -648,7 +670,7 @@ const uploadImage = (uidToFileNameMap) => {
             <el-col :span="12">
               <el-form-item label="联系方式" prop="contactNo" :rules="[
                 { required: true, message: '请输入联系方式', trigger: 'blur' },
-                { type: 'number', message: '必须是数字', trigger: 'blur' }
+                { validator: validatePhoneNumber, trigger: 'blur' }
               ]">
                 <el-input v-model.number="addform.contactNo" autocomplete="off" placeholder="请输入联系方式" />
               </el-form-item>

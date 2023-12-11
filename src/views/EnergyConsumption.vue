@@ -1,72 +1,164 @@
 <script setup>
-import { ref, onMounted, reactive, watch } from "vue";
+import { ref, onMounted, reactive, watch, nextTick } from "vue";
 import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
 import SearchComponent from "../components/SearchComponent.vue";
-import DialogComponent from "../components/DialogComponent.vue";
+// import DialogComponent from "../components/DialogComponent.vue";
 import PaginationComponent from "../components/PaginationComponent.vue";
-import LineGraph from "../components/LineGraph.vue";
-import PowerGraph from "../components/PowerGraph.vue";
-import { getEnergyConsumptionRecordsAPI } from "../apis/energyConsumptionRecords";
+// import LineGraph from "../components/LineGraph.vue";
+import { getEnergyConsumptionRecordsAPI, getFirstEnergyConsumptionRecordsAPI } from "../apis/energyConsumptionRecords";
 import ExportButton from "@/components/ExportButton.vue";
 import * as XLSX from 'xlsx';
+import * as echarts from 'echarts';
 
+// 可响应的数据存储区域和初始状态
 const sections = reactive([
   { name: "型钢切割工作站", tableData: [] },
   { name: "地面钢网工作站", tableData: [] },
   { name: "方通组焊工作站", tableData: [] },
   { name: "模块总装工作站", tableData: [] }
 ]);
-
 const selectedSection = ref(sections[0]);
 const total = ref(0);
-const startDate = ref(null);
-const endDate = ref(null);
-const showDialog = ref(false);
-const dialogComponentRef = ref(null);
-const refreshFunction = () => {
-  // 你的刷新逻辑代码，如果不需要刷新，这里可以为空
+const dateRange = ref([null, null]);
+const showCustomDialog = ref(false);
+const chartData = ref([]);
+
+// 显示特定日期的详细能耗数据并初始化图表
+const showDetails = async (productionDate) => {
+  const params = {
+    page: 1,
+    pageSize: 10,
+    sectionName: selectedSection.value.name,
+    startDate: productionDate,
+    endDate: productionDate
+  };
+  const res = await getEnergyConsumptionRecordsAPI(params);
+  if (res.code === 1) {
+    chartData.value = res.data.data;
+    showCustomDialog.value = true; // 显示自定义弹窗
+    console.log(chartData.value); // 检查数据格式
+
+    await nextTick();
+    setTimeout(() => {
+      initCharts();
+    }, 500); // 增加延时时间
+  } else {
+    console.error('数据加载失败:', res.msg);
+  }
 };
 
-const showDetails = (productionDate) => {
-  const dataForSelectedDate = selectedSection.value.tableData.filter(row => row.productionDate === productionDate);
-  dialogComponentRef.value.dataForDate = dataForSelectedDate;
-  dialogComponentRef.value.dialogVisible = true;
+// 图表初始化函数，用于创建 echarts 图表
+const energyChartRef = ref(null);
+const powerChartRef = ref(null);
+const initCharts = () => {
+  if (energyChartRef.value && powerChartRef.value) {
+    const formattedTimes = chartData.value.map(item => formatTime(item.timestamp));
+    // 初始化能耗图表
+    const energyChart = echarts.init(energyChartRef.value);
+    const energyOption = {
+      title: {
+        text: '能耗',
+        left: 'center' // 将标题居中
+      },
+      tooltip: {
+        trigger: 'axis', // 或 'item'，根据需求选择
+        // 格式化 tooltip 文本
+        formatter: (params) => {
+          return params.map((param) => {
+            return `${param.axisValue}: ${param.value[1]} (能耗值)`;
+          }).join('<br/>');
+        }
+      },
+      xAxis: {
+        type: 'category',
+        data: formattedTimes
+      },
+      yAxis: { type: 'value' },
+      series: [{
+        data: chartData.value.map((item, index) => {
+          return [formattedTimes[index], item.energyConsumed];
+        }),
+        type: 'line'
+      }]
+    };
+    energyChart.setOption(energyOption);
+
+    // 初始化电压图表
+    const powerChart = echarts.init(powerChartRef.value);
+    const powerOption = {
+      title: {
+        text: '功率',
+        left: 'center' // 将标题居中
+      },
+      tooltip: {
+        trigger: 'axis', // 或 'item'
+        formatter: (params) => {
+          return params.map((param) => {
+            return `${param.axisValue}: ${param.value[1]} (功率值)`;
+          }).join('<br/>');
+        }
+      },
+      xAxis: {
+        type: 'category',
+        data: formattedTimes
+      },
+      yAxis: { type: 'value' },
+      series: [{
+        data: chartData.value.map((item, index) => {
+          return [formattedTimes[index], item.power];
+        }),
+        type: 'line'
+      }]
+    };
+    powerChart.setOption(powerOption);
+  }
 };
 
+// 格式化日期和时间的辅助函数
+const formatDate = (date) => date.toISOString().substr(0, 10);
+function formatTime(timestamp) {
+  const timePart = timestamp.split('T')[1];
+  return timePart ? timePart.substr(0, 5) : ''; // 返回小时和分钟部分
+}
 
-const formatDate = (date) => date.toISOString().substr(0, 10); // 新增的日期格式化函数
-
+// 更改当前选中的工作站部分并获取其数据
 const changeSection = (section) => {
   selectedSection.value = section;
   getDataFromAPI();
 };
 
+// 从 API 获取数据的主要函数,获取每个生产日期下的第一条数据
 const getDataFromAPI = async () => {
   let params = {
     page: currentPage.value,
     pageSize: pageSize.value,
-    sectionName: selectedSection.value.name
+    sectionName: selectedSection.value.name,
+    startDate: dateRange.value[0] ? formatDate(new Date(dateRange.value[0])) : null,
+    endDate: dateRange.value[1] ? formatDate(new Date(dateRange.value[1])) : null
   };
 
-  // 检查startDate和endDate是否存在并且是数组
-  if (startDate.value && Array.isArray(startDate.value)) {
-    params.startDate = formatDate(new Date(startDate.value[0])); // 使用新增的函数
-    params.endDate = formatDate(new Date(startDate.value[1])); // 使用新增的函数
+  console.log("Sending request with params:", params);
+
+  const res = await getFirstEnergyConsumptionRecordsAPI(params);
+  if (res.code === 1 && res.data && Array.isArray(res.data.data)) {
+    console.log("Received filtered data:", res.data.data); // 打印接收到的数据，检查是否已过滤
+    selectedSection.value.tableData = res.data;
+    total.value = res.data.total;
+  } else {
+    console.error('数据加载失败:', res.msg);
+    selectedSection.value.tableData = []; // 清空数据以反映没有结果
   }
-
-  // 使用params发送API请求
-  const res = await getEnergyConsumptionRecordsAPI(params);
-  // console.log('API Response:', res.data);
-
-  selectedSection.value.tableData = res.data.data;
-  total.value = res.data.total;
 };
 
 
+// 获取当前选中部分的表格数据
 const getCurrentTableData = () => {
-  return selectedSection.value.tableData || [];
+  if (selectedSection.value.tableData && Array.isArray(selectedSection.value.tableData.data)) {
+    // console.log("Table data:", selectedSection.value.tableData.data);
+    return selectedSection.value.tableData.data;
+  }
+  return [];
 };
-
 
 //分页组件相关
 //#region
@@ -87,9 +179,9 @@ const cur = (val) => {
   getDataFromAPI();
 };
 
+// 清空筛选条件
 const resetFilters = () => {
-  startDate.value = null;
-  endDate.value = null;
+  dateRange.value = [null, null];
   getDataFromAPI();
 };
 
@@ -116,8 +208,26 @@ const filterExportData = (data) => {
   }));
 };
 
-const exportDailyData = (productionDate) => {
-  const dailyData = selectedSection.value.tableData.filter(row => row.productionDate === productionDate);
+const exportDailyData = async (productionDate) => {
+  let dailyData = chartData.value.filter(row => row.productionDate === productionDate);
+
+  // 如果没有找到数据，从后端加载
+  if (dailyData.length === 0) {
+    const response = await getEnergyConsumptionRecordsAPI({
+      page: 1,
+      pageSize: 10,
+      sectionName: selectedSection.value.name,
+      startDate: productionDate,
+      endDate: productionDate
+    });
+
+    if (response.code === 1) {
+      dailyData = response.data.data;
+    } else {
+      console.error('数据加载失败:', response.msg);
+      return; // 在这里结束函数，因为没有数据可导出
+    }
+  }
 
   const formattedData = dailyData.map(row => ({
     sectionName: selectedSection.value.name,
@@ -139,28 +249,26 @@ const exportDailyData = (productionDate) => {
     { header: '功率', key: 'power' },
     { header: '能耗', key: 'energyConsumed' },
   ];
-
   // 使用 xlsx 工具创建工作簿和工作表
   const wb = XLSX.utils.book_new();
-
   // 将表头和数据结合在一起
   const allData = [exportHeaders.map(h => h.header)].concat(formattedData.map(row => exportHeaders.map(h => row[h.key])));
-
   const ws = XLSX.utils.aoa_to_sheet(allData);
-
   // 为工作表设置列的数据类型，确保数据格式正确
   ws['!cols'] = exportHeaders.map(header => ({ wch: header.key.length + 5 })); // 定义列宽度
-
   XLSX.utils.book_append_sheet(wb, ws, '能耗统计记录');
   XLSX.writeFile(wb, `能耗统计记录${productionDate}.xlsx`);
 };
 
+// 页面加载时自动执行的函数，用于获取初始数据
 onMounted(() => {
   getDataFromAPI();
 });
 
-watch([startDate, endDate], getDataFromAPI);
+// 根据日期筛选更改重新获取数据
+watch([dateRange], getDataFromAPI);
 </script>
+
 <template>
   <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
     background-color="#3545659e">
@@ -170,8 +278,8 @@ watch([startDate, endDate], getDataFromAPI);
       <el-main style="overflow: hidden">
         <div class="input-row">
           <div>生产时间：
-            <el-date-picker v-model="startDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期"
-              title="日期范围" :default-time="defaultTime1" />
+            <el-date-picker v-model="dateRange" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期"
+              title="日期范围" />
           </div>
 
           <el-button @click="getDataFromAPI" type="primary" style="margin-left: 10px; width: 7%">
@@ -190,7 +298,6 @@ watch([startDate, endDate], getDataFromAPI);
                 fileName="能耗统计记录.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
             </el-button>
 
-
           </span>
           <el-button>
             <el-dropdown>
@@ -206,23 +313,21 @@ watch([startDate, endDate], getDataFromAPI);
           </el-button>
         </div>
 
-        <DialogComponent ref="dialogComponentRef" :dataForDate="dataForSelectedDate" dialogTitle="能耗详情"
-          :dialogVisible.sync="showDialog" :form="yourFormObject" :confirmFunc="yourConfirmFunction"
-          :refreshFunc="refreshFunction" hideFooter="true" @close="showDialog = false">
-          <div class="graphs-container">
-            <div class="graph-block">
-              <h3 class="graph-title">能耗</h3>
-              <LineGraph :station="selectedSection.name" :stations="sections.map(s => s.name)" width="280px"
-                height="280px" />
+        <!-- 自定义弹窗 -->
+        <div v-if="showCustomDialog" class="custom-dialog">
+          <div class="custom-dialog-content">
+            <h2 class="dialog-title">能耗详情</h2>
+            <div class="graphs-container">
+              <div class="graph-block">
+                <div id="energy-chart" ref="energyChartRef" style="width: 100%; height: 390px;"></div>
+              </div>
+              <div class="graph-block">
+                <div id="power-chart" ref="powerChartRef" style="width: 100%; height: 390px;"></div>
+              </div>
             </div>
-
-            <div class="graph-block">
-              <h3 class="graph-title">功率</h3>
-              <PowerGraph :station="selectedSection.name" :stations="sections.map(s => s.name)" width="280px"
-                height="280px" />
-            </div>
+            <el-button type="primary" @click="showCustomDialog = false">关闭</el-button>
           </div>
-        </DialogComponent>
+        </div>
 
         <div>
           <el-table :data="getCurrentTableData()" show-overflow-tooltip @selection-change="handleSelectionChange"
@@ -231,9 +336,12 @@ watch([startDate, endDate], getDataFromAPI);
             <el-table-column type="index" label="序号" align="center" min-width="60vh" />
             <el-table-column prop="productionDate" label="生产日期" align="center" />
             <el-table-column prop="operation" label="能耗" align="center">
-              <div class="flex justify-space-between flex-wrap gap-4">
-                <el-button style="color:rgb(114, 159, 208)" link @click="showDetails">详情</el-button>
-              </div>
+              <template #default="scope">
+                <div class="flex justify-space-between flex-wrap gap-4">
+                  <el-button style="color:rgb(114, 159, 208)" link
+                    @click="showDetails(scope.row.productionDate)">详情</el-button>
+                </div>
+              </template>
             </el-table-column>
             <el-table-column prop="operation" label="数据" align="center">
               <template #default="scope">
@@ -309,28 +417,7 @@ watch([startDate, endDate], getDataFromAPI);
   width: 100%;
   align-items: center;
   margin-bottom: 12px;
-  /* margin-left: 5%; */
   position: relative;
-}
-
-.graphs-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.graph-block {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  margin: 0 10px;
-}
-
-.graph-title {
-  margin-bottom: 15px;
 }
 
 .tab {
@@ -344,10 +431,45 @@ watch([startDate, endDate], getDataFromAPI);
   font-size: medium;
   color: #606266;
   border: 1px solid #fff;
-  /* 添加白色边框 */
   padding: 5px 10px;
   border-radius: 4px;
   background-color: white;
 }
-</style>
 
+.custom-dialog {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  border-radius: 6px;
+}
+
+.custom-dialog-content {
+  width: 800px;
+  height: 470px;
+}
+
+.dialog-title {
+  color: #303133;
+  font-size: 20px;
+  margin-top: 2px;
+}
+
+.graphs-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.graph-block {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.graph-block:last-child {
+  margin-right: 0;
+}
+</style>

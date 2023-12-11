@@ -11,6 +11,35 @@ const sections = ["型钢切割工作站", "地面钢网工作站", "方通组�
 const selectedSection = ref(sections[0]); // 默认选中的工作站
 const stationData = ref([]);  // 用于保存工位数据
 
+// 定义工位排序映射
+const stationOrderMap = {
+  "桁架上料工位": 17,
+  "型钢翻转工位": 18,
+  "激光切割工位": 19,
+  "机器人下料工位": 20,
+  "桁架下料工位": 21,
+  "搬运机器人工位": 35,
+  "柱头焊接工位1": 36,
+  "柱头焊接工位2": 37,
+  "柱脚焊接工位1": 38,
+  "柱脚焊接工位2": 39,
+  "柱头总装工位": 40,
+  "柱脚总装工位": 41,
+  "整焊机台工位": 42,
+  "桁架上下料工位": 43,
+  "移动模台工位": 46,
+  "装夹工位1": 47,
+  "装夹工位2": 48,
+  "机器人焊接工位1": 49,
+  "机器人焊接工位2": 50,
+  "机器人焊接工位3": 51,
+  "机器人焊接工位4": 52,
+  "移动桁架工位": 53,
+  "桁架上料工位": 110,
+  "机器人焊接工位": 112,
+  "桁架下料工位": 118,
+};
+
 //保存后端数据
 const tableData = reactive({
   total: 0,
@@ -21,17 +50,24 @@ const tableData = reactive({
 const fetchTableData = async (section) => {
   const res = await getProductionTimeAPI(currentPage.value, pageSize.value, null, itemName.value, itemModel.value, section, startDate.value, endDate.value);
   if (res.code === 1) {
-    tableData.data = res.data.data;
+    tableData.data = res.data.data.map(item => ({
+      ...item,
+      stationTimes: item.stationTimes.sort((a, b) => {
+        return (stationOrderMap[a.stationName] || 0) - (stationOrderMap[b.stationName] || 0);
+      })
+    }));
     tableData.total = res.data.total;
 
     // 提取当前分页数据中的所有工位名称
     let allStations = new Set();
-    for (let item of tableData.data) {
-      for (let station of item.stationTimes) {
+    tableData.data.forEach(item => {
+      item.stationTimes.forEach(station => {
         allStations.add(station.stationName);
-      }
-    }
-    stationData.value = [...allStations].map(name => ({ stationName: name }));
+      });
+    });
+    stationData.value = [...allStations].sort((a, b) => {
+      return (stationOrderMap[a] || 0) - (stationOrderMap[b] || 0);
+    });
   } else {
     stationData.value = [];
   }
@@ -95,7 +131,22 @@ const headers = ref([
 ]);
 const filterExportData = (data) => {
   // 过滤或转换数据的逻辑
-  return data; // 示例：返回原始数据，不做任何处理
+  // 遍历tableData.data中的项目，对每个项目的stationTimes按照stationOrderMap中定义的顺序进行排序。排序后的数据将被用于导出。
+  return data.map(item => {
+    // 对 stationTimes 进行排序
+    const sortedStationTimes = item.stationTimes.sort((a, b) => {
+      return (stationOrderMap[a.stationName] || 0) - (stationOrderMap[b.stationName] || 0);
+    });
+
+    // 重构 stationInfo 字段
+    const stationInfo = sortedStationTimes.map(station => `${station.stationName}:${station.timeSpent}`).join(', ');
+
+    return {
+      ...item,
+      stationTimes: sortedStationTimes,
+      stationInfo: stationInfo // 使用新的 stationInfo
+    };
+  });
 };
 
 // 搜索功能相关
@@ -229,10 +280,9 @@ onMounted(async () => {
             <el-table-column prop="productionDate" label="生产日期" align="center"
               :formatter="row => formatDate(row.productionDate)">
             </el-table-column>
-            <el-table-column v-for="station in stationData" :key="station.stationName" :label="`${station.stationName}`"
-              align="center">
+            <el-table-column v-for="station in stationData" :key="station" :label="station" align="center">
               <template #default="scope">
-                {{ getStationTime(scope.row.stationTimes, station.stationName) }}
+                {{ getStationTime(scope.row.stationTimes, station) }}
               </template>
             </el-table-column>
           </el-table>
@@ -241,11 +291,6 @@ onMounted(async () => {
       <!-- pagination -->
       <el-footer style="display: flex; justify-content: center">
         <div class="demo-pagination-block">
-          <!-- <el-pagination class="el_total-color" v-model:current-page="currentPage" v-model:page-size="pageSize"
-            :page-sizes="[10, 20, 50, 100]" :small="small" :disabled="disabled" :background="background"
-            layout="total, sizes, prev, pager, next, jumper" :total="tableData.total" @size-change="handleSizeChange"
-            @current-change="handleCurrentChange" /> -->
-
           <PaginationComponent :total="tableData.total" @size="size" @cur="cur" />
         </div>
       </el-footer>

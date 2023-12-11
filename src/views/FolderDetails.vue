@@ -8,6 +8,9 @@ import UploadFile from "../components/UploadFile.vue";
 import DialogComponent from "../components/DialogComponent.vue";
 import PaginationComponent from "../components/PaginationComponent.vue";
 import { ElMessage, ElMessageBox } from 'element-plus';
+import axios from 'axios';
+import JSZip from 'jszip';
+import FileSaver from 'file-saver';
 
 // 初始化变量和响应式数据
 const route = useRoute();
@@ -18,6 +21,8 @@ const fileList = ref([]);
 const folderName = ref(route.params.folderName);  // 从路由参数中获取文件夹名称
 const searchKeyword = ref("");
 const downloadLinkRef = ref(null);
+const selectedRows = ref([]);
+const fileName = ref('');
 
 // 移除文件的扩展名
 const removeFileExtension = (filename) => {
@@ -47,6 +52,51 @@ const downloadFile = (fileId) => {
     }
 }
 
+// 批量下载
+const getFile = (url) => {
+    return new Promise((resolve, reject) => {
+        axios({
+            method: 'get',
+            url,
+            responseType: 'arraybuffer'
+        }).then(response => {
+            resolve(response.data);
+        }).catch(error => {
+            reject(error.toString());
+        });
+    });
+};
+
+const handleBatchDownload = () => {
+    if (selectedRows.value.length === 0) {
+        ElMessage.warning("请选择要下载的文件");
+        return;
+    }
+
+    const zip = new JSZip();
+    const promises = [];
+
+    selectedRows.value.forEach(file => {
+        const downloadUrl = `https://cmc.eos-chengdu-1.cmecloud.cn/devicefile/${file.fileName}`;
+        const promise = getFile(downloadUrl).then(data => {
+            zip.file(file.fileName, data, { binary: true });
+        });
+        promises.push(promise);
+    });
+
+    Promise.all(promises).then(() => {
+        zip.generateAsync({ type: "blob" }).then(content => {
+            FileSaver.saveAs(content, "打包下载.zip");
+        });
+    });
+};
+
+// 当表格中的选择发生变化时
+const handleSelectionChange = (selection) => {
+    selectedRows.value = selection;
+};
+
+
 // 打开重命名对话框
 const renameform = reactive({
     newName: '', //新文件夹名称
@@ -66,7 +116,7 @@ const fetchFilesInFolder = async () => {
         if (response.code === 1) {
             fileList.value = response.data.data;
             total.value = response.data.total;  // 更新总文件数
-            console.log("Updated fileList:", fileList.value);
+            // console.log("Updated fileList:", fileList.value);
 
         } else {
             console.error(response.data.message);
@@ -287,6 +337,12 @@ onMounted(() => {
                 <!-- operation -->
                 <div style="display: flex; justify-content: space-between">
                     <UploadFile ref="uploadFileRef" :folder-id="route.params.folderId" @file-uploaded="onFileUploaded" />
+
+                    <div style="margin-right: 88%;">
+                        <el-button type="primary" @click="handleBatchDownload">
+                            <download style="width: 1em; height: 1em; margin-right: 8px" />批量下载
+                        </el-button>
+                    </div>
                 </div>
 
                 <DialogComponent ref="editDialog" :form="renameform" dialog-title="编辑文件" :refreshFunc="() => { }"
@@ -299,7 +355,7 @@ onMounted(() => {
 
                 <!-- table -->
                 <div>
-                    <el-table :data="fileList" show-overflow-tooltip
+                    <el-table :data="fileList" @selection-change="handleSelectionChange" show-overflow-tooltip
                         style="width: 100%; border-radius: 1vh; margin-top: 1vh" table-layout="fixed" height="50vh">
                         <el-table-column type="selection" align="center" />
                         <el-table-column type="index" label="序号" align="center" min-width="60vh" />
@@ -328,8 +384,8 @@ onMounted(() => {
                             <template #default="scope">
                                 <el-button class="inline_button" v-if="scope.row.fileName"
                                     @click.prevent="downloadFile(scope.row.fileId)">下载</el-button>
-                                <el-button class="inline_button"
-                                    @click="openRenameDialog(scope.row.fileId, scope.row.fileName, 'file')">编辑</el-button>
+                                <!-- <el-button class="inline_button"
+                                    @click="openRenameDialog(scope.row.fileId, scope.row.fileName, 'file')">编辑</el-button> -->
                                 <el-button class="inline_button"
                                     @click="deleteFile(scope.row.fileId || scope.row.fileId, scope.row.fileName ? 'file' : 'file')">删除</el-button>
                             </template>
@@ -337,7 +393,6 @@ onMounted(() => {
 
                     </el-table>
                 </div>
-
 
             </el-main>
             <!-- pagination -->
