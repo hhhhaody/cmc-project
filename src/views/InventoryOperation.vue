@@ -30,11 +30,16 @@ const handleSelectionChange = (selected) => {
     // console.log('selectedRows after update:', selectedRows.value);
 };
 const headers = ref([
-    { key: 'id', title: 'ID' },
+    { key: 'id', title: '序号' },
+    { key: 'batch', title: '物料批次' },
     { key: 'name', title: '物料名称' },
     { key: 'spec', title: '规格型号' },
-    { key: 'amount', title: '库存数量' },
+    { key: 'amount', title: '数量' },
+    { key: 'operation', title: '操作' },
     { key: 'supplyTime', title: '操作时间' },
+    { key: 'operator', title: '操作人员' },
+    { key: 'supplier', title: '供料单位' },
+    { key: 'supplyTime', title: '供料日期' },
 ]);
 const filterExportData = (data) => {
     // 过滤或转换数据的逻辑

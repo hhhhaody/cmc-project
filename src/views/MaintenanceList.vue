@@ -37,7 +37,7 @@ const handleSelectionChange = (selected) => {
   // console.log('selectedRows after update:', selectedRows.value);
 };
 const headers = ref([
-  { key: 'id', title: 'ID' },
+  { key: 'id', title: '序号' },
   { key: 'serialNo', title: '设备编号' },
   { key: 'name', title: '设备名称' },
   { key: 'spec', title: '规格型号' },

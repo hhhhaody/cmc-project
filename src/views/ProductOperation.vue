@@ -30,7 +30,7 @@ const handleSelectionChange = (selected) => {
     // console.log('selectedRows after update:', selectedRows.value);
 };
 const headers = ref([
-    { key: 'id', title: 'ID' },
+    { key: 'id', title: '序号' },
     { key: 'batch', title: '产品批次' },
     { key: 'name', title: '产品名称' },
     { key: 'spec', title: '规格型号' },
@@ -40,7 +40,7 @@ const headers = ref([
     { key: 'operator', title: '操作人员' },
     { key: 'quality', title: '质量情况' },
     { key: 'produceTime', title: '生产日期' },
-    { key: 'receipt', title: '凭证' },
+    // { key: 'receipt', title: '凭证' },
     { key: 'detail', title: '情况说明' }
 ]);
 const filterExportData = (data) => {

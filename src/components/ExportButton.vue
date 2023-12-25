@@ -46,6 +46,13 @@ export default {
                 // 使用过滤函数处理数据（如果提供了的话）
                 data = this.filterFunction(data);
 
+                // 重新生成序号，并保持其他数据不变
+                data = data.map((item, index) => {
+                    const newItem = { ...item };
+                    newItem.id = index + 1;  // 从1开始的序号
+                    return newItem;
+                });
+
                 // 将数据转换为 Excel 可以处理的格式
                 const excelData = data.map((item) => {
                     const rowData = this.headers.map((header) => item[header.key]);

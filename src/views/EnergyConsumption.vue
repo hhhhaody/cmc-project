@@ -193,6 +193,7 @@ const handleSelectionChange = (selected) => {
   // console.log('selectedRows after update:', selectedRows.value);
 };
 const headers = ref([
+  { key: 'id', title: '序号' },
   { key: 'sectionName', title: '工作站名称' },
   { key: 'productionDate', title: '生产日期' },
   { key: 'timestamp', title: '时间戳' },

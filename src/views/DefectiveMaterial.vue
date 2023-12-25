@@ -31,7 +31,7 @@ const handleSelectionChange = (selected) => {
   // console.log('selectedRows after update:', selectedRows.value);
 };
 const headers = ref([
-  { key: 'id', title: 'ID' },
+  { key: 'id', title: '序号' },
   { key: 'batch', title: '物料批次' },
   { key: 'name', title: '物料名称' },
   { key: 'spec', title: '规格型号' },
@@ -39,7 +39,7 @@ const headers = ref([
   { key: 'returnedAmount', title: '返用数量' },
   { key: 'scrappedAmount', title: '报废数量' },
   { key: 'supplier', title: '供料单位' },
-  { key: 'createTime', title: '创建时间' },
+  // { key: 'createTime', title: '创建时间' },
 ]);
 const filterExportData = (data) => {
   // 过滤或转换数据的逻辑

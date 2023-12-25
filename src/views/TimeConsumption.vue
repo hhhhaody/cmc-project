@@ -123,6 +123,7 @@ const handleSelectionChange = (selected) => {
   selectedRows.value = selected;
 };
 const headers = ref([
+  { key: 'id', title: '序号' },
   { key: 'itemCode', title: '产品编号' },
   { key: 'itemName', title: '产品名称' },
   { key: 'itemModel', title: '规格型号' },

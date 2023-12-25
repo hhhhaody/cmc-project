@@ -35,7 +35,7 @@ const handleSelectionChange = (selected) => {
   // console.log('selectedRows after update:', selectedRows.value);
 };
 const headers = ref([
-  { key: 'id', title: 'ID' },
+  { key: 'id', title: '序号' },
   { key: 'name', title: '物料名称' },
   { key: 'spec', title: '规格型号' },
   { key: 'amount', title: '库存数量' },
