@@ -7,10 +7,10 @@
 <script setup>
 import { ref, onMounted, inject, toRefs, watch } from "vue";
 
-const { value } = toRefs(props);
 const GaugeChartRef = ref();
 const props = defineProps(["value"]);
 const GaugeChart = ref(null);
+const { value } = toRefs(props);
 
 onMounted(() => {
   // 注入echarts实例
