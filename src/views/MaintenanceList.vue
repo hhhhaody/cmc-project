@@ -37,7 +37,7 @@ const handleSelectionChange = (selected) => {
   // console.log('selectedRows after update:', selectedRows.value);
 };
 const headers = ref([
-  { key: 'id', title: 'ID' },
+  { key: 'id', title: '序号' },
   { key: 'serialNo', title: '设备编号' },
   { key: 'name', title: '设备名称' },
   { key: 'spec', title: '规格型号' },
@@ -204,6 +204,7 @@ const remains = computed(() => {
   return `本批次余量：${remainingStock.value}`;
 });
 
+
 //表单数据
 const addform = reactive({
   name: '',
@@ -228,6 +229,7 @@ const stockform
     completeTime: '',
     maintenanceman: '',
     info: '',
+    updateTime: ''
   })
 
 const dailyList = ref([
@@ -248,7 +250,7 @@ const dailyConfirm = async () => {
 
 const getDailyPlan = async () => {
   const res = await getFacilityAPI(currentPage.value, 99999, '', '', '', '', '', true);
-  // console.log(res.data);
+  console.log(res.data);
 
 
   for (const obj of res.data.data) {
@@ -258,6 +260,8 @@ const getDailyPlan = async () => {
       dailyList.value.push(obj);
     }
   }
+
+  // console.log(dailyList);
 }
 
 function isSameDay(date1, date2) {
@@ -292,6 +296,11 @@ const getMaintenancePlanByID = async (id) => {
     stockform.section = res.data.section
     stockform.plannedTime = res.data.plannedTime
     stockform.serialNo = res.data.serialNo
+    stockform.status = res.data.status
+    stockform.info = res.data.info
+    stockform.completeTime = res.data.completeTime
+    stockform.maintenanceman = res.data.maintenanceman
+    stockform.updateTime = res.data.updateTime
     updateSearchSuggestion()
     console.log(stockform);
   }
@@ -506,8 +515,10 @@ const uploadImage = (uidToFileNameMap) => {
           </span>
           <span>
 
-            <el-button @click="dailyDialog = true, dialog = true, getDefaultDate(), getDailyPlan()">日常保养</el-button>
-
+            <!-- <el-button @click="dailyDialog = true, dialog = true, getDefaultDate(), getDailyPlan()">日常保养</el-button> -->
+            <el-button>
+              <RouterLink to="/maintenancePlan/daily">日常保养</RouterLink>
+            </el-button>
             <!-- <el-button
               @click="stockOutDialog.dialogVisible = true, stockform.operation = '出库', dialog = true, getDefaultDate()">出库</el-button>
             <el-button
@@ -588,7 +599,7 @@ const uploadImage = (uidToFileNameMap) => {
 
 
         <!-- 编辑弹框 -->
-        <DialogComponent ref="editDialog" :form="stockform" dialog-title="记录故障维修记录" :refreshFunc="getDataFromAPI"
+        <DialogComponent ref="editDialog" :form="stockform" dialog-title="编辑维护计划记录" :refreshFunc="getDataFromAPI"
           :confirm-func="updateMaintenancePlanAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
           <el-row>
             <el-col :span="12">
@@ -655,7 +666,7 @@ const uploadImage = (uidToFileNameMap) => {
 
         <!-- 日常弹框 -->
         <el-dialog v-model="dailyDialog" title="日常保养" align-center destroy-on-close :before-close="dailyClose">
-          <el-card v-for="(item, index) in    dailyList   ">
+          <!-- <el-card v-for="(item, index) in    dailyList   ">
             <el-form :model="item" @submit.prevent label-position=right>
               <el-row>
                 <el-col :span="12">
@@ -700,7 +711,50 @@ const uploadImage = (uidToFileNameMap) => {
                 <el-input v-model="item.info" autocomplete="off" placeholder="请填写维护内容" style="margin-right:1vh" />
               </el-form-item>
             </el-form>
-          </el-card>
+          </el-card> -->
+
+          <el-table :data="dailyList.value" style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh"
+            show-overflow-tooltip>
+            <el-table-column type="selection" align="center" min-width="20vh" />
+            <el-table-column label="序号" type="index" align="center" min-width="50vh" />
+            <el-table-column prop="serialNo" label="设备编号" align="center" />
+            <el-table-column prop="name" label="设备名称" align="center" />
+            <el-table-column prop="spec" label="规格型号" align="center" />
+            <el-table-column prop="station" label="工位名称" align="center" />
+            <el-table-column prop="section" label="工段名称" align="center" />
+            <el-table-column prop="type" label="维护类型" align="center" />
+            <el-table-column prop="plannedTime" label="计划完成日期" align="center" min-width="100vh">
+              <template #default="scope">
+                {{ scope.row.plannedTime.substring(0, 10) }}
+              </template>
+            </el-table-column>
+            <!-- <el-table-column prop="completeTime" label="实际完成日期" align="center" min-width="100vh">
+            <template #default="scope">
+              {{ scope.row.completeTime ? scope.row.completeTime.substring(0, 10) : '' }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="maintenanceman" label="维护人员" align="center" />
+          <el-table-column prop="info" label="维护内容" align="center" /> -->
+            <el-table-column prop="status" label="维护状态" align="center" />
+            <el-table-column prop="operation" label="操作" align="center" min-width="110vh">
+              <template #default="scope">
+                <el-button v-if="!scope.row.ongoing" class=" inline_button" style="color:#ff9a02a0"
+                  @click="maintenance(scope.row.id), getDataFromAPI()">
+                  检修维护
+                </el-button>
+                <el-button v-else class="inline_button"
+                  @click="getMaintenancePlanByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, stockform.id = scope.row.id">
+                  编辑
+                </el-button>
+                <el-button class="inline_button">
+                  <RouterLink :to="{ name: 'maintenancePlanDetail', query: { id: scope.row.id } }">详情
+                  </RouterLink>
+                </el-button>
+
+              </template>
+            </el-table-column>
+
+          </el-table>
 
           <template #footer>
             <span class="dialog-footer">
@@ -730,13 +784,13 @@ const uploadImage = (uidToFileNameMap) => {
               {{ scope.row.plannedTime.substring(0, 10) }}
             </template>
           </el-table-column>
-          <el-table-column prop="completeTime" label="实际完成日期" align="center" min-width="100vh">
+          <!-- <el-table-column prop="completeTime" label="实际完成日期" align="center" min-width="100vh">
             <template #default="scope">
               {{ scope.row.completeTime ? scope.row.completeTime.substring(0, 10) : '' }}
             </template>
           </el-table-column>
           <el-table-column prop="maintenanceman" label="维护人员" align="center" />
-          <el-table-column prop="info" label="维护内容" align="center" />
+          <el-table-column prop="info" label="维护内容" align="center" /> -->
           <el-table-column prop="status" label="维护状态" align="center" />
           <el-table-column prop="operation" label="操作" align="center" min-width="110vh">
             <template #default="scope">
@@ -744,9 +798,13 @@ const uploadImage = (uidToFileNameMap) => {
                 @click="maintenance(scope.row.id), getDataFromAPI()">
                 检修维护
               </el-button>
-              <el-button v-else class="inline_button" :disabled="scope.row.completeTime !== null"
+              <el-button v-else class="inline_button"
                 @click="getMaintenancePlanByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, stockform.id = scope.row.id">
-                记录
+                编辑
+              </el-button>
+              <el-button class="inline_button">
+                <RouterLink :to="{ name: 'maintenancePlanDetail', query: { id: scope.row.id } }">详情
+                </RouterLink>
               </el-button>
 
             </template>

@@ -32,7 +32,7 @@ const handleSelectionChange = (selected) => {
     // console.log('selectedRows after update:', selectedRows.value);
 };
 const headers = ref([
-    { key: 'id', title: 'ID' },
+    { key: 'id', title: '序号' },
     { key: 'serialNo', title: '设备编号' },
     { key: 'name', title: '设备名称' },
     { key: 'spec', title: '规格型号' },
@@ -406,7 +406,7 @@ const nextImage = () => {
                 <div>
                     <SearchComponent :key="renderKey" search-title="工段名称" :searchContent=section ref="search1"
                         field="section" database="facilities/status" @search="search" @edit="edit" />
-                    <SearchComponent :key="renderKey" search-title="物料名称" :searchContent=name ref="search2" field="name"
+                    <SearchComponent :key="renderKey" search-title="设备名称" :searchContent=name ref="search2" field="name"
                         @search="search" database="facilities/status" @edit="edit" />
                     <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=spec ref="search3" field="spec"
                         @search="search" database="facilities/status" @edit="edit" />

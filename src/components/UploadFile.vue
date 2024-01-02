@@ -1,5 +1,6 @@
 <template>
-    <el-upload class="upload-demo" action="" :http-request="customHttpRequest" :show-file-list="false">
+    <el-upload class="upload-demo" action="" :http-request="customHttpRequest" :show-file-list="false"
+        accept=".pdf, .docx, .txt">
         <el-button type="primary">
             <Upload style="width: 1em; height: 1em; margin-right: 8px" />上传
         </el-button>
@@ -56,8 +57,34 @@ getSts()
 const customHttpRequest = async (options) => {
     const { file } = options;
     const originalFileName = file.name;
+    // const encodedFileName = encodeURIComponent(originalFileName);
 
-    uidToFileNameMap.value[file.uid] = originalFileName;
+    // uidToFileNameMap.value[file.uid] = originalFileName;
+
+    // 检查文件大小，如果超过10MB，则提示用户
+    if (file.size > 10485760) { // 10MB的大小限制
+        ElMessage.warning("文件大小超过10MB，请选择一个较小的文件。");
+        return; // 中断上传流程
+    }
+
+    // 检查文件类型
+    const allowedTypes = ['.pdf', '.docx', '.txt'];
+    if (!allowedTypes.some(type => originalFileName.toLowerCase().endsWith(type))) {
+        ElMessage.warning("不支持的文件类型，请上传.pdf, .docx, .txt文件。");
+        return; // 中断上传流程
+    }
+
+    // 首先，调用后端API以检查文件是否存在或是否需要重命名
+    const result = await uploadFileAPI(file, props.folderId);
+    // console.log("API Response:", result); // 打印API响应
+    // const returnedFileName = result.data.fileName || result.data;
+    // console.log("Original filename:", originalFileName, "Returned filename:", returnedFileName); // 打印文件名对比
+
+    // 如果后端返回表示文件名重复的响应
+    if (result.data === "文件名重复") {
+        ElMessage.warning("文件名重复，请修改后重新上传");
+        return; // 中断上传流程
+    }
 
     const s3 = new AWS.S3({
         apiVersion: '2006-03-01',
@@ -76,22 +103,7 @@ const customHttpRequest = async (options) => {
         // Step 1: Upload the file to S3
         await s3.upload(params).promise();
         console.log('File uploaded successfully to S3 with name:', originalFileName);
-
-        // Step 2: Call the backend API to get the new filename
-        const result = await uploadFileAPI(file, props.folderId);
-        const returnedFileName = result.data.fileName || result.data;
-
-        // Step 3: If the returned filename is different, rename the file in S3
-        if (returnedFileName !== originalFileName) {
-            await requestRenameInS3(originalFileName, returnedFileName);
-            console.log(`File renamed in S3 from ${originalFileName} to ${returnedFileName}`);
-            ElMessage.success(`文件上传成功，文件名已更改为 ${returnedFileName}`);
-        } else {
-            ElMessage.success("文件上传成功");
-        }
-
-        // Step 4 is handled by the backend, which updates the database record
-
+        ElMessage.success("文件上传成功");
         emit('file-uploaded', file);
     } catch (error) {
         console.error('Error uploading file:', error);
@@ -110,10 +122,10 @@ const deleteFileFromS3 = async (fileName) => {
         sslEnabled: false,
     });
 
-    const encodedFileName = encodeURIComponent(fileName); // 使用encodeURIComponent进行URL编码
+    // const encodedFileName = encodeURIComponent(fileName);
     const params = {
         Bucket: 'cmc/devicefile',
-        Key: encodedFileName,
+        Key: fileName,
     };
 
     try {
@@ -129,10 +141,14 @@ const deleteFileFromS3 = async (fileName) => {
 // 在S3中重命名文件的方法
 const renameFileInS3 = async (oldFileName, newFileName) => {
     console.log('Starting renameFileInS3 method...');
-    console.log('Old File Name:', oldFileName);
-    console.log('New File Name:', newFileName);
 
-    if (oldFileName === newFileName) {
+    const encodedOldFileName = encodeURIComponent(oldFileName);
+    const encodedNewFileName = encodeURIComponent(newFileName);
+
+    console.log('Old File Name:', encodedOldFileName);
+    console.log('New File Name:', encodedNewFileName);
+
+    if (encodedOldFileName === encodedNewFileName) {
         console.warn("Old and new file names are the same. Skipping rename operation.");
         return;
     }
@@ -147,8 +163,8 @@ const renameFileInS3 = async (oldFileName, newFileName) => {
     // 复制文件
     const copyParams = {
         Bucket: 'cmc/devicefile',
-        CopySource: `cmc/devicefile/${oldFileName}`,
-        Key: newFileName,
+        CopySource: `cmc/devicefile/${encodedOldFileName}`,
+        Key: encodedNewFileName,
         ACL: 'public-read'
     };
 
@@ -165,19 +181,19 @@ const renameFileInS3 = async (oldFileName, newFileName) => {
     }
 
     // 删除原文件
-    const deleteParams = {
-        Bucket: 'cmc/devicefile',
-        Key: oldFileName
-    };
+    //     const deleteParams = {
+    //         Bucket: 'cmc/devicefile',
+    //         Key: oldFileName
+    //     };
 
-    try {
-        console.log('Starting to delete the old file...');
-        await s3.deleteObject(deleteParams).promise();
-        console.log('Old file deleted successfully');
-    } catch (error) {
-        console.error('Error deleting original file from S3:', error.message);
-    }
-    emit('file-renamed-in-s3', newFileName);
+    //     try {
+    //         console.log('Starting to delete the old file...');
+    //         await s3.deleteObject(deleteParams).promise();
+    //         console.log('Old file deleted successfully');
+    //     } catch (error) {
+    //         console.error('Error deleting original file from S3:', error.message);
+    //     }
+    //     emit('file-renamed-in-s3', newFileName);
 }
 
 // 文件预览方法

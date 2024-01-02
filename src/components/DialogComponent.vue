@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { ElNotification } from 'element-plus'
+import { ElMessage, ElNotification } from 'element-plus'
 
 const props = defineProps({
     dialogTitle: { type: String, default: "新增物料类型" },
@@ -62,12 +62,32 @@ const push = async () => {
     if (res.code === 1) {
         console.log(res);
         if (res.data != null) {
-            ElNotification({
-                title: '成功',
-                message: res.data,
-                duration: 3000,
-                type: "success"
-            })
+            if (res.data === '新增成功') {
+                ElMessage({
+                    type: 'success',
+                    message: '新增成功',
+                })
+            }
+            else if (res.data == '更新成功') {
+                ElMessage({
+                    type: 'success',
+                    message: '更新成功',
+                })
+            }
+            else if (res.data == '记录成功') {
+                ElMessage({
+                    type: 'success',
+                    message: '记录成功',
+                })
+            }
+            else {
+                ElNotification({
+                    title: '成功',
+                    message: res.data,
+                    duration: 3000,
+                    type: "success"
+                })
+            }
         }
 
         dialogVisible.value = false

@@ -55,11 +55,11 @@ const changeStation = (type, val) => {
 
 <template>
   <main class="layout">
-    <span class="g4 animate__animated animate__fadeInRight">
+    <span class="g4 animate__animated animate__fadeInRight grey">
       <i>
-        <span @click="navigate('inventory')">能耗统计</span>
+        <span class="click" @click="navigate('inventory')">能耗统计</span>
         <el-dropdown class="tab">
-          <span class="el-dropdown-link"> {{ line }} </span>
+          <span class="el-dropdown-link" style="font-size: 15px; font-weight: 500;"> {{ line }} </span>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click="changeStation(4, stations[0])">型钢切割工作站</el-dropdown-item>
@@ -72,11 +72,11 @@ const changeStation = (type, val) => {
       </i>
       <LineGraph class="graph" :station="line" :stations="stations" />
     </span>
-    <span class="g3 animate__animated animate__fadeInLeft">
+    <span class="g3 animate__animated animate__fadeInLeft grey">
       <i>
-        <span @click="navigate('product')">产品生产情况</span>
+        <span class="click" @click="navigate('product')">产品生产情况</span>
         <el-dropdown class="tab">
-          <span class="el-dropdown-link"> {{ bar }} </span>
+          <span class="el-dropdown-link" style="font-size: 15px; font-weight: 500;"> {{ bar }} </span>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click="changeStation(2, stations[0])">型钢切割工作站</el-dropdown-item>
@@ -90,11 +90,11 @@ const changeStation = (type, val) => {
 
       <BarGraph class="graph" :station="bar" :stations="stations" />
     </span>
-    <span class="g2 animate__animated animate__fadeInRight">
+    <span class="g2 animate__animated animate__fadeInRight grey">
       <i>
-        <span @click="navigate('timeConsumption')">耗时统计</span>
+        <span class="click" @click="navigate('timeConsumption')">耗时统计</span>
         <el-dropdown class="tab">
-          <span class="el-dropdown-link"> {{ radar }} </span>
+          <span class="el-dropdown-link" style="font-size: 15px; font-weight: 500;"> {{ radar }} </span>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click="changeStation(1, stations[0])">型钢切割工作站</el-dropdown-item>
@@ -105,14 +105,16 @@ const changeStation = (type, val) => {
           </template>
         </el-dropdown>
       </i>
+      <!-- <BarGraph class="graph" :station="bar" :stations="stations" /> -->
+      <!-- <LineGraph class="graph" :station="line" :stations="stations" /> -->
 
       <RadarGraph class="graph" :station="radar" :stations="stations" />
     </span>
-    <span class="g1 animate__animated animate__fadeInLeft">
+    <span class="g1 animate__animated animate__fadeInLeft grey">
       <i>
-        <span @click="navigate('inventory')">原材料使用情况</span>
+        <span class="click" @click="navigate('inventory')">原材料使用情况</span>
         <el-dropdown class="tab">
-          <span class="el-dropdown-link"> {{ usage }} </span>
+          <span class="el-dropdown-link" style="font-size: 15px; font-weight: 500;"> {{ usage }} </span>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click="changeStation(3, stations[0])">型钢切割工作站</el-dropdown-item>
@@ -153,20 +155,44 @@ const changeStation = (type, val) => {
   height: 35vh;
 }
 
+.click {
+  cursor: pointer;
+}
+
+.graph::after {
+  /* content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  background: #435e7c32; */
+}
+
 .g1 {
+
+  z-index: 100;
   grid-area: graph1;
 }
 
 .g2 {
   grid-area: graph2;
+  z-index: 100;
+
 }
 
 .g3 {
   grid-area: graph3;
+  z-index: 100;
+
 }
 
 .g4 {
   grid-area: graph4;
+  z-index: 100;
+
 }
 
 .g5 {
@@ -175,11 +201,15 @@ const changeStation = (type, val) => {
   /* width: 80vh; */
 }
 
-span {
+.grey {
   /* height: 36vh; */
-  /* background-color: #1019281e; */
+  background-color: #ffffff0a;
+  border-radius: 1vh;
   /* background: linear-gradient(#1d1d1ded, transparent); */
   /* overflow: hidden; */
+  padding: 1vh;
+  padding-bottom: 0;
+  margin: 1vh;
 }
 
 i {
@@ -210,7 +240,7 @@ i {
 .tab {
   display: inline-block;
   /* width: 10vh; */
-  right: 2vh;
+  right: 5vh;
   position: absolute;
   text-align: center;
   vertical-align: middle;
@@ -219,6 +249,7 @@ i {
   color: #fff;
   /* text-shadow: 1px -1px 5px #a3ccf9; */
 }
+
 
 /* .el-dropdown-menu {
   color: #fff;

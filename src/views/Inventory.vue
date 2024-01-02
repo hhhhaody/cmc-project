@@ -35,7 +35,7 @@ const handleSelectionChange = (selected) => {
   // console.log('selectedRows after update:', selectedRows.value);
 };
 const headers = ref([
-  { key: 'id', title: 'ID' },
+  { key: 'id', title: '序号' },
   { key: 'name', title: '物料名称' },
   { key: 'spec', title: '规格型号' },
   { key: 'amount', title: '库存数量' },
@@ -54,6 +54,9 @@ const search1 = ref();
 const search2 = ref();
 const name = ref("")
 const spec = ref("")
+const searchForm = reactive({
+  name, spec
+})
 //用于重新加载搜索框和搜索建议
 const renderKey = ref(0)
 const updateSearchSuggestion = () => {
@@ -92,8 +95,16 @@ const loadMore = (status) => {
 // 记录用于通过搜索组件输入的搜索种类及对应关键词 searchComponent
 const search = (title, keyword) => {
   // console.log(title, keyword);
-  if (title === "name") name.value = keyword
-  if (title === "spec") spec.value = keyword
+  if (title === "name") {
+    name.value = keyword
+    updateSearchSuggestion()
+
+  }
+  if (title === "spec") {
+    spec.value = keyword
+    updateSearchSuggestion()
+
+  }
 
 
   //弹框内使用
@@ -165,6 +176,10 @@ const saveImage = () => {
   confirmImage.value = true
 }
 
+const disabledDate = (day) => {
+  return day > new Date();
+}
+
 const getDefaultDate = () => {
   const currentDate = new Date()
   stockform.operateTime = format(currentDate, 'yyyy-MM-dd') + 'T' + format(currentDate, 'HH:mm:ss')
@@ -176,6 +191,15 @@ const remains = computed(() => {
   }
   return `本批次余量：${remainingStock.value}`;
 });
+
+const checkNumber = (rule, value, callback) => {
+  if (value > remainingStock.value) {
+    callback(new Error('此批次余量不足'))
+  }
+  else {
+    callback()
+  }
+}
 
 //表单数据
 const addform = reactive({
@@ -380,9 +404,9 @@ const uploadImage = (uidToFileNameMap) => {
         <!-- search -->
         <div>
           <SearchComponent :key="renderKey" search-title="物料名称" :searchContent=name ref="search1" field="name"
-            @search="search" @edit="edit" />
+            @search="search" @edit="edit" :data="searchForm" />
           <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=spec ref="search2" field="spec"
-            @search="search" @edit="edit" />
+            @search="search" @edit="edit" :data="searchForm" />
           <el-button type="primary" style="margin-left: 10px; width: 7%" @click="update">
             <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
           </el-button>
@@ -541,7 +565,7 @@ const uploadImage = (uidToFileNameMap) => {
               <el-form-item label="供料日期" prop="supplyTime" :rules="[
                 { required: true, message: '请输入供料日期', trigger: 'blur' }]">
                 <el-date-picker v-model="stockform.supplyTime" type="datetime" placeholder="选择供料日期"
-                  value-format="YYYY-MM-DDTHH:mm:ss" />
+                  value-format="YYYY-MM-DDTHH:mm:ss" :disabled-date="disabledDate" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -591,7 +615,8 @@ const uploadImage = (uidToFileNameMap) => {
             <el-col :span="12">
               <el-form-item label="出库数量" prop="amount" :rules="[
                 { required: true, message: '请输入数量', trigger: 'blur' },
-                { type: 'number', message: '必须是数字', trigger: 'blur' }
+                { type: 'number', message: '必须是数字', trigger: 'blur' },
+                { validator: checkNumber, trigger: 'blur' }
               ]">
                 <el-input v-model.number="stockform.amount" autocomplete="off" :placeholder="remains" />
               </el-form-item>
@@ -607,7 +632,7 @@ const uploadImage = (uidToFileNameMap) => {
             </el-col>
             <el-col :span="12">
               <el-form-item label="供料日期" prop="supplyTime">
-                <el-input v-model="formattedTime" autocomplete="off" />
+                <el-input v-model="formattedTime" autocomplete="off" disabled />
               </el-form-item>
             </el-col>
           </el-row>
@@ -657,7 +682,8 @@ const uploadImage = (uidToFileNameMap) => {
             <el-col :span="12">
               <el-form-item label="转库数量" prop="amount" :rules="[
                 { required: true, message: '请输入数量', trigger: 'blur' },
-                { type: 'number', message: '必须是数字', trigger: 'blur' }
+                { type: 'number', message: '必须是数字', trigger: 'blur' },
+                { validator: checkNumber, trigger: 'blur' }
               ]">
                 <el-input v-model.number="stockform.amount" autocomplete="off" :placeholder="remains" />
               </el-form-item>
@@ -673,7 +699,7 @@ const uploadImage = (uidToFileNameMap) => {
             </el-col>
             <el-col :span="12">
               <el-form-item label="供料日期" prop="supplyTime">
-                <el-input v-model="formattedTime" autocomplete="off" />
+                <el-input v-model="formattedTime" autocomplete="off" disabled />
               </el-form-item>
             </el-col>
           </el-row>

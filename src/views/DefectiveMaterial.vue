@@ -31,7 +31,7 @@ const handleSelectionChange = (selected) => {
   // console.log('selectedRows after update:', selectedRows.value);
 };
 const headers = ref([
-  { key: 'id', title: 'ID' },
+  { key: 'id', title: '序号' },
   { key: 'batch', title: '物料批次' },
   { key: 'name', title: '物料名称' },
   { key: 'spec', title: '规格型号' },
@@ -39,7 +39,7 @@ const headers = ref([
   { key: 'returnedAmount', title: '返用数量' },
   { key: 'scrappedAmount', title: '报废数量' },
   { key: 'supplier', title: '供料单位' },
-  { key: 'createTime', title: '创建时间' },
+  // { key: 'createTime', title: '创建时间' },
 ]);
 const filterExportData = (data) => {
   // 过滤或转换数据的逻辑
@@ -56,6 +56,7 @@ const search3 = ref()
 const name = ref("")
 const spec = ref("")
 const supplier = ref("")
+const searchForm = reactive({ name, spec, supplier })
 //用于重新加载搜索框和搜索建议
 const renderKey = ref(0)
 const updateSearchSuggestion = () => {
@@ -94,9 +95,9 @@ const loadMore = (status) => {
 // 记录用于通过搜索组件输入的搜索种类及对应关键词 searchComponent
 const search = (title, keyword) => {
   // console.log(title, keyword);
-  if (title === "name") name.value = keyword
-  if (title === "spec") spec.value = keyword
-  if (title === "supplier") supplier.value = keyword
+  if (title === "name") name.value = keyword; updateSearchSuggestion()
+  if (title === "spec") spec.value = keyword; updateSearchSuggestion()
+  if (title === "supplier") supplier.value = keyword; updateSearchSuggestion()
 
 
   //弹框内使用
@@ -347,11 +348,11 @@ const nextImage = () => {
         <!-- search -->
         <div>
           <SearchComponent :key="renderKey" search-title="物料名称" :searchContent=name ref="search1" field="name"
-            @search="search" @edit="edit" database="defectives" />
+            @search="search" @edit="edit" database="defectives" :data="searchForm" />
           <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=spec ref="search2" field="spec"
-            @search="search" @edit="edit" database="defectives" />
+            @search="search" @edit="edit" database="defectives" :data="searchForm" />
           <SearchComponent :key="renderKey" search-title="供料单位" :searchContent=supplier ref="search3" field="supplier"
-            @search="search" @edit="edit" database="defectives" />
+            @search="search" @edit="edit" database="defectives" :data="searchForm" />
           <el-button type="primary" style="margin-left: 10px; width: 7%" @click="update">
             <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
           </el-button>

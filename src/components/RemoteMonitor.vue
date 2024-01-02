@@ -94,13 +94,14 @@ onUnmounted(() => {
   
 <style scoped>
 .carousel {
-  width: 431px;
-  height: 300px;
-  margin-top: 13px;
-  margin-left: 8px;
+  width: 98%;
+  height: 85%;
+  top: 1vh;
+  left: 50%;
+  transform: translateX(-50%);
   position: relative;
   overflow: hidden;
-  border-radius: 7px;
+  border-radius: 1vh;
 }
 
 .carousel-item {
@@ -109,12 +110,14 @@ onUnmounted(() => {
   height: 100%;
   opacity: 0;
   transition: opacity 0.2s;
-  pointer-events: none;  /* 非激活项不接受鼠标事件 */
+  pointer-events: none;
+  /* 非激活项不接受鼠标事件 */
 }
 
 .carousel-item.active {
   opacity: 1;
-  pointer-events: auto;  /* 激活项可以接受鼠标事件 */
+  pointer-events: auto;
+  /* 激活项可以接受鼠标事件 */
 }
 
 .video-js {

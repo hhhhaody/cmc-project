@@ -14,29 +14,29 @@ const navigate = (routeName) => {
 
 <template>
   <main class="layout">
-    <span class="g4 animate__animated animate__fadeInRight">
+    <span class="g4 animate__animated animate__fadeInRight grey">
       <i>
-        <span @click="navigate('maintenancePlan')">维保任务</span>
+        <span class="click" @click="navigate('maintenancePlan')">维保任务</span>
       </i>
 
       <MaintenanceTask />
       <!-- <LineGraph /> -->
     </span>
-    <span class="g3 animate__animated animate__fadeInLeft">
+    <span class="g3 animate__animated animate__fadeInLeft grey">
       <i>信息提醒中心 </i>
 
       <Notification />
     </span>
-    <span class="g2 animate__animated animate__fadeInRight">
+    <span class="g2 animate__animated animate__fadeInRight grey">
       <i>
-        <span @click="navigate('security')">远程监控</span>
+        <span class="click" @click="navigate('security')">远程监控</span>
       </i>
 
       <RemoteMonitor />
     </span>
-    <span class="g1 animate__animated animate__fadeInLeft">
+    <span class="g1 animate__animated animate__fadeInLeft grey">
       <i>
-        <span @click="navigate('deviceStatus')">监测设备统计</span>
+        <span class="click" @click="navigate('deviceStatus')">监测设备统计</span>
       </i>
       <DeviceStatus />
 
@@ -76,20 +76,31 @@ const navigate = (routeName) => {
   height: 35vh;
 }
 
+.click {
+  cursor: pointer;
+}
+
 .g1 {
   grid-area: graph1;
+  z-index: 100;
 }
 
 .g2 {
   grid-area: graph2;
+  z-index: 100;
+
 }
 
 .g3 {
   grid-area: graph3;
+  z-index: 100;
+
 }
 
 .g4 {
   grid-area: graph4;
+  z-index: 100;
+
 }
 
 .g5 {
@@ -98,11 +109,16 @@ const navigate = (routeName) => {
   /* width: 80vh; */
 }
 
-span {
+
+.grey {
   /* height: 36vh; */
   /* height: 100%;
   width: 100%; */
   /* background-color: #1019285f; */
+  background-color: #ffffff0a;
+  border-radius: 1vh;
+  margin: 1vh;
+  padding: 1vh;
   /* background: linear-gradient(#1d1d1ded, transparent); */
   /* overflow: hidden; */
 }

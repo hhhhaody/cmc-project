@@ -384,11 +384,10 @@ getDailyPlan()
 
 <style scoped>
 .collapse {
-  height: 35vh;
-  width: 90%;
-  margin-top: 1.5vh;
-  margin-left: 1vh;
+  height: 30vh;
+  margin: 1vh;
   overflow: auto;
+  border-radius: 1vh;
 }
 
 ::-webkit-scrollbar {

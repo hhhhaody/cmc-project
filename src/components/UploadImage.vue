@@ -1,12 +1,20 @@
 <template>
-    <el-upload v-model:file-list="fileList" class="upload" :http-request="customHttpRequest" list-type="picture-card"
-        :on-remove="handleRemove" :on-preview="handlePreview">
+    <el-upload v-model:file-list="fileList" class="upload" :http-request="customHttpRequest" :limit="3"
+        list-type="picture-card" :on-remove="handleRemove" :on-preview="handlePreview" :on-exceed="handleExceed"
+        :before-upload="beforeAvatarUpload">
+        <template #tip>
+            <div class="el-upload__tip">
+                图片或pdf格式，不多于3个
+            </div>
+        </template>
         <el-icon>
             <Plus />
         </el-icon>
+
     </el-upload>
     <el-dialog v-model="dialogVisible">
-        <img w-full :src="dialogImageUrl" alt="Preview Image" />
+        <img v-if="dialogImageUrl" w-full :src="dialogImageUrl" />
+        <iframe v-if="dialogPdfUrl" width="100%" height="100%" :src="dialogPdfUrl" frameborder="0" scrolling="no"></iframe>
     </el-dialog>
 </template>
 
@@ -94,6 +102,17 @@ const customHttpRequest = async (options) => {
 
 }
 
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+    if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'application/pdf') {
+        ElMessage.error('仅支持图片或pdf上传!')
+        return false
+    } else if (rawFile.size / 1024 / 1024 > 2) {
+        ElMessage.error('文件大于2MB!')
+        return false
+    }
+    return true
+}
+
 const handleRemove: UploadProps['onRemove'] = async (uploadFile, uploadFiles) => {
     const fileName = uidToFileNameMap.value[uploadFile.uid];
 
@@ -136,11 +155,24 @@ const handleRemove: UploadProps['onRemove'] = async (uploadFile, uploadFiles) =>
     }
 }
 const dialogImageUrl = ref('')
+const dialogPdfUrl = ref('')
 const dialogVisible = ref(false)
 const handlePreview: UploadProps['onPreview'] = (file) => {
     console.log(file)
-    dialogImageUrl.value = file.url!
+
+    if (file.name.endsWith('.pdf')) {
+        dialogPdfUrl.value = file.url!
+    }
+    else {
+        dialogImageUrl.value = file.url!
+    }
     dialogVisible.value = true
+}
+
+const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
+    ElMessage.warning(
+        `限制上传3个文件`
+    )
 }
 
 

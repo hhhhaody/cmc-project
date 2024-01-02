@@ -807,9 +807,9 @@ const uploadImage = (uidToFileNameMap) => {
                     <span class="status-item3">
                         报警
                     </span>
-                    <!-- <span class="status-item4">
+                    <span class="status-item4">
                         停机
-                    </span> -->
+                    </span>
                 </div>
 
                 <!-- 用于显示所有工作站的容器 -->

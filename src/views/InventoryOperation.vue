@@ -30,11 +30,16 @@ const handleSelectionChange = (selected) => {
     // console.log('selectedRows after update:', selectedRows.value);
 };
 const headers = ref([
-    { key: 'id', title: 'ID' },
+    { key: 'id', title: '序号' },
+    { key: 'batch', title: '物料批次' },
     { key: 'name', title: '物料名称' },
     { key: 'spec', title: '规格型号' },
-    { key: 'amount', title: '库存数量' },
+    { key: 'amount', title: '数量' },
+    { key: 'operation', title: '操作' },
     { key: 'supplyTime', title: '操作时间' },
+    { key: 'operator', title: '操作人员' },
+    { key: 'supplier', title: '供料单位' },
+    { key: 'supplyTime', title: '供料日期' },
 ]);
 const filterExportData = (data) => {
     // 过滤或转换数据的逻辑
@@ -59,6 +64,7 @@ const operator = ref("")
 const defaultTime1 = new Date(2000, 1, 1, 12, 0, 0)
 const show = ref(false)
 
+const searchForm = reactive({ operation, name, spec, supplier, operator })
 
 //用于重新加载搜索框和搜索建议
 const renderKey = ref(0)
@@ -103,6 +109,7 @@ const search = (title, keyword) => {
     if (title === "spec") spec.value = keyword
     if (title === "supplier") supplier.value = keyword
     if (title === "operator") operator.value = keyword
+    updateSearchSuggestion()
 };
 
 // 根据关键字搜索数据库
@@ -181,6 +188,10 @@ const editDialog = ref()
 const dialogClose = () => {
     dialog.value = false
     uploaded.value = null
+}
+
+const disabledDate = (day) => {
+    return day > new Date(updateform.operateTime);
 }
 
 //表单数据
@@ -399,11 +410,11 @@ const nextImage = () => {
                 <!-- search -->
                 <div>
                     <SearchComponent :key="renderKey" search-title="操作" :searchContent=operation ref="search1"
-                        field="operation" database="materials/operation" @search="search" @edit="edit" />
+                        field="operation" database="materials/operation" @search="search" @edit="edit" :data="searchForm" />
                     <SearchComponent :key="renderKey" search-title="物料名称" :searchContent=name ref="search2" field="name"
-                        @search="search" database="materials/operation" @edit="edit" />
+                        @search="search" database="materials/operation" @edit="edit" :data="searchForm" />
                     <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=spec ref="search3" field="spec"
-                        @search="search" database="materials/operation" @edit="edit" />
+                        @search="search" database="materials/operation" @edit="edit" :data="searchForm" />
                     <el-button style="margin-left: 10px; width: 7%" @click="show = !show">
                         <ArrowDown style="width: 1em; height: 1em; margin-right: 8px" />更多
                     </el-button>
@@ -420,9 +431,9 @@ const nextImage = () => {
                             :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
                     </div>
                     <SearchComponent :key="renderKey" search-title="供料单位" :searchContent=supplier ref="search5"
-                        field="supplier" database="materials/operation" @search="search" @edit="edit" />
+                        field="supplier" database="materials/operation" @search="search" @edit="edit" :data="searchForm" />
                     <SearchComponent :key="renderKey" search-title="操作人员" :searchContent=operator ref="search6"
-                        field="operator" database="materials/operation" @search="search" @edit="edit" />
+                        field="operator" database="materials/operation" @search="search" @edit="edit" :data="searchForm" />
                 </div>
                 <br />
                 <!-- operation -->
@@ -440,7 +451,7 @@ const nextImage = () => {
                 <!-- 弹框区 -->
 
                 <!-- 编辑弹框 -->
-                <DialogComponent ref="editDialog" :form="updateform" dialog-title="操作记录编辑" :refreshFunc="getDataFromAPI"
+                <DialogComponent ref="editDialog" :form="updateform" dialog-title="编辑操作记录" :refreshFunc="getDataFromAPI"
                     :confirm-func="updateMaterialOperationAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
                     <el-form-item label="操作" prop="operation">
                         <el-input v-model="updateform.operation" autocomplete="off" disabled />
@@ -499,8 +510,11 @@ const nextImage = () => {
                         <el-col :span="12">
                             <el-form-item label="供料日期" prop="supplyTime" :rules="[
                                 { required: true, message: '请输入供料日期', trigger: 'blur' }]">
-                                <el-date-picker v-model="updateform.supplyTime" type="datetime" placeholder="选择供料日期"
-                                    value-format="YYYY-MM-DDTHH:mm:ss" />
+                                <el-date-picker v-if="updateform.operation === '入库'" v-model="updateform.supplyTime"
+                                    type="datetime" placeholder="选择供料日期" value-format="YYYY-MM-DDTHH:mm:ss"
+                                    :disabled-date="disabledDate" />
+                                <el-date-picker v-else v-model="updateform.supplyTime" type="datetime" placeholder="选择供料日期"
+                                    value-format="YYYY-MM-DDTHH:mm:ss" disabled />
                             </el-form-item>
                         </el-col>
                     </el-row>

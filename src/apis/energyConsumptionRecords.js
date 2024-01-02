@@ -14,6 +14,19 @@ export const getEnergyConsumptionRecordsAPI = (params) => {
     });
 }
 
+// 获取每个生产日期的第一条能耗统计记录
+export const getFirstEnergyConsumptionRecordsAPI = (params) => {
+    return httpInstance({
+        url: '/energyConsumption/firstRecords',
+        params: {
+            page: params.page,
+            pageSize: params.pageSize,
+            sectionName: params.sectionName,
+            startDate: params.startDate,
+            endDate: params.endDate
+        }
+    });
+}
 
 // 添加能耗统计记录
 export const addEnergyConsumptionRecordAPI = (data) => {

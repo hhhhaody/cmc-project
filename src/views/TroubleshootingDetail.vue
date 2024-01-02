@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, reactive, onUnmounted, watch, computed } from "vue";
-import { RouterLink } from "vue-router";
+import { useRoute } from "vue-router";
 import { format } from "date-fns"
 import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
 import SearchComponent from "../components/SearchComponent.vue";
@@ -36,7 +36,7 @@ const handleSelectionChange = (selected) => {
     // console.log('selectedRows after update:', selectedRows.value);
 };
 const headers = ref([
-    { key: 'id', title: '序号' },
+    { key: 'id', title: 'ID' },
     { key: 'serialNo', title: '设备编号' },
     { key: 'name', title: '设备名称' },
     { key: 'spec', title: '规格型号' },
@@ -251,8 +251,7 @@ const stockform
         errorTime: '',
         completeTime: '',
         repairman: '',
-        info: '',
-        updateTime: ''
+        info: ''
     })
 
 watch(
@@ -280,7 +279,10 @@ const getTroubleshootingRecordByID = async (id) => {
         stockform.section = res.data.section
         stockform.errorTime = res.data.errorTime
         stockform.serialNo = res.data.serialNo
-        stockform.updateTime = res.data.updateTime
+        stockform.repairman = res.data.repairman
+        stockform.completeTime = res.data.completeTime
+        stockform.status = res.data.status
+        stockform.info = res.data.info
         updateSearchSuggestion()
         console.log(stockform);
     }
@@ -426,6 +428,10 @@ const uploadImage = (uidToFileNameMap) => {
     confirmImage.value = false
 }
 //#endregion
+
+const route = useRoute()
+const id = route.query.id
+getTroubleshootingRecordByID(id)
 </script>
 
 <template>
@@ -435,11 +441,20 @@ const uploadImage = (uidToFileNameMap) => {
         <!-- body -->
         <el-container class="subNavPage">
             <br />
-            <h1>故障维修记录</h1>
+            <div style="display: flex;justify-content: center;">
+                <el-breadcrumb separator="/">
+                    <el-breadcrumb-item :to="{ path: '/troubleshooting' }">
+                        <h1>故障维修记录</h1>
+                    </el-breadcrumb-item>
+                    <el-breadcrumb-item>
+                        <h1>详情</h1>
+                    </el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
             <!-- main -->
             <el-main style="overflow: hidden">
                 <!-- search -->
-                <div>
+                <!-- <div>
                     <SearchComponent :key="renderKey" search-title="工段名称" :searchContent=section ref="search1"
                         field="section" database="troubleshooting" @search="search" @edit="edit" :wNo="10" />
                     <SearchComponent :key="renderKey" search-title="设备名称" :searchContent=name ref="search2" field="name"
@@ -457,8 +472,8 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-button style="width: 7%" @click="reset">
                         <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />清空
                     </el-button>
-                </div>
-                <div style="margin-top: 1vh;position:absolute;left:17%" v-if="show">
+                </div> -->
+                <!-- <div style="margin-top: 1vh;position:absolute;left:17%" v-if="show">
                     <div style="display: inline-block; position: relative;top: 2px; padding-right: 1vh;">完成维修日期：
                         <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期"
                             :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
@@ -466,18 +481,18 @@ const uploadImage = (uidToFileNameMap) => {
 
                     <SearchComponent :key="renderKey" search-title="维修人员" :searchContent=repairman ref="search6"
                         field="repairman" database="troubleshooting" @search="search" @edit="edit" :wNo="17" />
-                </div>
+                </div> -->
                 <br />
                 <!-- operation -->
                 <div style="display: flex; justify-content: space-between">
-                    <span>
+                    <!-- <span>
                         <el-button type="primary" @click="addDialog.dialogVisible = true, dialog = true">
                             <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增
                         </el-button>
 
                         <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value"
                             fileName="故障维修记录.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
-                    </span>
+                    </span> -->
                     <!-- <span>
                         <el-button
                             @click="stockInDialog.dialogVisible = true, stockform.operation = '入库', dialog = true, getDefaultDate()">入库</el-button>
@@ -487,7 +502,7 @@ const uploadImage = (uidToFileNameMap) => {
                     </span> -->
                 </div>
                 <!-- record -->
-                <div style="
+                <!-- <div style="
             height: 4vh;
             line-height: 4vh;
             text-decoration: underline;
@@ -497,8 +512,8 @@ const uploadImage = (uidToFileNameMap) => {
             width: fit-content;
             cursor: pointer;
           ">
-                    <!-- <RouterLink to="/product/operation">操作记录</RouterLink> -->
-                </div>
+                    <RouterLink to="/product/operation">操作记录</RouterLink>
+                </div> -->
 
                 <!-- 弹框区 -->
                 <!-- 新增弹框 -->
@@ -626,10 +641,57 @@ const uploadImage = (uidToFileNameMap) => {
                     </el-form-item>
                 </DialogComponent>
 
+                <!-- 故障维修记录详情 -->
+                <div style="display: flex; justify-content: center; width: 100%;margin-top: 1vh;flex-direction: column;">
 
+                    <el-card style="width: 100%;margin-bottom: 1vh;">
+                        <template #header>
+                            <div class="card-header">
+                                <span>基本信息</span>
+                            </div>
+                        </template>
+                        <div style="height: 4vh;line-height: 4vh">
+                            设备编号：{{ stockform.serialNo }}</div>
+                        <div style="height: 4vh;line-height: 4vh;">
+                            设备名称：{{ stockform.name }}</div>
+                        <div style="height: 4vh;line-height: 4vh;">
+                            规格型号：{{ stockform.spec }}</div>
+                        <div style="height: 4vh;line-height: 4vh;">
+                            工段名称：{{ stockform.section }}</div>
+                        <div style="height: 4vh;line-height: 4vh;">
+                            工位名称：{{ stockform.station }}</div>
+                        <div style="height: 4vh;line-height: 4vh;">
+                            故障时间：{{ stockform.errorTime.substring(0, 10) }} {{ stockform.errorTime.substring(11,) }}</div>
+                        <div style="height: 4vh;line-height: 4vh;">
+                            故障内容：{{ stockform.error }}</div>
+                        <!-- <div
+                            style="height: 4vh;line-height: 4vh;text-decoration: underline; color: #729fd0; width: fit-content;">
+                            {{ stockform.status }}</div> -->
+                    </el-card>
+
+                    <el-card style="width: 100%;">
+                        <template #header>
+                            <div class="card-header">
+                                <span>维修信息</span>
+                            </div>
+                        </template>
+                        <div style="height: 4vh;line-height: 4vh">
+                            维修结果：{{ stockform.status }}</div>
+                        <div style="height: 4vh;line-height: 4vh;">
+                            维修人员：{{ stockform.repairman }}</div>
+                        <div style="height: 4vh;line-height: 4vh;">
+                            完成维修日期：{{ stockform.completeTime ? stockform.completeTime.substring(0, 10) : '' }} {{
+                                stockform.completeTime ? stockform.completeTime.substring(11,) : '' }}</div>
+                        <div style="height: 4vh;line-height: 4vh;">
+                            维修内容：{{ stockform.info }}</div>
+                    </el-card>
+
+
+
+                </div>
 
                 <!-- table -->
-                <el-table :data="tableData.value" @selection-change="handleSelectionChange"
+                <!-- <el-table :data="tableData.value" @selection-change="handleSelectionChange"
                     style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh" show-overflow-tooltip>
                     <el-table-column type="selection" align="center" min-width="20vh" />
                     <el-table-column label="序号" type="index" align="center" min-width="40vh" />
@@ -644,37 +706,34 @@ const uploadImage = (uidToFileNameMap) => {
                             {{ scope.row.errorTime.substring(0, 10) }} {{ scope.row.errorTime.substring(11,) }}
                         </template>
                     </el-table-column>
-                    <!-- <el-table-column prop="completeTime" label="完成维修日期" align="center" min-width="100vh">
+                    <el-table-column prop="completeTime" label="完成维修日期" align="center" min-width="100vh">
                         <template #default="scope">
                             {{ scope.row.completeTime ? scope.row.completeTime.substring(0, 10) : '' }}
                         </template>
                     </el-table-column>
                     <el-table-column prop="repairman" label="维修人员" align="center" />
-                    <el-table-column prop="info" label="维修内容" align="center" /> -->
+                    <el-table-column prop="info" label="维修内容" align="center" /> 
                     <el-table-column prop="status" label="维修状态" align="center" />
 
                     <el-table-column prop="operation" label="操作" align="center">
                         <template #default="scope">
-                            <el-button class="inline_button"
+                            <el-button class="inline_button" :disabled="scope.row.completeTime !== null"
                                 @click="getTroubleshootingRecordByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, stockform.id = scope.row.id">
                                 编辑
                             </el-button>
-                            <!-- <el-button class="inline_button" @click="deleteConfirm(scope.row.id)">
-                                删除
-                            </el-button> -->
 
                             <el-button class="inline_button">
-                                <RouterLink :to="{ name: 'troubleshootingDetail', query: { id: scope.row.id } }">详情
+                                <RouterLink :to="{ name: 'facilityDetail', query: { id: scope.row.id } }">详情
                                 </RouterLink>
                             </el-button>
                         </template>
                     </el-table-column>
 
-                </el-table>
+                </el-table> -->
             </el-main>
             <!-- pagination -->
             <el-footer style="display: flex; justify-content: center">
-                <PaginationComponent :total="total" @size="size" @cur="cur" />
+                <!-- <PaginationComponent :total="total" @size="size" @cur="cur" /> -->
             </el-footer>
         </el-container>
     </dv-border-box1>
@@ -719,6 +778,29 @@ const uploadImage = (uidToFileNameMap) => {
 
 :deep .el-overlay {
     background-color: rgba(37, 54, 83, 0.498);
+}
+
+:deep .el-breadcrumb__inner {
+    color: #fff !important;
+}
+
+:deep .el-breadcrumb__inner.is-link {
+    color: #fff !important;
+    text-shadow: 1px 1px 15px #a3ccf9;
+}
+
+:deep .el-date-editor {
+    height: 33px !important;
+}
+
+:deep .el-descriptions__body {
+    border-radius: 1vh !important;
+    padding: 2vh
+}
+
+:deep .el-card.is-always-shadow {
+    border-radius: 1vh !important;
+    margin-right: 1vh;
 }
 </style>
 

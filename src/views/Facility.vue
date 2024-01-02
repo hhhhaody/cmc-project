@@ -39,12 +39,12 @@ const handleSelectionChange = (selected) => {
   // console.log('selectedRows after update:', selectedRows.value);
 };
 const headers = ref([
-  { key: 'id', title: 'ID' },
+  { key: 'id', title: '序号' },
   { key: 'serialNo', title: '设备编号' },
   { key: 'name', title: '设备名称' },
   { key: 'spec', title: '规格型号' },
-  { key: 'section', title: '工段名称' },
   { key: 'station', title: '工位名称' },
+  { key: 'section', title: '工段名称' },
   { key: 'purchaseTime', title: '购买日期' },
   { key: 'supplier', title: '供应商' },
   { key: 'status', title: '设备状态' },
@@ -123,6 +123,28 @@ const search = (title, keyword) => {
 const update = () => {
   refresh.value = true
   getDataFromAPI()
+};
+
+//手机号规范限制，采用正则表达式
+const validatePhoneNumber = (rule, value, callback) => {
+  if (!value) {
+    return callback(new Error('手机号码不能为空'));
+  }
+  if (!/^[0-9]{10,11}$/.test(value)) {
+    callback(new Error('请输入有效的手机号码'));
+  } else {
+    callback();
+  }
+};
+
+// 判断购买日期是否应该被禁用
+const disabledDate = (time) => {
+  // 获取今天的日期，不包括时间
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // 禁用所有在今天之后的日期
+  return time.getTime() > today.getTime();
 };
 
 // 清空搜索组件的关键字搜索，并初始化表格展示数据
@@ -630,7 +652,7 @@ const uploadImage = (uidToFileNameMap) => {
                   message: '长度必须在1-30之间', trigger: 'blur'
                 }]">
                 <el-date-picker v-model="addform.purchaseTime" type="datetime" placeholder="选择购买日期"
-                  value-format="YYYY-MM-DDTHH:mm:ss" />
+                  value-format="YYYY-MM-DDTHH:mm:ss" :disabled-date="disabledDate"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -648,7 +670,7 @@ const uploadImage = (uidToFileNameMap) => {
             <el-col :span="12">
               <el-form-item label="联系方式" prop="contactNo" :rules="[
                 { required: true, message: '请输入联系方式', trigger: 'blur' },
-                { type: 'number', message: '必须是数字', trigger: 'blur' }
+                { validator: validatePhoneNumber, trigger: 'blur' }
               ]">
                 <el-input v-model.number="addform.contactNo" autocomplete="off" placeholder="请输入联系方式" />
               </el-form-item>
@@ -696,6 +718,7 @@ const uploadImage = (uidToFileNameMap) => {
             </el-col>
             <el-col :span="3">
               <el-select v-model="addform.firstLevelMaintenanceUnit" placeholder="月">
+                <el-option label="周" value="周"></el-option>
                 <el-option label="月" value="月"></el-option>
                 <el-option label="年" value="年"></el-option>
               </el-select>
@@ -717,6 +740,7 @@ const uploadImage = (uidToFileNameMap) => {
             </el-col>
             <el-col :span="3">
               <el-select v-model="addform.secondLevelMaintenanceUnit" placeholder="月">
+                <el-option label="周" value="周"></el-option>
                 <el-option label="月" value="月"></el-option>
                 <el-option label="年" value="年"></el-option>
               </el-select>
@@ -745,7 +769,7 @@ const uploadImage = (uidToFileNameMap) => {
           <div style="margin:2vh;display:flex;flex-wrap:wrap;justify-content:space-evenly">
             <div v-for="(item, index) in folderList" style="text-decoration: underline;
             color: #729fd0;
-            width: 20vh;
+            width: 30vh;
             cursor: pointer" @click="updateFileList(item.folderId)">{{ item.folderName }}</div>
 
 
@@ -900,6 +924,7 @@ const uploadImage = (uidToFileNameMap) => {
             </el-col>
             <el-col :span="3">
               <el-select v-model="addform.firstLevelMaintenanceUnit" placeholder="月">
+                <el-option label="周" value="周"></el-option>
                 <el-option label="月" value="月"></el-option>
                 <el-option label="年" value="年"></el-option>
               </el-select>
@@ -921,6 +946,7 @@ const uploadImage = (uidToFileNameMap) => {
             </el-col>
             <el-col :span="3">
               <el-select v-model="addform.secondLevelMaintenanceUnit" placeholder="月">
+                <el-option label="周" value="周"></el-option>
                 <el-option label="月" value="月"></el-option>
                 <el-option label="年" value="年"></el-option>
               </el-select>

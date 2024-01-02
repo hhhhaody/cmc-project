@@ -1,7 +1,42 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import HelloWorld from "./components/HelloWorld.vue";
-import { Decoration5 } from "@kjgl77/datav-vue3";
+import { Decoration5 } from "@kjgl77/datav-vue3";;
+import Swiper from 'swiper/bundle';
+
+// import styles bundle
+import 'swiper/css/bundle';
+
+// init Swiper:
+const swiper = new Swiper('.swiper', {
+  // Optional parameters
+  direction: 'horizontal',
+  autoplay: {
+    delay: 5000,
+  },
+
+  // If we need pagination
+  // pagination: {
+  //   el: '.swiper-pagination',
+  // },
+
+  // Navigation arrows
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+
+  // And if we need scrollbar
+  // scrollbar: {
+  //   el: '.swiper-scrollbar',
+  // },
+});
+
+const videos = [
+  { source: './assets/videos/总装工作站_V4_231221.mp4" type="video/mp4' },
+  { source: './assets/videos/方通阻焊_V1_231222.mp4" type="video/mp4' },
+  // Add more video sources as needed
+];
 
 
 // test API function
@@ -36,7 +71,7 @@ const show = () => {
 
 <template>
   <main class="bg">
-    <header class="animate__animated animate__fadeInDown">
+    <header class="animate__animated animate__fadeInDown" style="z-index: 1;">
       <h1>
         <span>
           <!-- <img alt="Our logo" src="@/assets/logo.png" /> -->
@@ -49,7 +84,7 @@ const show = () => {
       <RouterView />
     </div>
 
-    <nav class="animate__animated animate__fadeInUp">
+    <nav class="animate__animated animate__fadeInUp" style="z-index: 1;">
       <el-dropdown class="navItem nav1">
         <span class="el-dropdown-link"> 库存管理 </span>
         <template #dropdown>
@@ -151,23 +186,123 @@ const show = () => {
   </header> -->
 
     <!-- <RouterView /> -->
+
+
+
+
+
+
   </main>
 
+
   <div class="videoContainer">
-    <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="" :style="{ display: animation }">
-      <source src="./assets/videos/深色3.mp4" type="video/mp4" />
-    </video>
+    <el-carousel style="z-index: 1;" class="fullscreen" :interval="1440000" :style="{ display: animation }">
+      <el-carousel-item style="height: 225%;">
+        <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
+          <source src="./assets/videos/方通阻焊_V2_231225.mp4" type="video/mp4" />
+
+        </video>
+      </el-carousel-item>
+      <el-carousel-item style="height: 225%;">
+        <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
+          <source src="./assets/videos/V3_231221(1).mp4" type="video/mp4" />
+
+        </video>
+      </el-carousel-item>
+      <el-carousel-item style="height: 225%;">gi
+        <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
+          <source src="./assets/videos/地面钢网_V2_231221.mp4" type="video/mp4" />
+
+        </video>
+      </el-carousel-item>
+      <el-carousel-item style="height: 225%;">
+        <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
+          <source src="./assets/videos/总装工作站_V4_231221.mp4" type="video/mp4" />
+
+        </video>
+      </el-carousel-item>
+
+    </el-carousel>
   </div>
+
+
+
+  <!-- <div class="videoContainer">
+    <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="" :style="{ display: animation }"> -->
+  <!-- <source src="./assets/videos/深色3.mp4" type="video/mp4" /> -->
+  <!-- <source src="./assets/videos/dmgw.mp4" type="video/mp4" /> -->
+  <!-- <source src="./assets/videos/V3_231221(1).mp4" type="video/mp4" /> -->
+  <!-- <source src="./assets/videos/地面钢网_V2_231221.mp4" type="video/mp4" /> -->
+  <!-- <source src="./assets/videos/方通阻焊_V1_231222.mp4" type="video/mp4" /> -->
+  <!-- <source src="./assets/videos/总装工作站_V4_231221.mp4" type="video/mp4" /> -->
+
+  <!-- </video> -->
+  <!-- </div> -->
 </template>
 
 <style scoped>
+.demonstration {
+  color: var(--el-text-color-secondary);
+}
+
+.el-carousel__item {
+  /* color: #475669;
+  opacity: 0.75;
+  line-height: 150px;
+  margin: 0;
+  text-align: center; */
+  /* background-color: black !important; */
+
+
+  background:
+    /* radial-gradient(
+      100vh 100vh at 41%,
+      transparent 30%,
+      #182330a5 60%
+    ), */
+    url("./assets/images/map-2.png") no-repeat center fixed;
+  background-size: cover;
+  height: 150%;
+}
+
+:deep.el-carousel__item:nth-child(2n) {
+  background-color: transparent !important;
+  ;
+}
+
+:deep.el-carousel__item:nth-child(2n + 1) {
+  background-color: transparent !important;
+}
+
+
 .videoContainer {
   position: relative;
   top: -100%;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  z-index: -100;
+}
+
+.el-carousel-item:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  /* background: #435e7cc4; */
+  /* background: #435e7c; */
+
+  background:
+    /* radial-gradient(
+      100vh 100vh at 41%,
+      transparent 30%,
+      #182330a5 60%
+    ), */
+    url("./assets/images/map-2.png") no-repeat center fixed;
+  background-size: cover;
 }
 
 .videoContainer:before {
@@ -192,16 +327,28 @@ const show = () => {
   background-size: cover;
 }
 
+
 .fullscreenVideo {
-  /* border-radius: 60vh; */
   position: relative;
   mix-blend-mode: screen;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 50%;
-  height: 50%;
+  width: 100%;
+  height: 100%;
 }
+
+.fullscreen {
+  position: relative;
+  /* mix-blend-mode: screen; */
+  top: 15vh;
+  /* left: 50%;
+  transform: translate(-50%, -50%); */
+  /* width: 100%; */
+  height: 75vh;
+}
+
+
 
 /* .fullscreenVideo {
   border-radius: 60vh; 
@@ -463,4 +610,24 @@ nav a:first-of-type {
     animation-fill-mode: forwards;
   } 
 }*/
+
+.demonstration {
+  color: var(--el-text-color-secondary);
+}
+
+.el-carousel__item h3 {
+  color: #475669;
+  opacity: 0.75;
+  line-height: 150px;
+  margin: 0;
+  text-align: center;
+}
+
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+
+.el-carousel__item:nth-child(2n + 1) {
+  background-color: #d3dce6;
+}
 </style>

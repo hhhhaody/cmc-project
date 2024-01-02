@@ -224,7 +224,7 @@ watch([dialog, refresh], (val1, val2) => {
                 <!-- operation -->
                 <div style="display: flex; justify-content: space-between">
                     <span>
-                        <el-button type="primary" @click="addDialog.dialogVisible = true, dialog = true">
+                        <el-button type="primary" @click="addDialog.dialogVisible = true, dialog = true" disabled>
                             <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增
                         </el-button>
 
@@ -308,12 +308,12 @@ watch([dialog, refresh], (val1, val2) => {
                                 min: 1, max: 30,
                                 message: '长度必须在1-30之间', trigger: 'blur'
                             }]">
-                        <el-input v-model="manageform.stations[index]" placeholder="请输入工位名称"></el-input>
-                        <el-button @click="deleteFormItem(manageform, index)">
+                        <el-input v-model="manageform.stations[index]" placeholder="请输入工位名称" disabled></el-input>
+                        <el-button @click="deleteFormItem(manageform, index)" disabled>
                             <Minus style="width: 1em; height: 1em;" />
                         </el-button>
                     </el-form-item>
-                    <el-button @click="addFormItem(manageform)">
+                    <el-button @click="addFormItem(manageform)" disabled>
                         <Plus style="width: 1em; height: 1em;" />
                     </el-button>
                 </DialogComponent>
@@ -330,11 +330,11 @@ watch([dialog, refresh], (val1, val2) => {
                                 @click="getStationsBySection(scope.row.section), manageDialog.dialogVisible = true, dialog = true, manageform.section = scope.row.section">
                                 工位管理
                             </el-button>
-                            <el-button class="inline_button"
+                            <el-button class="inline_button" disabled
                                 @click="editDialog.dialogVisible = true, dialog = true, editform.section = scope.row.section, editform.newName = scope.row.section">
                                 编辑
                             </el-button>
-                            <el-button class="inline_button" @click="deleteConfirm(scope.row.section)">
+                            <el-button class="inline_button" @click="deleteConfirm(scope.row.section)" disabled>
                                 删除
                             </el-button>
                         </template>

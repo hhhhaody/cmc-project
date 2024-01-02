@@ -227,9 +227,12 @@ const saveImage = () => {
 
 const getDefaultDate = () => {
   const currentDate = new Date()
-  stockform.operateTime = format(currentDate, 'yyyy-MM-dd') + 'T' + format(currentDate, 'HH:mm:ss')
+  stockform.plannedTime = format(currentDate, 'yyyy-MM-dd') + 'T' + format(currentDate, 'HH:mm:ss')
 }
 
+const disabledDate = (day) => {
+  return day < new Date();
+}
 
 
 const remains = computed(() => {
@@ -263,6 +266,7 @@ const stockform
     completeTime: '',
     maintenanceman: '',
     info: '',
+    updateTime: ''
   })
 
 const dailyList = ref([
@@ -319,7 +323,7 @@ function isSameDay(date1, date2) {
 watch(
   stockform,
   (newVal, oldVal) => {
-    formattedTime.value = stockform.plannedTime.substring(0, 10)
+    // formattedTime.value = stockform.plannedTime.substring(0, 10)
     // console.log(stockform)
   },
   { deep: true } // Enable deep monitoring
@@ -340,6 +344,11 @@ const getMaintenancePlanByID = async (id) => {
     stockform.section = res.data.section
     stockform.plannedTime = res.data.plannedTime
     stockform.serialNo = res.data.serialNo
+    stockform.status = res.data.status
+    stockform.info = res.data.info
+    stockform.completeTime = res.data.completeTime
+    stockform.maintenanceman = res.data.maintenanceman
+    stockform.updateTime = res.data.updateTime
     updateSearchSuggestion()
     console.log(stockform);
   }
@@ -509,6 +518,7 @@ const dealMyDate = (v) => {
   return res
 }
 
+getDefaultDate()
 
 
 </script>
@@ -527,7 +537,10 @@ const dealMyDate = (v) => {
       </span>
       <span>
 
-        <el-button @click="dailyDialog = true, dialog = true, getDefaultDate(), getDailyPlan()">日常保养</el-button>
+        <!-- <el-button @click="dailyDialog = true, dialog = true, getDefaultDate(), getDailyPlan()">日常保养</el-button> -->
+        <el-button>
+          <RouterLink to="/maintenancePlan/daily">日常保养</RouterLink>
+        </el-button>
 
         <!-- <el-button
               @click="stockOutDialog.dialogVisible = true, stockform.operation = '出库', dialog = true, getDefaultDate()">出库</el-button>
@@ -566,7 +579,7 @@ const dealMyDate = (v) => {
 
         <template #date-cell="{ data }">
           <div class="date-cell-wrapper"
-            @click="selectedDate = new Date(data.day), getTodayPlan(data.day), getDataFromAPI(new Date(data.day))">
+            @click="selectedDate = new Date(data.day), getTodayPlan(data.day), getDataFromAPI(new Date(data.day)), stockform.plannedTime = data.day + 'T17:30:00'">
             <p class="date-number" :class="[
               data.isSelected ? 'is-selected' : '',
               new Date(data.day).getMonth() === currentMonth ? 'current-month' : 'is-other-month'
@@ -578,9 +591,9 @@ const dealMyDate = (v) => {
               <i v-for="(item, index) in dealMyDate(data.day).value" :key="index"
                 style="color:black;width:100%;font-size: 12px;">
                 <div v-if="index < 2">
-                  <div v-if="item.value.status === '逾期完成'" style="color: #e26237ab;">{{ item.value.name }}-{{
+                  <div v-if="item.value.status === '逾期完成'" style="color: #ff9a02a0;">{{ item.value.name }}-{{
                     item.value.type }}</div>
-                  <div v-if="item.value.status === '待完成'" style="color: #ff9a02a0;">{{ item.value.name }}-{{
+                  <div v-if="item.value.status === '待完成'" style="color: #e26237ab;">{{ item.value.name }}-{{
                     item.value.type
                   }}</div>
                   <div v-if="item.value.status === '已完成'" style="color: #339a528b;">{{ item.value.name }}-{{
@@ -647,7 +660,7 @@ const dealMyDate = (v) => {
             <el-form-item label="计划完成时间" prop="plannedTime" :rules="[
               { required: true, message: '请输入计划完成维护时间', trigger: 'blur' }]">
               <el-date-picker v-model="stockform.plannedTime" type="datetime" placeholder="选择计划完成维护时间"
-                value-format="YYYY-MM-DDTHH:mm:ss" />
+                value-format="YYYY-MM-DDTHH:mm:ss" :disabled-date="disabledDate" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -655,7 +668,7 @@ const dealMyDate = (v) => {
 
 
       <!-- 编辑弹框 -->
-      <DialogComponent ref="editDialog" :form="stockform" dialog-title="记录故障维修记录" :refreshFunc="getDataFromAPI"
+      <DialogComponent ref="editDialog" :form="stockform" dialog-title="编辑维护计划记录" :refreshFunc="getDataFromAPI"
         :confirm-func="updateMaintenancePlanAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
         <el-row>
           <el-col :span="12">
@@ -854,9 +867,9 @@ const dealMyDate = (v) => {
             @click="maintenance(item.id), getDataFromAPI()">
             检修维护
           </el-button>
-          <el-button v-else class="inline_button" :disabled="item.completeTime !== null"
+          <el-button v-else class="inline_button"
             @click="getMaintenancePlanByID(item.id), editDialog.dialogVisible = true, dialog = true, stockform.id = item.id">
-            记录
+            编辑
           </el-button>
         </el-card>
       </div>

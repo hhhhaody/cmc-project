@@ -491,7 +491,7 @@ getFacilityByID(id)
                 <!-- table -->
                 <el-table :data="tableData.value" @selection-change="handleSelectionChange"
                     style="width: 100%; border-radius: 1vh;" table-layout="fixed" show-overflow-tooltip height="36vh">
-                    <el-table-column type="selection" align="center" min-width="20vh" />
+                    <!-- <el-table-column type="selection" align="center" min-width="20vh" /> -->
                     <el-table-column label="序号" type="index" align="center" min-width="40vh" />
                     <el-table-column prop="updateTime" label="更新时间" align="center" min-width="120vh">
                         <template #default="scope">

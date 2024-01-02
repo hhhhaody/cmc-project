@@ -60,7 +60,7 @@ setTimeout(start, 1000);
 
 <style scoped>
 .list {
-  height: 35vh;
+  height: 30vh;
   margin-top: 1vh;
   overflow: auto;
 }
@@ -124,4 +124,5 @@ ul :nth-child(7) {
 
 .el-carousel__item:nth-child(2n + 1) {
   background-color: #d3dce6c5;
-} */</style>
+} */
+</style>

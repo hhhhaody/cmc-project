@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { getSearchSuggestionAPI } from "../apis/util";
+import { getSearchSuggestionAPI, getSearchAdvanceSuggestionAPI } from "../apis/util";
 
 const props = defineProps({
   searchTitle: { type: String, default: "Material Name" },
@@ -8,7 +8,8 @@ const props = defineProps({
   hideTitle: { type: Boolean, default: false },
   wNo: { type: Number },
   database: { type: String, default: "materials" },
-  field: { type: String, default: "id" }
+  field: { type: String, default: "id" },
+  data: { type: Object, default: null }
 });
 
 const emit = defineEmits(["search", "edit"]);
@@ -58,8 +59,16 @@ const blur = () => {
 }
 
 const loadSuggestion = async () => {
-  const res = await getSearchSuggestionAPI(props.database, props.field)
-  searchResult.value = res.data
+  console.log(props.data === null);
+  if (props.data === null) {
+    const res = await getSearchSuggestionAPI(props.database, props.field)
+    searchResult.value = res.data
+  }
+  else {
+    const res = await getSearchAdvanceSuggestionAPI(props.database, props.field, props.data)
+    searchResult.value = res.data
+  }
+
 };
 
 
@@ -74,8 +83,8 @@ defineExpose({ searchContent });
 
 <template>
   <template v-if="props.hideTitle === false">{{ props.searchTitle }}:
-    <el-autocomplete style="margin: 0 1vh" :style="{ width: props.wNo + '%' }" v-model="searchContent"
-      :fetch-suggestions="querySearchAsync" clearable :placeholder="placeholder" @select="handleSelect" @change="check"
+    <el-autocomplete style="margin: 0 1vh;" :style="{ width: props.wNo + '%' }" v-model="searchContent"
+      :fetch-suggestions="querySearchAsync" :placeholder="placeholder" @select="handleSelect" @change="check"
       @focus="focus" @blur="blur" />
   </template>
   <template v-else>

@@ -87,7 +87,18 @@ const router = createRouter({
     }, {
       path: '/maintenancePlan/maintenanceList',
       component: () => import('../views/MaintenanceList.vue')
-    }, {
+    },
+    {
+      path: '/maintenancePlan/detail',
+      name: 'maintenancePlanDetail',
+      component: () => import('../views/MaintenancePlanDetail.vue')
+    },
+    {
+      path: '/maintenancePlan/daily',
+      name: 'maintenancePlanDaily',
+      component: () => import('../views/DailyMaintenance.vue')
+    },
+    {
       path: '/deviceFiles',
       name: 'deviceFiles',
       component: () => import('../views/DeviceFiles.vue')
@@ -125,6 +136,11 @@ const router = createRouter({
       path: '/troubleshooting',
       name: 'troubleshooting',
       component: () => import('../views/Troubleshooting.vue')
+    },
+    {
+      path: '/troubleshooting/detail',
+      name: 'troubleshootingDetail',
+      component: () => import('../views/TroubleshootingDetail.vue')
     },
     {
       path: '/login',
