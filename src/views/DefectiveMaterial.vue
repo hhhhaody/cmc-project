@@ -337,8 +337,8 @@ const nextImage = () => {
 
 <template>
   <!-- borderbox -->
-  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-    background-color="#3545659e">
+  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+    :color="['#4f698794', '#4f698794']" background-color="#3545659e">
     <!-- body -->
     <el-container class="subNavPage">
       <br />
@@ -364,8 +364,8 @@ const nextImage = () => {
         <!-- operation -->
         <div style="display: flex; justify-content: space-between">
           <span>
-            <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value" fileName="不良物料库存信息.xlsx"
-              :filterFunction="filterExportData" buttonLabel="导出" />
+            <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value"
+              fileName="不良物料库存信息.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
           </span>
           <span>
             <el-button type="primary"
@@ -393,24 +393,24 @@ const nextImage = () => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="物料名称" prop="name">
-                <DialogSearch :key="renderKey" :wNo="100" search-title="物料名称" :searchContent=operateform.name field="name"
-                  @search="dialogSearchSuggestion" :data="operateform" database="defectives" />
+                <DialogSearch :key="renderKey" :wNo="100" search-title="物料名称" :searchContent=operateform.name
+                  field="name" @search="dialogSearchSuggestion" :data="operateform" database="defectives" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="规格型号" prop="spec">
-                <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号" :searchContent=operateform.spec field="spec"
-                  @search="dialogSearchSuggestion" :data="operateform" database="defectives" />
+                <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号" :searchContent=operateform.spec
+                  field="spec" @search="dialogSearchSuggestion" :data="operateform" database="defectives" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-form-item label="物料批次" prop="batch" :rules="[
-            { required: true, message: '请选择物料批次', trigger: 'blur' }]">
+      { required: true, message: '请选择物料批次', trigger: 'blur' }]">
             <DialogSearch :key="renderKey" :wNo="100" search-title="物料批次" :searchContent=operateform.batch field="batch"
               @search="dialogSearchSuggestion" :data="operateform" database="defectives" />
           </el-form-item>
           <el-form-item label="处理结果" prop="operation" :rules="[
-            { required: true, message: '请选择处理结果', trigger: 'blur' }]">
+      { required: true, message: '请选择处理结果', trigger: 'blur' }]">
             <el-radio-group v-model="operateform.operation">
               <el-radio-button label="返用" />
               <el-radio-button label="报废" />
@@ -419,20 +419,21 @@ const nextImage = () => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="处理人员" prop="operator" :rules="[
-                { required: true, message: '请输入操作人员', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入操作人员', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="处理人员"
-                  :searchContent=operateform.operator field="operator" @search="search" database="defectives/operation" />
+                  :searchContent=operateform.operator field="operator" @search="search"
+                  database="defectives/operation" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="处理数量" prop="amount" :rules="[
-                { required: true, message: '请输入数量', trigger: 'blur' },
-                { type: 'number', message: '必须是数字', trigger: 'blur' }
-              ]">
+      { required: true, message: '请输入数量', trigger: 'blur' },
+      { type: 'number', message: '必须是数字', trigger: 'blur' }
+    ]">
                 <el-input v-model.number="operateform.amount" autocomplete="off" :placeholder="remains" />
               </el-form-item>
             </el-col>
@@ -440,30 +441,30 @@ const nextImage = () => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="处理时间" prop="operateTime" :rules="[
-                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+      { required: true, message: '请输入供料日期', trigger: 'blur' }]">
                 <el-date-picker v-model="operateform.operateTime" type="datetime" placeholder="选择处理日期"
                   value-format="YYYY-MM-DDTHH:mm:ss" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="维修人员" prop="handler" :rules="[
-                { required: true, message: '请输入操作人员', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入操作人员', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="维修人员"
                   :searchContent=operateform.handler field="handler" @search="search" database="defectives/operation" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-form-item label="处理意见" prop="comment" :rules="[
-            { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
+      { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
             <el-input v-model="operateform.comment" autocomplete="off" />
           </el-form-item>
-          <el-form-item label="出库凭证" prop="receipt" :rules="[
-            { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
-            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage />
+          <el-form-item label="凭证" prop="receipt" :rules="[
+      { required: true, message: '请上传凭证', trigger: 'blur' }]">
+            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage :limit="3" />
           </el-form-item>
         </DialogComponent>
 
@@ -483,6 +484,7 @@ const nextImage = () => {
             <el-table-column prop="comment" label="处理意见" align="center" />
             <el-table-column prop="handler" label="维修人员" align="center" />
             <el-table-column prop="receipt" label="处理照片" align="center" min-width="60vh">
+
               <template #default="scope">
                 <el-button class="inline_button" @click="detail(scope.row.receipt)">
                   详情
@@ -495,7 +497,8 @@ const nextImage = () => {
 
         <!-- table -->
         <el-table :data="tableData.value" @selection-change="handleSelectionChange"
-          style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh" show-overflow-tooltip>
+          style="width: 100%;margin-top: 1vh; border-radius: 1vh" table-layout="fixed" height="55vh"
+          show-overflow-tooltip>
           <el-table-column type="selection" align="center" />
           <el-table-column label="序号" type="index" align="center" min-width="70vh" />
           <el-table-column prop="batch" label="物料批次" align="center" />
@@ -506,10 +509,11 @@ const nextImage = () => {
           <el-table-column prop="scrappedAmount" label="报废数量" align="center" />
           <el-table-column prop="supplier" label="供料单位" align="center" />
           <el-table-column prop="operation" label="处理记录" align="center">
+
             <template #default="scope">
               <el-button class="inline_button" @click="getDefectiveOperationList(scope.row.batch),
-                recordDialogVisible = true,
-                dialog = true">
+      recordDialogVisible = true,
+      dialog = true">
                 查看
               </el-button>
             </template>
@@ -578,4 +582,3 @@ const nextImage = () => {
   max-height: 60vh;
 }
 </style>
-

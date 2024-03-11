@@ -474,8 +474,8 @@ const uploadImage = (uidToFileNameMap) => {
 
 <template>
     <!-- borderbox -->
-    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-        background-color="#3545659e">
+    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+        :color="['#4f698794', '#4f698794']" background-color="#3545659e">
         <!-- body -->
         <el-container class="subNavPage">
             <br />
@@ -548,15 +548,17 @@ const uploadImage = (uidToFileNameMap) => {
                         <el-col :span="12">
                             <el-form-item label="设备名称" prop="name" :rules="[
                                 { required: true, message: '请选择设备名称', trigger: 'blur' }]">
-                                <DialogSearch :key="renderKey" :wNo="100" search-title="设备名称" :searchContent=stockform.name
-                                    field="name" @search="dialogSearchSuggestion" :data="stockform" database="facilities" />
+                                <DialogSearch :key="renderKey" :wNo="100" search-title="设备名称"
+                                    :searchContent=stockform.name field="name" @search="dialogSearchSuggestion"
+                                    :data="stockform" database="facilities" />
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="规格型号" prop="spec" :rules="[
                                 { required: true, message: '请选择规格型号', trigger: 'blur' }]">
-                                <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号" :searchContent=stockform.spec
-                                    field="spec" @search="dialogSearchSuggestion" :data="stockform" database="facilities" />
+                                <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号"
+                                    :searchContent=stockform.spec field="spec" @search="dialogSearchSuggestion"
+                                    :data="stockform" database="facilities" />
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -601,8 +603,9 @@ const uploadImage = (uidToFileNameMap) => {
 
 
                 <!-- 编辑弹框 -->
-                <DialogComponent ref="editDialog" :form="stockform" dialog-title="编辑维护计划记录" :refreshFunc="getDataFromAPI"
-                    :confirm-func="updateFacilityAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
+                <DialogComponent ref="editDialog" :form="stockform" dialog-title="编辑维护计划记录"
+                    :refreshFunc="getDataFromAPI" :confirm-func="updateFacilityAPI" @dialogClose="dialogClose"
+                    :image=true @saveImage=saveImage>
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="设备名称" prop="name">
@@ -635,14 +638,15 @@ const uploadImage = (uidToFileNameMap) => {
                                     min: 1, max: 30,
                                     message: '长度必须在1-30之间', trigger: 'blur'
                                 }]">
-                                <el-input v-model="stockform.prevMaintenanceman" autocomplete="off" placeholder="请输入维护人员" />
+                                <el-input v-model="stockform.prevMaintenanceman" autocomplete="off"
+                                    placeholder="请输入维护人员" />
 
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="上次维护日期" prop="prevDailyTime">
-                                <el-date-picker v-model="stockform.prevDailyTime" type="datetime" placeholder="选择计划完成维护日期"
-                                    value-format="YYYY-MM-DDTHH:mm:ss" disabled />
+                                <el-date-picker v-model="stockform.prevDailyTime" type="datetime"
+                                    placeholder="选择计划完成维护日期" value-format="YYYY-MM-DDTHH:mm:ss" disabled />
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -715,7 +719,8 @@ const uploadImage = (uidToFileNameMap) => {
 
                 <!-- table -->
                 <el-table :data="tableData.value" @selection-change="handleSelectionChange"
-                    style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh" show-overflow-tooltip>
+                    style="width: 100%;margin-top: 1vh; border-radius: 1vh" table-layout="fixed" height="52vh"
+                    show-overflow-tooltip>
                     <el-table-column type="selection" align="center" min-width="20vh" />
                     <el-table-column label="序号" type="index" align="center" min-width="50vh" />
                     <el-table-column prop="serialNo" label="设备编号" align="center" />
@@ -738,8 +743,9 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-table-column prop="prevInfo" label="维护内容" align="center" />
                     <el-table-column label="维护状态" align="center">
                         <template #default="scope">
-                            {{ scope.row.prevDailyTime ? isSameDay(new Date(), new Date(scope.row.prevDailyTime)) ? '已完成' :
-                                '未完成' : '未完成' }}
+                            {{ scope.row.prevDailyTime ? isSameDay(new Date(), new Date(scope.row.prevDailyTime)) ?
+                            '已完成' :
+                            '未完成' : '未完成' }}
                         </template>
                     </el-table-column>
                     <el-table-column prop="operation" label="操作" align="center" min-width="110vh">

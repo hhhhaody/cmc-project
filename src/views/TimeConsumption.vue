@@ -220,8 +220,8 @@ onMounted(async () => {
 </script>
 <template>
   <!-- borderbox -->
-  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-    background-color="#3545659e">
+  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+    :color="['#4f698794', '#4f698794']" background-color="#3545659e">
     <!-- body -->
     <el-container class="subNavPage">
       <br />
@@ -263,7 +263,7 @@ onMounted(async () => {
                 <el-dropdown-menu>
                   <el-dropdown-item v-for="section in sections" :key="section" @click="changeSection(section)">{{
                     section
-                  }}</el-dropdown-item>
+                    }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -272,7 +272,7 @@ onMounted(async () => {
 
         <div>
           <el-table :data="tableData.data" @selection-change="handleSelectionChange" show-overflow-tooltip
-            style="width: 100%; border-radius: 1vh; margin-top: 1vh" table-layout="fixed" height="50vh">
+            style="width: 100%; margin-top: 1vh;border-radius: 1vh; margin-top: 1vh" table-layout="fixed" height="52vh">
             <el-table-column type="selection" align="center" />
             <el-table-column type="index" label="序号" align="center" min-width="60vh" />
             <el-table-column prop="itemCode" label="产品编号" align="center" />

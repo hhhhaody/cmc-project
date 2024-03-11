@@ -77,6 +77,7 @@ const changeStation = (type, val) => {
         <span class="click" @click="navigate('product')">产品生产情况</span>
         <el-dropdown class="tab">
           <span class="el-dropdown-link" style="font-size: 15px; font-weight: 500;"> {{ bar }} </span>
+
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click="changeStation(2, stations[0])">型钢切割工作站</el-dropdown-item>
@@ -95,6 +96,7 @@ const changeStation = (type, val) => {
         <span class="click" @click="navigate('timeConsumption')">耗时统计</span>
         <el-dropdown class="tab">
           <span class="el-dropdown-link" style="font-size: 15px; font-weight: 500;"> {{ radar }} </span>
+
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click="changeStation(1, stations[0])">型钢切割工作站</el-dropdown-item>
@@ -115,6 +117,7 @@ const changeStation = (type, val) => {
         <span class="click" @click="navigate('inventory')">原材料使用情况</span>
         <el-dropdown class="tab">
           <span class="el-dropdown-link" style="font-size: 15px; font-weight: 500;"> {{ usage }} </span>
+
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click="changeStation(3, stations[0])">型钢切割工作站</el-dropdown-item>

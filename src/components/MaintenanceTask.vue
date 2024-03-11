@@ -268,6 +268,7 @@ getDailyPlan()
             {{ routineNo + level1No + level2No }}
             项</span></template>
         <el-collapse-item name="10" class="row">
+
           <template #title>
             日常保养
             <span class="num">
@@ -289,6 +290,7 @@ getDailyPlan()
           </el-table>
         </el-collapse-item>
         <el-collapse-item name="11" class="row">
+
           <template #title>
             一级保养
             <span class="num">
@@ -308,6 +310,7 @@ getDailyPlan()
             <el-table-column prop="station" label="工位" />
             <el-table-column prop="name" label="设备名称" /> </el-table></el-collapse-item>
         <el-collapse-item name="12" class="row">
+
           <template #title>
             二级保养
             <span class="num">
@@ -330,12 +333,14 @@ getDailyPlan()
         </el-collapse-item>
       </el-collapse-item>
       <el-collapse-item name="0" class="row">
+
         <template #title>
           逾期未完成维护保养任务
           <span class="num">
             {{ level3No + level4No }}
             项</span></template>
         <el-collapse-item name="01" class="row">
+
           <template #title>
             一级保养
             <span class="num">
@@ -355,6 +360,7 @@ getDailyPlan()
             <el-table-column prop="station" label="工位" />
             <el-table-column prop="name" label="设备名称" /> </el-table></el-collapse-item>
         <el-collapse-item name="02" class="row">
+
           <template #title>
             二级保养
             <span class="num">

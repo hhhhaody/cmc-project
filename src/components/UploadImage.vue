@@ -1,9 +1,9 @@
 <template>
-    <el-upload v-model:file-list="fileList" class="upload" :http-request="customHttpRequest" :limit="3"
+    <el-upload v-model:file-list="fileList" class="upload" :http-request="customHttpRequest" :limit="limit"
         list-type="picture-card" :on-remove="handleRemove" :on-preview="handlePreview" :on-exceed="handleExceed"
         :before-upload="beforeAvatarUpload">
         <template #tip>
-            <div class="el-upload__tip">
+            <div v-if="limit == 3" class="el-upload__tip">
                 图片或pdf格式，不多于3个
             </div>
         </template>
@@ -14,7 +14,8 @@
     </el-upload>
     <el-dialog v-model="dialogVisible">
         <img v-if="dialogImageUrl" w-full :src="dialogImageUrl" />
-        <iframe v-if="dialogPdfUrl" width="100%" height="100%" :src="dialogPdfUrl" frameborder="0" scrolling="no"></iframe>
+        <iframe v-if="dialogPdfUrl" width="100%" height="100%" :src="dialogPdfUrl" frameborder="0"
+            scrolling="no"></iframe>
     </el-dialog>
 </template>
 
@@ -29,7 +30,8 @@ const emit = defineEmits(["uploadImage"])
 const props = defineProps({
     dialog: { type: Boolean },
     confirmImage: { type: Boolean },
-    uploaded: { type: String, default: null }
+    uploaded: { type: String, default: null },
+    limit: { type: Number, default: 1 }
 });
 const original = ref()
 
@@ -106,10 +108,11 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
     if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'application/pdf') {
         ElMessage.error('仅支持图片或pdf上传!')
         return false
-    } else if (rawFile.size / 1024 / 1024 > 2) {
-        ElMessage.error('文件大于2MB!')
-        return false
     }
+    // else if (rawFile.size / 1024 / 1024 > 2 {
+    //     ElMessage.error('文件大于2MB!')
+    //     return false
+    // }
     return true
 }
 

@@ -390,8 +390,8 @@ const nextImage = () => {
 
 <template>
     <!-- borderbox -->
-    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-        background-color="#3545659e">
+    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+        :color="['#4f698794', '#4f698794']" background-color="#3545659e">
         <!-- body -->
         <el-container class="subNavPage">
             <br />
@@ -410,7 +410,8 @@ const nextImage = () => {
                 <!-- search -->
                 <div>
                     <SearchComponent :key="renderKey" search-title="操作" :searchContent=operation ref="search1"
-                        field="operation" database="materials/operation" @search="search" @edit="edit" :data="searchForm" />
+                        field="operation" database="materials/operation" @search="search" @edit="edit"
+                        :data="searchForm" />
                     <SearchComponent :key="renderKey" search-title="物料名称" :searchContent=name ref="search2" field="name"
                         @search="search" database="materials/operation" @edit="edit" :data="searchForm" />
                     <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=spec ref="search3" field="spec"
@@ -427,13 +428,15 @@ const nextImage = () => {
                 </div>
                 <div style="margin-top: 1vh;position:absolute;left: 15%;" v-if="show">
                     <div style="display: inline-block; position: relative;top: 2px; padding-right: 1vh;">时间：
-                        <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期"
-                            :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
+                        <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期"
+                            end-placeholder="结束日期" :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
                     </div>
                     <SearchComponent :key="renderKey" search-title="供料单位" :searchContent=supplier ref="search5"
-                        field="supplier" database="materials/operation" @search="search" @edit="edit" :data="searchForm" />
+                        field="supplier" database="materials/operation" @search="search" @edit="edit"
+                        :data="searchForm" />
                     <SearchComponent :key="renderKey" search-title="操作人员" :searchContent=operator ref="search6"
-                        field="operator" database="materials/operation" @search="search" @edit="edit" :data="searchForm" />
+                        field="operator" database="materials/operation" @search="search" @edit="edit"
+                        :data="searchForm" />
                 </div>
                 <br />
                 <!-- operation -->
@@ -452,7 +455,8 @@ const nextImage = () => {
 
                 <!-- 编辑弹框 -->
                 <DialogComponent ref="editDialog" :form="updateform" dialog-title="编辑操作记录" :refreshFunc="getDataFromAPI"
-                    :confirm-func="updateMaterialOperationAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
+                    :confirm-func="updateMaterialOperationAPI" @dialogClose="dialogClose" :image=true
+                    @saveImage=saveImage>
                     <el-form-item label="操作" prop="operation">
                         <el-input v-model="updateform.operation" autocomplete="off" disabled />
                     </el-form-item>
@@ -473,30 +477,30 @@ const nextImage = () => {
                         <el-input v-model="updateform.batch" autocomplete="off" disabled />
                     </el-form-item>
                     <el-form-item label="供料单位" prop="supplier" :rules="[
-                        { required: true, message: '请输入供料单位', trigger: 'blur' },
-                        {
-                            min: 1, max: 30,
-                            message: '长度必须在1-30之间', trigger: 'blur'
-                        }]">
+            { required: true, message: '请输入供料单位', trigger: 'blur' },
+            {
+                min: 1, max: 30,
+                message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
                         <el-input v-model="updateform.supplier" autocomplete="off" />
                     </el-form-item>
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="操作人员" prop="operator" :rules="[
-                                { required: true, message: '请输入操作人员', trigger: 'blur' },
-                                {
-                                    min: 1, max: 30,
-                                    message: '长度必须在1-30之间', trigger: 'blur'
-                                }]">
+            { required: true, message: '请输入操作人员', trigger: 'blur' },
+            {
+                min: 1, max: 30,
+                message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
                                 <el-input v-model="updateform.operator" autocomplete="off" />
 
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="操作数量" prop="amount" :rules="[
-                                { required: true, message: '请输入数量', trigger: 'blur' },
-                                { type: 'number', message: '必须是数字', trigger: 'blur' }
-                            ]">
+            { required: true, message: '请输入数量', trigger: 'blur' },
+            { type: 'number', message: '必须是数字', trigger: 'blur' }
+        ]">
                                 <el-input v-model.number="updateform.amount" autocomplete="off" />
                             </el-form-item>
                         </el-col>
@@ -509,19 +513,19 @@ const nextImage = () => {
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="供料日期" prop="supplyTime" :rules="[
-                                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+            { required: true, message: '请输入供料日期', trigger: 'blur' }]">
                                 <el-date-picker v-if="updateform.operation === '入库'" v-model="updateform.supplyTime"
                                     type="datetime" placeholder="选择供料日期" value-format="YYYY-MM-DDTHH:mm:ss"
                                     :disabled-date="disabledDate" />
-                                <el-date-picker v-else v-model="updateform.supplyTime" type="datetime" placeholder="选择供料日期"
-                                    value-format="YYYY-MM-DDTHH:mm:ss" disabled />
+                                <el-date-picker v-else v-model="updateform.supplyTime" type="datetime"
+                                    placeholder="选择供料日期" value-format="YYYY-MM-DDTHH:mm:ss" disabled />
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-form-item label="操作凭证" prop="receipt" :rules="[
-                        { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
+            { required: true, message: '请上传操作凭证', trigger: 'blur' }]">
                         <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage
-                            :uploaded="uploaded" />
+                            :uploaded="uploaded" :limit="3" />
                     </el-form-item>
                 </DialogComponent>
 
@@ -529,7 +533,8 @@ const nextImage = () => {
 
                 <!-- table -->
                 <el-table :data="tableData.value" @selection-change="handleSelectionChange"
-                    style="width: 100%; border-radius: 1vh" table-layout="fixed" show-overflow-tooltip height="48vh">
+                    style="width: 100%; margin-top: 1vh;border-radius: 1vh" table-layout="fixed" show-overflow-tooltip
+                    height="55vh">
                     <el-table-column type="selection" align="center" min-width="20vh" />
                     <el-table-column label="序号" type="index" align="center" min-width="40vh" />
                     <el-table-column prop="batch" label="物料批次" align="center" min-width="120vh" />
@@ -546,11 +551,13 @@ const nextImage = () => {
                     <el-table-column prop="operator" label="操作人员" align="center" />
                     <el-table-column prop="supplier" label="供料单位" align="center" />
                     <el-table-column prop="supplyTime" label="供料日期" align="center">
+
                         <template #default="scope">
                             {{ scope.row.supplyTime.substring(0, 10) }}
                         </template>
                     </el-table-column>
                     <el-table-column prop="receipt" label="凭证" align="center" min-width="40vh">
+
                         <template #default="scope">
                             <el-button class="inline_button" @click="detail(scope.row.receipt)">
                                 详情
@@ -558,6 +565,7 @@ const nextImage = () => {
                         </template>
                     </el-table-column>
                     <el-table-column prop="operation1" label="业务操作" align="center">
+
                         <template #default="scope">
                             <el-button class="inline_button"
                                 @click="getMaterialOperationByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, updateform.id = scope.row.id">
@@ -670,4 +678,3 @@ const nextImage = () => {
     height: 33px !important;
 }
 </style>
-

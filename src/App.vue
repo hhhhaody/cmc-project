@@ -2,41 +2,6 @@
 import { RouterLink, RouterView } from "vue-router";
 import HelloWorld from "./components/HelloWorld.vue";
 import { Decoration5 } from "@kjgl77/datav-vue3";;
-import Swiper from 'swiper/bundle';
-
-// import styles bundle
-import 'swiper/css/bundle';
-
-// init Swiper:
-const swiper = new Swiper('.swiper', {
-  // Optional parameters
-  direction: 'horizontal',
-  autoplay: {
-    delay: 5000,
-  },
-
-  // If we need pagination
-  // pagination: {
-  //   el: '.swiper-pagination',
-  // },
-
-  // Navigation arrows
-  navigation: {
-    nextEl: '.swiper-button-next',
-    prevEl: '.swiper-button-prev',
-  },
-
-  // And if we need scrollbar
-  // scrollbar: {
-  //   el: '.swiper-scrollbar',
-  // },
-});
-
-const videos = [
-  { source: './assets/videos/总装工作站_V4_231221.mp4" type="video/mp4' },
-  { source: './assets/videos/方通阻焊_V1_231222.mp4" type="video/mp4' },
-  // Add more video sources as needed
-];
 
 
 // test API function
@@ -73,11 +38,8 @@ const show = () => {
   <main class="bg">
     <header class="animate__animated animate__fadeInDown" style="z-index: 1;">
       <h1>
-        <span>
-          <!-- <img alt="Our logo" src="@/assets/logo.png" /> -->
-          CMC产线智能化管理系统
-          <!-- <Decoration5 :dur="5" style="width:50%;height:40px;margin: auto;" :color="['#5d8cbd', 'white']" /> -->
-        </span>
+        <!-- <img alt="Our logo" src="@/assets/logo.png" /> -->
+        <RouterLink to="/about" @click="hide" style="color: white;">CMC产线智能化管理系统</RouterLink>
       </h1>
     </header>
     <div>
@@ -209,7 +171,7 @@ const show = () => {
 
         </video>
       </el-carousel-item>
-      <el-carousel-item style="height: 225%;">gi
+      <el-carousel-item style="height: 225%;">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
           <source src="./assets/videos/地面钢网_V2_231221.mp4" type="video/mp4" />
 
@@ -539,7 +501,7 @@ a.router-link-exact-active {
   /* color: #a3ccf9;
   text-shadow: 1px 1px 1px #455260; */
   color: #455260;
-  text-shadow: 1px 1px 1px #a3ccf9;
+  /* text-shadow: 1px 1px 1px #a3ccf9; */
 }
 
 nav a:hover {

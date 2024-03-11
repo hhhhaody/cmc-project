@@ -430,8 +430,8 @@ const uploadImage = (uidToFileNameMap) => {
 
 <template>
     <!-- borderbox -->
-    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-        background-color="#3545659e">
+    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+        :color="['#4f698794', '#4f698794']" background-color="#3545659e">
         <!-- body -->
         <el-container class="subNavPage">
             <br />
@@ -446,8 +446,8 @@ const uploadImage = (uidToFileNameMap) => {
                         @search="search" database="troubleshooting" @edit="edit" :wNo="10" />
                     <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=spec ref="search3" field="spec"
                         @search="search" database="troubleshooting" @edit="edit" :wNo="10" />
-                    <SearchComponent :key="renderKey" search-title="维修状态" :searchContent=status ref="search5" field="status"
-                        database="troubleshooting" @search="search" @edit="edit" :wNo="10" />
+                    <SearchComponent :key="renderKey" search-title="维修状态" :searchContent=status ref="search5"
+                        field="status" database="troubleshooting" @search="search" @edit="edit" :wNo="10" />
                     <el-button style="margin-left: 10px; width: 7%" @click="show = !show">
                         <ArrowDown style="width: 1em; height: 1em; margin-right: 8px" />更多
                     </el-button>
@@ -460,8 +460,8 @@ const uploadImage = (uidToFileNameMap) => {
                 </div>
                 <div style="margin-top: 1vh;position:absolute;left:17%" v-if="show">
                     <div style="display: inline-block; position: relative;top: 2px; padding-right: 1vh;">完成维修日期：
-                        <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期"
-                            :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
+                        <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期"
+                            end-placeholder="结束日期" :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
                     </div>
 
                     <SearchComponent :key="renderKey" search-title="维修人员" :searchContent=repairman ref="search6"
@@ -503,20 +503,23 @@ const uploadImage = (uidToFileNameMap) => {
                 <!-- 弹框区 -->
                 <!-- 新增弹框 -->
                 <DialogComponent ref="addDialog" :form="stockform" dialog-title="新增故障维修记录" :refreshFunc="getDataFromAPI"
-                    :confirm-func="addTroubleshootingRecordAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
+                    :confirm-func="addTroubleshootingRecordAPI" @dialogClose="dialogClose" :image=true
+                    @saveImage=saveImage>
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="设备名称" prop="name" :rules="[
                                 { required: true, message: '请选择设备名称', trigger: 'blur' }]">
-                                <DialogSearch :key="renderKey" :wNo="100" search-title="设备名称" :searchContent=stockform.name
-                                    field="name" @search="dialogSearchSuggestion" :data="stockform" database="facilities" />
+                                <DialogSearch :key="renderKey" :wNo="100" search-title="设备名称"
+                                    :searchContent=stockform.name field="name" @search="dialogSearchSuggestion"
+                                    :data="stockform" database="facilities" />
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="规格型号" prop="spec" :rules="[
                                 { required: true, message: '请选择规格型号', trigger: 'blur' }]">
-                                <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号" :searchContent=stockform.spec
-                                    field="spec" @search="dialogSearchSuggestion" :data="stockform" database="facilities" />
+                                <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号"
+                                    :searchContent=stockform.spec field="spec" @search="dialogSearchSuggestion"
+                                    :data="stockform" database="facilities" />
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -554,9 +557,9 @@ const uploadImage = (uidToFileNameMap) => {
                 </DialogComponent>
 
                 <!-- 编辑弹框 -->
-                <DialogComponent ref="editDialog" :form="stockform" dialog-title="编辑故障维修记录" :refreshFunc="getDataFromAPI"
-                    :confirm-func="updateTroubleshootingRecordAPI" @dialogClose="dialogClose" :image=true
-                    @saveImage=saveImage>
+                <DialogComponent ref="editDialog" :form="stockform" dialog-title="编辑故障维修记录"
+                    :refreshFunc="getDataFromAPI" :confirm-func="updateTroubleshootingRecordAPI"
+                    @dialogClose="dialogClose" :image=true @saveImage=saveImage>
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="设备名称" prop="name">
@@ -630,7 +633,8 @@ const uploadImage = (uidToFileNameMap) => {
 
                 <!-- table -->
                 <el-table :data="tableData.value" @selection-change="handleSelectionChange"
-                    style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh" show-overflow-tooltip>
+                    style="width: 100%;margin-top: 1vh; border-radius: 1vh" table-layout="fixed" height="52vh"
+                    show-overflow-tooltip>
                     <el-table-column type="selection" align="center" min-width="20vh" />
                     <el-table-column label="序号" type="index" align="center" min-width="40vh" />
                     <el-table-column prop="serialNo" label="设备编号" align="center" />

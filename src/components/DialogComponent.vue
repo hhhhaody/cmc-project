@@ -93,6 +93,12 @@ const push = async () => {
         dialogVisible.value = false
         props.refreshFunc()
     }
+    else {
+        ElMessage({
+            type: 'error',
+            message: res.msg,
+        })
+    }
     // console.log(res);
 };
 

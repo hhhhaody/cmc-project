@@ -194,6 +194,7 @@ const cur = (val) => {
 //#region
 const dialog = ref(false)
 const formattedTime = ref()
+const uploaded = ref(null)
 const fileName = ref()
 const remainingStock = ref(null)
 const addDialog = ref()
@@ -238,6 +239,7 @@ const updateFileList = async (folderId) => {
 
 const dialogClose = () => {
   dialog.value = false
+  uploaded.value = null
   remainingStock.value = null
   addform.warrantyUnit = '月'
   addform.firstLevelMaintenanceUnit = '月'
@@ -282,6 +284,7 @@ const addform = reactive({
   secondLevelMaintenanceNo: '',
   secondLevelMaintenanceUnit: '月',
   attachment: '',
+  picture: ''
 })
 
 const stockform
@@ -365,6 +368,8 @@ const getFacilityByID = async (id) => {
     addform.purchaseTime = res.data.purchaseTime
     addform.contact = res.data.contact
     addform.contactNo = res.data.contactNo
+    addform.picture = res.data.picture
+    uploaded.value = res.data.picture
     addform.attachment = res.data.attachment
     addform.warrantyNo = parseInt(res.data.warranty.match(/\d+/g))
     addform.warrantyUnit = res.data.warranty[res.data.warranty.length - 1]
@@ -510,8 +515,8 @@ const uploadImage = (uidToFileNameMap) => {
   console.log(JSON.stringify(uidToFileNameMap));
   // console.log(allFileNames.value);
   // stockform.receipt = allFileNames.value
-  stockform.receipt = JSON.stringify(uidToFileNameMap);
-  console.log(stockform);
+  addform.picture = JSON.stringify(uidToFileNameMap);
+  console.log(addform);
   confirmImage.value = false
 }
 //#endregion
@@ -520,8 +525,8 @@ const uploadImage = (uidToFileNameMap) => {
 
 <template>
   <!-- borderbox -->
-  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-    background-color="#3545659e">
+  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+    :color="['#4f698794', '#4f698794']" background-color="#3545659e">
     <!-- body -->
     <el-container class="subNavPage">
       <br />
@@ -585,25 +590,25 @@ const uploadImage = (uidToFileNameMap) => {
         <!-- 弹框区 -->
         <!-- 新增弹框 -->
         <DialogComponent ref="addDialog" :form="addform" dialog-title="新增设备" :refreshFunc="getDataFromAPI"
-          :confirm-func="addFacilityAPI" @dialogClose="dialogClose">
+          :confirm-func="addFacilityAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
           <el-row>
             <el-col :span="12">
               <el-form-item label="设备名称" prop="name" :rules="[
-                { required: true, message: '请输入设备名称', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入设备名称', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <el-input v-model="addform.name" autocomplete="off" placeholder="请输入设备名称" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="规格型号" prop="spec" :rules="[
-                { required: true, message: '请输入规格型号', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入规格型号', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <el-input v-model="addform.spec" autocomplete="off" placeholder="请输入规格型号" />
               </el-form-item>
             </el-col>
@@ -611,11 +616,11 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="工段名称" prop="section" :rules="[
-                { required: true, message: '请输入工段名称', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入工段名称', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <DialogSearch :key="renderKey" :wNo="100" search-title="工段名称" :searchContent=addform.section
                   field="section" @search="dialogSearchSuggestion" :data="addform" database="productionLine" />
               </el-form-item>
@@ -623,11 +628,11 @@ const uploadImage = (uidToFileNameMap) => {
             </el-col>
             <el-col :span="12">
               <el-form-item label="工位名称" prop="station" :rules="[
-                { required: true, message: '请输入工位名称', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入工位名称', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <DialogSearch :key="renderKey" :wNo="100" search-title="工位名称" :searchContent=addform.station
                   field="station" @search="dialogSearchSuggestion" :data="addform" database="productionLine" />
               </el-form-item>
@@ -636,42 +641,42 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="供应商" prop="supplier" :rules="[
-                { required: true, message: '请输入供应商', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入供应商', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <el-input v-model="addform.supplier" autocomplete="off" placeholder="请输入供应商" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="购买日期" prop="purchaseTime" :rules="[
-                { required: true, message: '请输入购买日期', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入购买日期', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <el-date-picker v-model="addform.purchaseTime" type="datetime" placeholder="选择购买日期"
-                  value-format="YYYY-MM-DDTHH:mm:ss" :disabled-date="disabledDate"/>
+                  value-format="YYYY-MM-DDTHH:mm:ss" :disabled-date="disabledDate" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
               <el-form-item label="联系人" prop="contact" :rules="[
-                { required: true, message: '请输入联系人姓名', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入联系人姓名', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <el-input v-model="addform.contact" autocomplete="off" placeholder="请输入联系人" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="联系方式" prop="contactNo" :rules="[
-                { required: true, message: '请输入联系方式', trigger: 'blur' },
-                { validator: validatePhoneNumber, trigger: 'blur' }
-              ]">
+      { required: true, message: '请输入联系方式', trigger: 'blur' },
+      { validator: validatePhoneNumber, trigger: 'blur' }
+    ]">
                 <el-input v-model.number="addform.contactNo" autocomplete="off" placeholder="请输入联系方式" />
               </el-form-item>
             </el-col>
@@ -681,9 +686,9 @@ const uploadImage = (uidToFileNameMap) => {
 
             <el-col :span="12">
               <el-form-item label="质保期" prop="warrantyNo" :rules="[
-                { required: true, message: '请输入质保期', trigger: 'blur' },
-                { type: 'number', message: '必须是数字', trigger: 'blur' }
-              ]">
+      { required: true, message: '请输入质保期', trigger: 'blur' },
+      { type: 'number', message: '必须是数字', trigger: 'blur' }
+    ]">
                 <el-input v-model.number="addform.warrantyNo" autocomplete="off" placeholder="请输入质保期" />
               </el-form-item>
 
@@ -697,8 +702,8 @@ const uploadImage = (uidToFileNameMap) => {
           </el-row>
 
           <el-form-item label="保养周期" prop="dailyMaintenance" :rules="[
-            { required: true, message: '请输入保养周期', trigger: 'blur' },
-            { type: 'boolean' }]">
+      { required: true, message: '请输入保养周期', trigger: 'blur' },
+      { type: 'boolean' }]">
             日常保养
             <el-switch v-model="addform.dailyMaintenance" />
           </el-form-item>
@@ -706,9 +711,9 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item prop="firstLevelMaintenanceNo" :rules="[
-                { required: true, message: '请输入保养周期', trigger: 'blur' },
-                { type: 'number', message: '必须是数字', trigger: 'blur' }
-              ]">
+      { required: true, message: '请输入保养周期', trigger: 'blur' },
+      { type: 'number', message: '必须是数字', trigger: 'blur' }
+    ]">
                 <span style="display:flex; line-height:100%;height:100%">
                   <i style="line-height:100%;min-width:fit-content;display:flex;align-items:center">一级保养</i>
                   <el-input v-model.number="addform.firstLevelMaintenanceNo" autocomplete="off" placeholder="请输入保养周期"
@@ -728,9 +733,9 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item prop="secondLevelMaintenanceNo" :rules="[
-                { required: true, message: '请输入保养周期', trigger: 'blur' },
-                { type: 'number', message: '必须是数字', trigger: 'blur' }
-              ]">
+      { required: true, message: '请输入保养周期', trigger: 'blur' },
+      { type: 'number', message: '必须是数字', trigger: 'blur' }
+    ]">
                 <span style="display:flex; line-height:100%;height:100%">
                   <i style="line-height:100%;min-width:fit-content;display:flex;align-items:center">二级保养</i>
                   <el-input v-model.number="addform.secondLevelMaintenanceNo" autocomplete="off" placeholder="请输入保养周期"
@@ -747,17 +752,21 @@ const uploadImage = (uidToFileNameMap) => {
             </el-col>
           </el-row>
           <el-form-item prop="attachment" label="附件" :rules="[
-            { required: true, message: '请关联附件', trigger: 'blur' },
-            {
-              min: 1, max: 999,
-              message: '长度必须在1-999之间', trigger: 'blur'
-            }]">
+      { required: true, message: '请关联附件', trigger: 'blur' },
+      {
+        min: 1, max: 999,
+        message: '长度必须在1-999之间', trigger: 'blur'
+      }]">
             <div style="
             text-decoration: underline;
             color: #729fd0;
             width: fit-content;
             cursor: pointer" @click="linkDialog = true, getFolderList()">关联文件</div>
             <div style="margin-left: 20px;">{{ addform.attachment }}</div>
+          </el-form-item>
+          <el-form-item label="图片" prop="picture" :rules="[
+      { required: true, message: '请上传图片', trigger: 'blur' }]">
+            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage :uploaded="uploaded" />
           </el-form-item>
         </DialogComponent>
 
@@ -796,21 +805,21 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="设备名称" prop="name" :rules="[
-                { required: true, message: '请输入设备名称', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入设备名称', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <el-input v-model="addform.name" autocomplete="off" placeholder="请输入设备名称" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="规格型号" prop="spec" :rules="[
-                { required: true, message: '请输入规格型号', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入规格型号', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <el-input v-model="addform.spec" autocomplete="off" placeholder="请输入规格型号" />
               </el-form-item>
             </el-col>
@@ -818,11 +827,11 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="工段名称" prop="section" :rules="[
-                { required: true, message: '请输入工段名称', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入工段名称', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <DialogSearch :key="renderKey" :wNo="100" search-title="工段名称" :searchContent=addform.section
                   field="section" @search="dialogSearchSuggestion" :data="addform" database="productionLine" />
               </el-form-item>
@@ -830,11 +839,11 @@ const uploadImage = (uidToFileNameMap) => {
             </el-col>
             <el-col :span="12">
               <el-form-item label="工位名称" prop="station" :rules="[
-                { required: true, message: '请输入工位名称', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入工位名称', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <DialogSearch :key="renderKey" :wNo="100" search-title="工位名称" :searchContent=addform.station
                   field="station" @search="dialogSearchSuggestion" :data="addform" database="productionLine" />
               </el-form-item>
@@ -843,21 +852,21 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="供应商" prop="supplier" :rules="[
-                { required: true, message: '请输入供应商', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入供应商', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <el-input v-model="addform.supplier" autocomplete="off" placeholder="请输入供应商" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="购买日期" prop="purchaseTime" :rules="[
-                { required: true, message: '请输入购买日期', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入购买日期', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <el-date-picker v-model="addform.purchaseTime" type="datetime" placeholder="选择购买日期"
                   value-format="YYYY-MM-DDTHH:mm:ss" />
               </el-form-item>
@@ -866,19 +875,19 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="联系人" prop="contact" :rules="[
-                { required: true, message: '请输入联系人姓名', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入联系人姓名', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <el-input v-model="addform.contact" autocomplete="off" placeholder="请输入联系人" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="联系方式" prop="contactNo" :rules="[
-                { required: true, message: '请输入联系方式', trigger: 'blur' },
-                { type: 'number', message: '必须是数字', trigger: 'blur' }
-              ]">
+      { required: true, message: '请输入联系方式', trigger: 'blur' },
+      { type: 'number', message: '必须是数字', trigger: 'blur' }
+    ]">
                 <el-input v-model.number="addform.contactNo" autocomplete="off" placeholder="请输入联系方式" />
               </el-form-item>
             </el-col>
@@ -888,9 +897,9 @@ const uploadImage = (uidToFileNameMap) => {
 
             <el-col :span="12">
               <el-form-item label="质保期" prop="warrantyNo" :rules="[
-                { required: true, message: '请输入质保期', trigger: 'blur' },
-                { type: 'number', message: '必须是数字', trigger: 'blur' }
-              ]">
+      { required: true, message: '请输入质保期', trigger: 'blur' },
+      { type: 'number', message: '必须是数字', trigger: 'blur' }
+    ]">
                 <el-input v-model.number="addform.warrantyNo" autocomplete="off" placeholder="请输入质保期" />
               </el-form-item>
 
@@ -904,7 +913,7 @@ const uploadImage = (uidToFileNameMap) => {
           </el-row>
 
           <el-form-item label="保养周期" prop="dailyMaintenance" :rules="[
-            { required: true, message: '请输入保养周期', trigger: 'blur' }]">
+      { required: true, message: '请输入保养周期', trigger: 'blur' }]">
             日常保养
             <el-switch v-model="addform.dailyMaintenance" />
           </el-form-item>
@@ -912,9 +921,9 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item prop="firstLevelMaintenanceNo" :rules="[
-                { required: true, message: '请输入保养周期', trigger: 'blur' },
-                { type: 'number', message: '必须是数字', trigger: 'blur' }
-              ]">
+      { required: true, message: '请输入保养周期', trigger: 'blur' },
+      { type: 'number', message: '必须是数字', trigger: 'blur' }
+    ]">
                 <span style="display:flex; line-height:100%;height:100%">
                   <i style="line-height:100%;min-width:fit-content;display:flex;align-items:center">一级保养</i>
                   <el-input v-model.number="addform.firstLevelMaintenanceNo" autocomplete="off" placeholder="请输入保养周期"
@@ -934,9 +943,9 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item prop="secondLevelMaintenanceNo" :rules="[
-                { required: true, message: '请输入保养周期', trigger: 'blur' },
-                { type: 'number', message: '必须是数字', trigger: 'blur' }
-              ]">
+      { required: true, message: '请输入保养周期', trigger: 'blur' },
+      { type: 'number', message: '必须是数字', trigger: 'blur' }
+    ]">
                 <span style="display:flex; line-height:100%;height:100%">
                   <i style="line-height:100%;min-width:fit-content;display:flex;align-items:center">二级保养</i>
                   <el-input v-model.number="addform.secondLevelMaintenanceNo" autocomplete="off" placeholder="请输入保养周期"
@@ -953,11 +962,11 @@ const uploadImage = (uidToFileNameMap) => {
             </el-col>
           </el-row>
           <el-form-item prop="attachment" label="附件" :rules="[
-            { required: true, message: '请关联附件', trigger: 'blur' },
-            {
-              min: 1, max: 999,
-              message: '长度必须在1-999之间', trigger: 'blur'
-            }]">
+      { required: true, message: '请关联附件', trigger: 'blur' },
+      {
+        min: 1, max: 999,
+        message: '长度必须在1-999之间', trigger: 'blur'
+      }]">
             <div style="
             text-decoration: underline;
             color: #729fd0;
@@ -965,13 +974,19 @@ const uploadImage = (uidToFileNameMap) => {
             cursor: pointer" @click="linkDialog = true, getFolderList()">关联文件</div>
             <div style="margin-left: 20px;">{{ addform.attachment }}</div>
           </el-form-item>
+
+          <el-form-item label="图片" prop="pic" :rules="[
+      { required: true, message: '请上传图片', trigger: 'blur' }]">
+            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage />
+          </el-form-item>
         </DialogComponent>
 
 
 
         <!-- table -->
         <el-table :data="tableData.value" @selection-change="handleSelectionChange"
-          style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh" show-overflow-tooltip>
+          style="width: 100%;margin-top: 1vh; border-radius: 1vh" table-layout="fixed" height="52vh"
+          show-overflow-tooltip>
           <el-table-column type="selection" align="center" min-width="20vh" />
           <el-table-column label="序号" type="index" align="center" min-width="40vh" />
           <el-table-column prop="serialNo" label="设备编号" align="center" />
@@ -980,6 +995,7 @@ const uploadImage = (uidToFileNameMap) => {
           <el-table-column prop="station" label="工位名称" align="center" />
           <el-table-column prop="section" label="工段名称" align="center" />
           <el-table-column prop="purchaseTime" label="购买日期" align="center">
+
             <template #default="scope">
               {{ scope.row.purchaseTime.substring(0, 10) }}
             </template>
@@ -987,6 +1003,7 @@ const uploadImage = (uidToFileNameMap) => {
           <el-table-column prop="supplier" label="供应商" align="center" />
           <el-table-column prop="status" label="设备状态" align="center" />
           <el-table-column prop="operation" label="操作" align="center" min-width="100vh">
+
             <template #default="scope">
               <el-button class="inline_button"
                 @click="getFacilityByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, addform.id = scope.row.id">
@@ -1069,4 +1086,3 @@ const uploadImage = (uidToFileNameMap) => {
   padding-left: 2vh !important
 }
 </style>
-

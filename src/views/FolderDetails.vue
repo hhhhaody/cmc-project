@@ -302,8 +302,8 @@ onMounted(() => {
 
 <template>
     <!-- borderbox -->
-    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-        background-color="#3545659e">
+    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+        :color="['#4f698794', '#4f698794']" background-color="#3545659e">
         <a ref="downloadLinkRef" style="display: none;"></a>
 
         <!-- body -->
@@ -336,7 +336,8 @@ onMounted(() => {
                 <br />
                 <!-- operation -->
                 <div style="display: flex; justify-content: space-between">
-                    <UploadFile ref="uploadFileRef" :folder-id="route.params.folderId" @file-uploaded="onFileUploaded" />
+                    <UploadFile ref="uploadFileRef" :folder-id="route.params.folderId"
+                        @file-uploaded="onFileUploaded" />
 
                     <div style="margin-right: 88%;">
                         <el-button type="primary" @click="handleBatchDownload">
@@ -356,7 +357,8 @@ onMounted(() => {
                 <!-- table -->
                 <div>
                     <el-table :data="fileList" @selection-change="handleSelectionChange" show-overflow-tooltip
-                        style="width: 100%; border-radius: 1vh; margin-top: 1vh" table-layout="fixed" height="50vh">
+                        style="width: 100%;margin-top: 1vh; border-radius: 1vh; margin-top: 1vh" table-layout="fixed"
+                        height="56vh">
                         <el-table-column type="selection" align="center" />
                         <el-table-column type="index" label="序号" align="center" min-width="60vh" />
 
@@ -367,6 +369,7 @@ onMounted(() => {
                         </el-table-column>
 
                         <el-table-column label="最后修改时间" align="center">
+
                             <template #default="scope">
                                 <span v-if="scope.row.fileName">{{ scope.row.updatedAt }}</span>
                                 <span v-else>{{ scope.row.updatedAt }}</span>
@@ -374,6 +377,7 @@ onMounted(() => {
                         </el-table-column>
 
                         <el-table-column label="创建时间" align="center">
+
                             <template #default="scope">
                                 <span v-if="scope.row.folderName">{{ scope.row.uploadedAt }}</span>
                                 <span v-else>{{ scope.row.uploadedAt }}</span>
@@ -381,6 +385,7 @@ onMounted(() => {
                         </el-table-column>
 
                         <el-table-column label="操作" align="center">
+
                             <template #default="scope">
                                 <el-button class="inline_button" v-if="scope.row.fileName"
                                     @click.prevent="downloadFile(scope.row.fileId)">下载</el-button>
@@ -404,7 +409,7 @@ onMounted(() => {
         </el-container>
     </dv-border-box1>
 </template>
-  
+
 <style scoped>
 .folder-details-container {
     padding: 20px;
@@ -454,4 +459,3 @@ onMounted(() => {
     --el-dialog-border-radius: 1vh
 }
 </style>
-  

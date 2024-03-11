@@ -424,8 +424,8 @@ const uploadImage = (uidToFileNameMap) => {
 
 <template>
   <!-- borderbox -->
-  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-    background-color="#3545659e">
+  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+    :color="['#4f698794', '#4f698794']" background-color="#3545659e">
     <!-- body -->
     <el-container class="subNavPage">
       <br />
@@ -642,8 +642,8 @@ const uploadImage = (uidToFileNameMap) => {
             <el-input v-model="stockform.detail" autocomplete="off" placeholder="请填写情况说明" />
           </el-form-item>
           <el-form-item label="入库凭证" prop="receipt" :rules="[
-            { required: true, message: '请签收凭证', trigger: 'blur' }]">
-            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage />
+            { required: true, message: '请上传入库凭证', trigger: 'blur' }]">
+            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage :limit="3" />
           </el-form-item>
         </DialogComponent>
 
@@ -713,8 +713,8 @@ const uploadImage = (uidToFileNameMap) => {
             <el-input v-model="stockform.detail" autocomplete="off" placeholder="请填写情况说明" />
           </el-form-item>
           <el-form-item label="出库凭证" prop="receipt" :rules="[
-            { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
-            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage />
+            { required: true, message: '请上传出库凭证', trigger: 'blur' }]">
+            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage :limit="3" />
           </el-form-item>
         </DialogComponent>
 
@@ -722,7 +722,8 @@ const uploadImage = (uidToFileNameMap) => {
 
         <!-- table -->
         <el-table :data="tableData.value" @selection-change="handleSelectionChange"
-          style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh" show-overflow-tooltip>
+          style="width: 100%;margin-top: 1vh; border-radius: 1vh" table-layout="fixed" height="52vh"
+          show-overflow-tooltip>
           <el-table-column type="selection" align="center" />
           <el-table-column label="序号" type="index" align="center" min-width="70vh" />
           <el-table-column prop="name" label="产品名称" align="center" />

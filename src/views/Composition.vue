@@ -208,8 +208,8 @@ watch([dialog, refresh], (val1, val2) => {
 
 <template>
     <!-- borderbox -->
-    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-        background-color="#3545659e">
+    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+        :color="['#4f698794', '#4f698794']" background-color="#3545659e">
         <!-- body -->
         <el-container class="subNavPage">
             <br />
@@ -252,20 +252,20 @@ watch([dialog, refresh], (val1, val2) => {
                 <DialogComponent ref="addDialog" :form="addform" dialog-title="新增工段" :refreshFunc="getDataFromAPI"
                     :confirm-func="addSectionAPI" @dialogClose="dialogClose">
                     <el-form-item label="工段名称" prop="section" :rules="[
-                        { required: true, message: '请输入工段名称', trigger: 'blur' },
-                        {
-                            min: 1, max: 30,
-                            message: '长度必须在1-30之间', trigger: 'blur'
-                        }]">
+            { required: true, message: '请输入工段名称', trigger: 'blur' },
+            {
+                min: 1, max: 30,
+                message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
                         <el-input v-model="addform.section" autocomplete="off" placeholder="请输入工段名称" />
                     </el-form-item>
                     <el-form-item class="form-row" v-for="(item, index) in addform.stations" :key="index" label="工位名称"
                         :rules="[
-                            { required: true, message: '请输入工位名称', trigger: 'blur' },
-                            {
-                                min: 1, max: 30,
-                                message: '长度必须在1-30之间', trigger: 'blur'
-                            }]">
+            { required: true, message: '请输入工位名称', trigger: 'blur' },
+            {
+                min: 1, max: 30,
+                message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
                         <el-input v-model="addform.stations[index]" placeholder="请输入工位名称"></el-input>
                         <el-button @click="deleteFormItem(addform, index)">
                             <Minus style="width: 1em; height: 1em;" />
@@ -281,11 +281,11 @@ watch([dialog, refresh], (val1, val2) => {
                 <DialogComponent ref="editDialog" :form="editform" dialog-title="编辑工段名称" :refreshFunc="getDataFromAPI"
                     :confirm-func="changeSectionNameAPI" @dialogClose="dialogClose">
                     <el-form-item label="工段名称" prop="section" :rules="[
-                        { required: true, message: '请输入工段名称', trigger: 'blur' },
-                        {
-                            min: 1, max: 30,
-                            message: '长度必须在1-30之间', trigger: 'blur'
-                        }]">
+            { required: true, message: '请输入工段名称', trigger: 'blur' },
+            {
+                min: 1, max: 30,
+                message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
                         <el-input v-model="editform.newName" autocomplete="off" placeholder="请输入工段名称" />
                     </el-form-item>
                 </DialogComponent>
@@ -294,20 +294,20 @@ watch([dialog, refresh], (val1, val2) => {
                 <DialogComponent ref="manageDialog" :form="manageform" dialog-title="工位管理" :refreshFunc="getDataFromAPI"
                     :confirm-func="updateStationsAPI" @dialogClose="dialogClose">
                     <el-form-item label="工段名称" prop="section" :rules="[
-                        { required: true, message: '请输入工段名称', trigger: 'blur' },
-                        {
-                            min: 1, max: 30,
-                            message: '长度必须在1-30之间', trigger: 'blur'
-                        }]">
+            { required: true, message: '请输入工段名称', trigger: 'blur' },
+            {
+                min: 1, max: 30,
+                message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
                         <el-input v-model="manageform.section" autocomplete="off" disabled placeholder="请输入工段名称" />
                     </el-form-item>
-                    <el-form-item class="form-row" v-for="(item, index) in manageform.stations" :key="index" label="工位名称"
-                        :rules="[
-                            { required: true, message: '请输入工位名称', trigger: 'blur' },
-                            {
-                                min: 1, max: 30,
-                                message: '长度必须在1-30之间', trigger: 'blur'
-                            }]">
+                    <el-form-item class="form-row" v-for="(item, index) in manageform.stations" :key="index"
+                        label="工位名称" :rules="[
+            { required: true, message: '请输入工位名称', trigger: 'blur' },
+            {
+                min: 1, max: 30,
+                message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
                         <el-input v-model="manageform.stations[index]" placeholder="请输入工位名称" disabled></el-input>
                         <el-button @click="deleteFormItem(manageform, index)" disabled>
                             <Minus style="width: 1em; height: 1em;" />
@@ -319,8 +319,8 @@ watch([dialog, refresh], (val1, val2) => {
                 </DialogComponent>
 
                 <!-- table -->
-                <el-table :data="tableData.value" style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh"
-                    show-overflow-tooltip>
+                <el-table :data="tableData.value" style="width: 100%;margin-top: 1vh; border-radius: 1vh"
+                    table-layout="fixed" height="56vh" show-overflow-tooltip>
                     <el-table-column type="selection" align="center" />
                     <el-table-column label="序号" type="index" align="center" min-width="70vh" />
                     <el-table-column prop="section" label="工段名称" align="center" />
@@ -404,4 +404,3 @@ watch([dialog, refresh], (val1, val2) => {
     background-color: rgba(37, 54, 83, 0.498);
 }
 </style>
-

@@ -215,8 +215,8 @@ onMounted(async () => {
 
 <template>
   <!-- borderbox -->
-  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-    background-color="#3545659e">
+  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+    :color="['#4f698794', '#4f698794']" background-color="#3545659e">
     <!-- body -->
     <el-container class="subNavPage">
       <br />
@@ -225,8 +225,8 @@ onMounted(async () => {
       <el-main style="overflow: hidden">
         <!-- search -->
         <div>
-          <SearchComponent :key="renderKey" search-title="文件夹" :searchContent=folderName ref="search1" field="folderName"
-            @search="search" @edit="edit" database="deviceFiles" />
+          <SearchComponent :key="renderKey" search-title="文件夹" :searchContent=folderName ref="search1"
+            field="folderName" @search="search" @edit="edit" database="deviceFiles" />
           <el-button type="primary" style="margin-left: 10px; width: 7%" @click="handleSearch">
             <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
           </el-button>
@@ -250,11 +250,11 @@ onMounted(async () => {
         <DialogComponent ref="addDialog" :form="addform" dialog-title="新建文件夹" :refreshFunc="() => { }"
           :confirm-func="createFolder" @dialogClose="dialogClose">
           <el-form-item label="文件夹:" prop="name" :rules="[
-            { required: true, message: '请输入文件夹名称', trigger: 'blur' },
-            {
-              min: 1, max: 30,
-              message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+      { required: true, message: '请输入文件夹名称', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
             <el-input v-model="addform.name" autocomplete="off" style="width: 100%;" />
           </el-form-item>
         </DialogComponent>
@@ -268,8 +268,8 @@ onMounted(async () => {
 
         <!-- table -->
         <div>
-          <el-table :data="tableData" show-overflow-tooltip style="width: 100%; border-radius: 1vh; margin-top: 1vh"
-            table-layout="fixed" height="50vh">
+          <el-table :data="tableData" show-overflow-tooltip
+            style="width: 100%;margin-top: 1vh; border-radius: 1vh; margin-top: 1vh" table-layout="fixed" height="56vh">
             <el-table-column type="selection" align="center" />
             <el-table-column type="index" label="序号" align="center" min-width="60vh" />
 
@@ -282,6 +282,7 @@ onMounted(async () => {
             </el-table-column>
 
             <el-table-column label="最后修改时间" align="center">
+
               <template #default="scope">
                 <span v-if="scope.row.folderName">{{ scope.row.updatedAt }}</span>
                 <span v-if="scope.row.fileName">{{ scope.row.uploadedAt }}</span>
@@ -289,6 +290,7 @@ onMounted(async () => {
             </el-table-column>
 
             <el-table-column label="创建时间" align="center">
+
               <template #default="scope">
                 <span v-if="scope.row.folderName">{{ scope.row.createdAt }}</span>
                 <!-- 对于文件，如果你有创建时间，你可以在这里显示 -->
@@ -296,6 +298,7 @@ onMounted(async () => {
             </el-table-column>
 
             <el-table-column label="操作" align="center">
+
               <template #default="scope">
                 <el-button class="inline_button" @click="openRenameDialog(scope.row.folderId, scope.row.folderName)">
                   编辑
@@ -363,4 +366,3 @@ onMounted(async () => {
   background-color: rgba(37, 54, 83, 0.498);
 }
 </style>
-

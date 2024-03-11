@@ -385,8 +385,8 @@ const nextImage = () => {
 
 <template>
     <!-- borderbox -->
-    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-        background-color="#3545659e">
+    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+        :color="['#4f698794', '#4f698794']" background-color="#3545659e">
         <!-- body -->
         <el-container class="subNavPage">
             <br />
@@ -422,8 +422,8 @@ const nextImage = () => {
                 </div>
                 <div style="margin-top: 1vh;position:absolute;left: 30%;" v-if="show">
                     <div style="display: inline-block; position: relative;top: 2px; padding-right: 1vh;">更新时间：
-                        <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期"
-                            :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
+                        <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期"
+                            end-placeholder="结束日期" :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
                     </div>
                 </div>
                 <br />
@@ -443,7 +443,8 @@ const nextImage = () => {
 
                 <!-- 编辑弹框 -->
                 <DialogComponent ref="editDialog" :form="updateform" dialog-title="操作记录编辑" :refreshFunc="getDataFromAPI"
-                    :confirm-func="updateMaterialOperationAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
+                    :confirm-func="updateMaterialOperationAPI" @dialogClose="dialogClose" :image=true
+                    @saveImage=saveImage>
                     <el-form-item label="操作" prop="operation">
                         <el-input v-model="updateform.operation" autocomplete="off" disabled />
                     </el-form-item>
@@ -464,30 +465,30 @@ const nextImage = () => {
                         <el-input v-model="updateform.batch" autocomplete="off" disabled />
                     </el-form-item>
                     <el-form-item label="供料单位" prop="supplier" :rules="[
-                        { required: true, message: '请输入供料单位', trigger: 'blur' },
-                        {
-                            min: 1, max: 30,
-                            message: '长度必须在1-30之间', trigger: 'blur'
-                        }]">
+            { required: true, message: '请输入供料单位', trigger: 'blur' },
+            {
+                min: 1, max: 30,
+                message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
                         <el-input v-model="updateform.supplier" autocomplete="off" />
                     </el-form-item>
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="操作人员" prop="operator" :rules="[
-                                { required: true, message: '请输入操作人员', trigger: 'blur' },
-                                {
-                                    min: 1, max: 30,
-                                    message: '长度必须在1-30之间', trigger: 'blur'
-                                }]">
+            { required: true, message: '请输入操作人员', trigger: 'blur' },
+            {
+                min: 1, max: 30,
+                message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
                                 <el-input v-model="updateform.operator" autocomplete="off" />
 
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="操作数量" prop="amount" :rules="[
-                                { required: true, message: '请输入数量', trigger: 'blur' },
-                                { type: 'number', message: '必须是数字', trigger: 'blur' }
-                            ]">
+            { required: true, message: '请输入数量', trigger: 'blur' },
+            { type: 'number', message: '必须是数字', trigger: 'blur' }
+        ]">
                                 <el-input v-model.number="updateform.amount" autocomplete="off" />
                             </el-form-item>
                         </el-col>
@@ -500,14 +501,14 @@ const nextImage = () => {
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="供料日期" prop="supplyTime" :rules="[
-                                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+            { required: true, message: '请输入供料日期', trigger: 'blur' }]">
                                 <el-date-picker v-model="updateform.supplyTime" type="datetime" placeholder="选择供料日期"
                                     value-format="YYYY-MM-DDTHH:mm:ss" />
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-form-item label="操作凭证" prop="receipt" :rules="[
-                        { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
+            { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
                         <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage
                             :uploaded="uploaded" />
                     </el-form-item>
@@ -517,7 +518,8 @@ const nextImage = () => {
 
                 <!-- table -->
                 <el-table :data="tableData.value" @selection-change="handleSelectionChange"
-                    style="width: 100%; border-radius: 1vh" table-layout="fixed" show-overflow-tooltip height="48vh">
+                    style="width: 100%;margin-top: 1vh; border-radius: 1vh" table-layout="fixed" show-overflow-tooltip
+                    height="55vh">
                     <el-table-column type="selection" align="center" min-width="20vh" />
                     <el-table-column label="序号" type="index" align="center" min-width="40vh" />
                     <el-table-column prop="serialNo" label="设备编号" align="center" min-width="120vh" />
@@ -658,4 +660,3 @@ const nextImage = () => {
     height: 33px !important;
 }
 </style>
-

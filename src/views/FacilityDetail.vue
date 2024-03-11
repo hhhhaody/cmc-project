@@ -405,8 +405,8 @@ getFacilityByID(id)
 
 <template>
     <!-- borderbox -->
-    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-        background-color="#3545659e">
+    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+        :color="['#4f698794', '#4f698794']" background-color="#3545659e">
         <!-- body -->
         <el-container class="subNavPage">
             <br />
@@ -426,8 +426,8 @@ getFacilityByID(id)
                 <!-- search -->
                 <div style="margin-top: 1vh">
                     <div style="display: inline-block; position: relative;top: 2px; padding-right: 2vh;">更新时间：
-                        <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期"
-                            :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
+                        <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期"
+                            end-placeholder="结束日期" :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
                     </div>
 
                     <el-button type="primary" style="margin-left: 12px; width: 7%" @click="update">
@@ -439,7 +439,7 @@ getFacilityByID(id)
                 </div>
 
                 <!-- 设备详情 -->
-                <div style="display: flex; justify-content: center; width: 100%;margin-top: 1vh">
+                <div style="display: flex; justify-content: space-between; width: 100%;margin-top: 1vh">
                     <el-card
                         style="display: flex;flex-direction: column;justify-content: space-evenly;align-items: center;">
                         <div style="height: 4vh;line-height: 4vh">
@@ -455,13 +455,14 @@ getFacilityByID(id)
                         <el-descriptions-item label="设备编号">{{ addform.serialNo }}</el-descriptions-item>
                         <el-descriptions-item label="工段名称">{{ addform.section }}</el-descriptions-item>
                         <el-descriptions-item label="工位名称">{{ addform.station }}</el-descriptions-item>
-                        <el-descriptions-item label="日常保养">{{ addform.dailyMaintenance ? '是' : '否' }}</el-descriptions-item>
+                        <el-descriptions-item label="日常保养">{{ addform.dailyMaintenance ? '是' : '否'
+                            }}</el-descriptions-item>
 
                         <el-descriptions-item label="供应商">{{ addform.supplier }}</el-descriptions-item>
 
                         <el-descriptions-item label="购买日期">{{ addform.purchaseTime ? addform.purchaseTime.substring(0,
-                            10) : ''
-                        }}</el-descriptions-item>
+            10) : ''
+                            }}</el-descriptions-item>
                         <el-descriptions-item label="质保期">{{ addform.warranty }}</el-descriptions-item>
                         <el-descriptions-item label="一级保养">{{ addform.firstLevelMaintenance }}</el-descriptions-item>
 
@@ -490,7 +491,8 @@ getFacilityByID(id)
 
                 <!-- table -->
                 <el-table :data="tableData.value" @selection-change="handleSelectionChange"
-                    style="width: 100%; border-radius: 1vh;" table-layout="fixed" show-overflow-tooltip height="36vh">
+                    style="width: 100%;margin-top: 1vh; border-radius: 1vh;" table-layout="fixed" show-overflow-tooltip
+                    height="42vh">
                     <!-- <el-table-column type="selection" align="center" min-width="20vh" /> -->
                     <el-table-column label="序号" type="index" align="center" min-width="40vh" />
                     <el-table-column prop="updateTime" label="更新时间" align="center" min-width="120vh">
@@ -645,4 +647,3 @@ getFacilityByID(id)
     margin-right: 1vh;
 }
 </style>
-
