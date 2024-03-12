@@ -239,12 +239,15 @@ const getFacilityByID = async (id) => {
         addform.purchaseTime = res.data.purchaseTime
         addform.contact = res.data.contact
         addform.contactNo = res.data.contactNo
+        addform.picture = res.data.picture
         addform.attachment = res.data.attachment
         addform.warranty = res.data.warranty
         addform.dailyMaintenance = res.data.dailyMaintenance
         addform.firstLevelMaintenance = res.data.firstLevelMaintenance
         addform.secondLevelMaintenance = res.data.secondLevelMaintenance
+        // console.log(addform);
         getDataFromAPI()
+        detail(res.data.picture)
     }
 };
 
@@ -378,9 +381,9 @@ const imageUrls = ref([]);
 
 const detail = (receipt) => {
     const receiptMap = JSON.parse(receipt);
+    // console.log(receipt);
     imageUrls.value = Object.values(receiptMap).map(url => ("https://cmc.eos-chengdu-1.cmecloud.cn/receipt/" + url));
     currentIndex.value = 0;
-    dialogVisible.value = true;
 }
 
 const prevImage = () => {
@@ -400,7 +403,6 @@ const nextImage = () => {
 const route = useRoute()
 const id = route.query.id
 getFacilityByID(id)
-
 </script>
 
 <template>
@@ -440,8 +442,11 @@ getFacilityByID(id)
 
                 <!-- 设备详情 -->
                 <div style="display: flex; justify-content: space-between; width: 100%;margin-top: 1vh">
+                    <el-card style="width: 50vh; display: flex;align-items: center;justify-content: center;">
+                        <img w-full :src="imageUrls[0]" alt="无图片" class="image" />
+                    </el-card>
                     <el-card
-                        style="display: flex;flex-direction: column;justify-content: space-evenly;align-items: center;">
+                        style="width: 20vh; display: flex;flex-direction: column;justify-content: space-evenly;align-items: center;">
                         <div style="height: 4vh;line-height: 4vh">
                             {{ addform.name }}</div>
                         <div style="height: 4vh;line-height: 4vh;">

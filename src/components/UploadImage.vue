@@ -174,7 +174,7 @@ const handlePreview: UploadProps['onPreview'] = (file) => {
 
 const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
     ElMessage.warning(
-        `限制上传3个文件`
+        `超过文件上传个数限制`
     )
 }
 

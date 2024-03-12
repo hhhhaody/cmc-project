@@ -393,8 +393,8 @@ const uploadImage = (uidToFileNameMap) => {
 
 <template>
   <!-- borderbox -->
-  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-    background-color="#3545659e">
+  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+    :color="['#4f698794', '#4f698794']" background-color="#3545659e">
     <!-- body -->
     <el-container class="subNavPage">
       <br />
@@ -405,6 +405,8 @@ const uploadImage = (uidToFileNameMap) => {
         <!-- <br /> -->
         <!-- record -->
         <!-- <el-card> -->
+        <p style="margin-bottom: 1vh;">CMC智能制造生产线工作站是基于产品的工业化设计,以自动化、智能化的手段赋能模块化建筑的柔性化智能制造生产线.</p>
+
         <el-carousel :interval="1440000">
           <el-carousel-item>
             <el-card>
@@ -491,4 +493,3 @@ const uploadImage = (uidToFileNameMap) => {
   height: 100vh !important
 }
 </style>
-

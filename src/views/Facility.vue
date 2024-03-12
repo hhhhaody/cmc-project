@@ -518,9 +518,38 @@ const uploadImage = (uidToFileNameMap) => {
   addform.picture = JSON.stringify(uidToFileNameMap);
   console.log(addform);
   confirmImage.value = false
+
 }
 //#endregion
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//图片详情相关
+//#region
 
+const dialogVisible = ref(false);
+const currentIndex = ref(0);
+const imageUrls = ref([]);
+
+const detail = (receipt) => {
+  const receiptMap = JSON.parse(receipt);
+  imageUrls.value = Object.values(receiptMap).map(url => ("https://cmc.eos-chengdu-1.cmecloud.cn/receipt/" + url));
+  console.log(imageUrls);
+  currentIndex.value = 0;
+  dialogVisible.value = true;
+}
+
+const prevImage = () => {
+  if (currentIndex.value > 0) {
+    currentIndex.value--;
+  }
+}
+
+const nextImage = () => {
+  if (currentIndex.value < imageUrls.value.length - 1) {
+    currentIndex.value++;
+  }
+}
+//#endregion
 </script>
 
 <template>
@@ -766,7 +795,7 @@ const uploadImage = (uidToFileNameMap) => {
           </el-form-item>
           <el-form-item label="图片" prop="picture" :rules="[
       { required: true, message: '请上传图片', trigger: 'blur' }]">
-            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage :uploaded="uploaded" />
+            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage />
           </el-form-item>
         </DialogComponent>
 
@@ -801,7 +830,7 @@ const uploadImage = (uidToFileNameMap) => {
 
         <!-- 编辑弹框 -->
         <DialogComponent ref="editDialog" :form="addform" dialog-title="编辑设备" :refreshFunc="getDataFromAPI"
-          :confirm-func="updateFacilityAPI" @dialogClose="dialogClose">
+          :confirm-func="updateFacilityAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
           <el-row>
             <el-col :span="12">
               <el-form-item label="设备名称" prop="name" :rules="[
@@ -975,12 +1004,20 @@ const uploadImage = (uidToFileNameMap) => {
             <div style="margin-left: 20px;">{{ addform.attachment }}</div>
           </el-form-item>
 
-          <el-form-item label="图片" prop="pic" :rules="[
+          <el-form-item label="图片" prop="picture" :rules="[
       { required: true, message: '请上传图片', trigger: 'blur' }]">
-            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage />
+            <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage :uploaded="uploaded" />
           </el-form-item>
         </DialogComponent>
 
+        <!-- 图片详情弹框 -->
+        <el-dialog v-model="dialogVisible" style="width: fit-content;border-radius: 1vh;">
+          <ArrowLeft @click="prevImage" v-if="currentIndex > 0" style="width: 5vh; height: 5vh" class="prev-button" />
+          <img w-full :src="imageUrls[currentIndex]" alt="无图片" class="image" />
+          <ArrowRight @click="nextImage" v-if="currentIndex < imageUrls.length - 1" style="width: 5vh; height: 5vh"
+            class="next-button" />
+
+        </el-dialog>
 
 
         <!-- table -->
@@ -1000,7 +1037,15 @@ const uploadImage = (uidToFileNameMap) => {
               {{ scope.row.purchaseTime.substring(0, 10) }}
             </template>
           </el-table-column>
-          <el-table-column prop="supplier" label="供应商" align="center" />
+          <el-table-column prop="picture" label="图片" align="center">
+
+            <template #default="scope">
+              <el-button v-if="scope.row.picture !== null && scope.row.picture !== {}" class="inline_button"
+                @click="detail(scope.row.picture)">
+                查看
+              </el-button>
+            </template>
+          </el-table-column>
           <el-table-column prop="status" label="设备状态" align="center" />
           <el-table-column prop="operation" label="操作" align="center" min-width="100vh">
 
