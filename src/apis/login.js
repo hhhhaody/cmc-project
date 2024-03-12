@@ -1,48 +1,85 @@
 import httpInstance from "../utils/http";
-// 基础URL配置，这取决于你的后端服务地址
-// const baseURL = 'http://10.200.20.17:8081';
-
-// // 创建一个axios实例
-// const apiClient = axios.create({
-//     baseURL: baseURL,
-//     timeout: 10000,  // 请求超时时间限制
-//     headers: {
-//         'Content-Type': 'application/json',
-//     },
-// });
-
-// apiClient.interceptors.request.use((config) => {
-//     const token = sessionStorage.getItem("jwtToken");
-//     if (token) {
-//         config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-// }, (error) => {
-//     return Promise.reject(error);
-// });
-
 
 // 登录API
-export const loginUser = async (username, password) => {
-    try {
-        const res = await httpInstance.post('/login', {
+export const loginUser = (username, password) => {
+    return httpInstance({
+        url: '/users/login',
+        method: 'POST',
+        data: {
             username,
-            password,
-        });
-
-        // console.log(res);
-        const token = res;
-        // console.log(token);
-        if (token) {
-            sessionStorage.setItem("jwtToken", token);
-            return res;
-        } else {
-            console.error("No token received");
-            throw new Error("No token received");  // 抛出错误以便调用者可以捕获
+            password
         }
-    } catch (error) {
-        console.error(error);
-        throw error;  // 抛出错误以便调用者可以捕获
-    }
-};
+    })
+}
 
+// 获取用户列表信息API
+export const getUserInfoAPI = (page, pageSize, name, username, phone, adminType, status) => {
+    return httpInstance({
+        url: '/users/userInfo',
+        params: {
+            page,
+            pageSize,
+            name,
+            username,
+            phone,
+            adminType,
+            status
+        }
+    })
+}
+
+export const addUserInfoAPI = (data) => {
+    return httpInstance({
+        url: '/users/addUserInfo',
+        method: 'post',
+        data
+    })
+}
+
+export const getByIdAPI = (id) => {
+    return httpInstance({
+        url: '/users/' + id
+    })
+}
+
+export const updateUserAPI = (data) => {
+    return httpInstance({
+        url: '/users/updateUser',
+        method: 'put',
+        data
+    })
+}
+
+export const updateUserStatusAPI = (data) => {
+    return httpInstance({
+        url: '/users/updateUserStatus',
+        method: 'put',
+        data
+    })
+}
+
+export const resetPasswordAPI = (userId) => {
+    return httpInstance({
+        url: `/users/${userId}/resetPassword`,
+        method: 'put',
+    });
+}
+
+
+export const deleteUserAPI = (id) => {
+    return httpInstance({
+        url: '/users/' + id,
+        method: 'delete'
+    })
+}
+
+export const updatePasswordAPI = (oldPassword, newPassword) => {
+    return httpInstance({
+        url: '/users/updatePassword',
+        method: 'put',
+        data: {
+            oldPassword,
+            newPassword,
+        },
+    });
+};

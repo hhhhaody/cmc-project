@@ -7,6 +7,8 @@ import DialogComponent from "../components/DialogComponent.vue";
 import { getMaterialOperationAPI, getMaterialOperationByIdAPI, deleteMaterialOperationAPI, updateMaterialOperationAPI } from "../apis/material";
 import ExportButton from "@/components/ExportButton.vue";
 import { getFacilityStatusAPI } from "../apis/facility";
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 
 // 从后端获取数据
@@ -428,7 +430,7 @@ const nextImage = () => {
                 </div>
                 <br />
                 <!-- operation -->
-                <div style="display: flex; justify-content: space-between">
+                <div v-if="!userStore.isReadOnly" style="display: flex; justify-content: space-between">
                     <span>
                         <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value"
                             fileName="设备状态信息.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />

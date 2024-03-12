@@ -5,6 +5,8 @@ import SearchComponent from "../components/SearchComponent.vue";
 import PaginationComponent from "../components/PaginationComponent.vue";
 import { getProductionRecordAPI } from "../apis/productionRecord";
 import ExportButton from "@/components/ExportButton.vue";
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 // 数据定义
 const tableData = reactive({ value: [] });
@@ -211,7 +213,7 @@ onMounted(async () => {
         <!-- operation -->
         <div style="display: flex; justify-content: space-between">
           <span>
-            <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value" fileName="实际产量记录.xlsx"
+            <ExportButton v-if="!userStore.isReadOnly" v-model="selectedRows" :headers="headers" :tableData="tableData.value" fileName="实际产量记录.xlsx"
               :filterFunction="filterExportData" buttonLabel="导出" />
           </span>
         </div>

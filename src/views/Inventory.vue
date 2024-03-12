@@ -10,6 +10,8 @@ import DialogComponent from "../components/DialogComponent.vue";
 import UploadImage from "../components/UploadImage.vue";
 import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, getByIdAPI, addMaterialOperationAPI, getByBatchAPI } from "../apis/material";
 import ExportButton from "@/components/ExportButton.vue";
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 
 // 从后端获取数据
@@ -416,7 +418,7 @@ const uploadImage = (uidToFileNameMap) => {
         </div>
         <br />
         <!-- operation -->
-        <div style="display: flex; justify-content: space-between">
+        <div v-if="!userStore.isReadOnly" style="display: flex; justify-content: space-between">
           <span>
             <el-button type="primary" @click="addDialog.dialogVisible = true, dialog = true">
               <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增物料
@@ -719,7 +721,7 @@ const uploadImage = (uidToFileNameMap) => {
           <el-table-column prop="spec" label="规格型号" align="center" />
           <el-table-column prop="amount" label="库存数量" align="center" />
           <el-table-column prop="threshold" label="低库存阈值" align="center" />
-          <el-table-column prop="operation" label="操作" align="center">
+          <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="操作" align="center">
             <template #default="scope">
               <el-button class="inline_button"
                 @click="getMaterialByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, updateform.id = scope.row.id">

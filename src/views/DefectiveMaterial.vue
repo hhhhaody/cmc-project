@@ -9,6 +9,8 @@ import DialogComponent from "../components/DialogComponent.vue";
 import UploadImage from "../components/UploadImage.vue";
 import { getDefectiveAPI, getByBatchAPI, addDefectiveOperationAPI, getDefectiveOperationListByBatchAPI } from "../apis/defective"
 import ExportButton from "@/components/ExportButton.vue";
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 // 从后端获取数据
 const tableData = reactive([]);
@@ -362,7 +364,7 @@ const nextImage = () => {
         </div>
         <br />
         <!-- operation -->
-        <div style="display: flex; justify-content: space-between">
+        <div v-if="!userStore.isReadOnly" style="display: flex; justify-content: space-between">
           <span>
             <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value" fileName="不良物料库存信息.xlsx"
               :filterFunction="filterExportData" buttonLabel="导出" />

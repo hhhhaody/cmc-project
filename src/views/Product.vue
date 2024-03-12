@@ -11,7 +11,8 @@ import UploadImage from "../components/UploadImage.vue";
 import ExportButton from "@/components/ExportButton.vue";
 import { getStationsIdsAPI } from "../apis/productionLine"
 import { getProductAPI, addProductAPI, getByIdAPI, deleteProductAPI, updateProductAPI, addProductOperationAPI, getByBatchAPI } from "../apis/product"
-
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 // 从后端获取数据
 const tableData = reactive([]);
@@ -447,7 +448,7 @@ const uploadImage = (uidToFileNameMap) => {
         </div>
         <br />
         <!-- operation -->
-        <div style="display: flex; justify-content: space-between">
+        <div v-if="!userStore.isReadOnly" style="display: flex; justify-content: space-between">
           <span>
             <el-button type="primary" @click="addDialog.dialogVisible = true, dialog = true">
               <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增产品类型
@@ -729,7 +730,7 @@ const uploadImage = (uidToFileNameMap) => {
           <el-table-column prop="spec" label="规格型号" align="center" />
           <el-table-column prop="qualified" label="合格品库存数量" align="center" />
           <el-table-column prop="discarded" label="废品库存数量" align="center" />
-          <el-table-column prop="operation" label="操作" align="center">
+          <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="操作" align="center">
             <template #default="scope">
               <el-button class="inline_button"
                 @click="getProductByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, addform.id = scope.row.id">

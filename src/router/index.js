@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import Home1 from '../views/Home1.vue'
 import Home2 from '../views/Home2.vue'
+import { jwtDecode } from 'jwt-decode';
 
 export function getQueryVariable(variable) {
   const query = window.location.search.substring(1);
@@ -150,6 +151,14 @@ const router = createRouter({
       path: '/folder-details/:folderId/:folderName',
       name: 'FolderDetails',
       component: () => import('../views/FolderDetails.vue')
+    }, {
+      path: '/UserManagement',
+      name: 'UserManagement',
+      component: () => import('../views/UserManagement.vue')
+    }, {
+      path: '/PersonalCenter',
+      name: 'PersonalCenter',
+      component: () => import('../views/PersonalCenter.vue')
     },
     {
       path: '/about',
@@ -168,21 +177,33 @@ router.beforeEach((to, from, next) => {
   if (to.name !== 'login' && !isAuthenticated()) next({ name: 'login', query: { pid: pid || '' } })
   else next()
 })
-//判断是否登录
-function isAuthenticated() {
 
+//判断是否登录
+//isAuthenticated 函数检查存储的令牌是否存在，以及该令牌是否已过期。如果令牌不存在或已过期，函数返回 false，用户被重定向到登录页面。令牌有效，函数返回 true，继续导航。
+function isAuthenticated() {
   let setToken = getQueryVariable('token') || '';
   if (setToken) {
     setToken = decodeURIComponent(setToken);
     sessionStorage.setItem("mobile_data_token", setToken);
   }
+
   const token = sessionStorage.getItem("mobile_data_token");
   if (token) {
-    return true
+    try {
+      const decoded = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      if (decoded.exp < currentTime) {
+        // 令牌已过期
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error("JWT 解码错误:", error);
+      return false;
+    }
   } else {
-    return false
+    return false;
   }
-
 }
 // console.log("Authenticated:", isAuthenticated());
 

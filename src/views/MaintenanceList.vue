@@ -12,7 +12,8 @@ import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, a
 import { addFacilityAPI, getFacilityAPI, deleteFacilityAPI, updateFacilityAPI, updateFacilityStatusAPI, updateFacilityDailyStatusAPI } from "../apis/facility";
 import ExportButton from "@/components/ExportButton.vue";
 import { getMaintenancePlanAPI, addMaintenancePlanAPI, getByIdAPI, updateMaintenancePlanAPI, updateMaintenancePlanStatusAPI } from "../apis/maintenance"
-
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 
 // 从后端获取数据
@@ -506,12 +507,12 @@ const uploadImage = (uidToFileNameMap) => {
         <!-- operation -->
         <div style="display: flex; justify-content: space-between">
           <span>
-            <el-button type="primary" @click="addDialog.dialogVisible = true, dialog = true">
+            <el-button v-if="!userStore.isReadOnly" type="primary" @click="addDialog.dialogVisible = true, dialog = true">
               <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增
             </el-button>
 
-            <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value" fileName="设备维护信息.xlsx"
-              :filterFunction="filterExportData" buttonLabel="导出" />
+            <ExportButton v-if="!userStore.isReadOnly" v-model="selectedRows" :headers="headers"
+              :tableData="tableData.value" fileName="设备维护信息.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
           </span>
           <span>
 
@@ -750,7 +751,6 @@ const uploadImage = (uidToFileNameMap) => {
                   <RouterLink :to="{ name: 'maintenancePlanDetail', query: { id: scope.row.id } }">详情
                   </RouterLink>
                 </el-button>
-
               </template>
             </el-table-column>
 
@@ -794,14 +794,27 @@ const uploadImage = (uidToFileNameMap) => {
           <el-table-column prop="status" label="维护状态" align="center" />
           <el-table-column prop="operation" label="操作" align="center" min-width="110vh">
             <template #default="scope">
-              <el-button v-if="!scope.row.ongoing" class=" inline_button" style="color:#ff9a02a0"
+              <!--修改代码-->
+              <!-- 检修维护按钮，仅在 !scope.row.ongoing 且用户不是只读角色时显示 -->
+              <el-button v-if="!scope.row.ongoing && !userStore.isReadOnly" class="inline_button" style="color:#ff9a02a0"
+                @click="maintenance(scope.row.id), getDataFromAPI()">
+                检修维护
+              </el-button>
+              <!-- 编辑按钮，仅在 scope.row.ongoing 且用户不是只读角色时显示 -->
+              <el-button v-if="scope.row.ongoing && !userStore.isReadOnly" class="inline_button"
+                @click="getMaintenancePlanByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, stockform.id = scope.row.id">
+                编辑
+              </el-button>
+
+              <!--原始代码-->
+              <!-- <el-button v-if="!scope.row.ongoing" class=" inline_button" style="color:#ff9a02a0"
                 @click="maintenance(scope.row.id), getDataFromAPI()">
                 检修维护
               </el-button>
               <el-button v-else class="inline_button"
                 @click="getMaintenancePlanByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, stockform.id = scope.row.id">
                 编辑
-              </el-button>
+              </el-button> -->
               <el-button class="inline_button">
                 <RouterLink :to="{ name: 'maintenancePlanDetail', query: { id: scope.row.id } }">详情
                 </RouterLink>

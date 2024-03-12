@@ -16,7 +16,7 @@ httpInstance.interceptors.request.use(function (config) {
     config.cancelToken = new axios.CancelToken(cancel => {
         _axiosPromiseArr.push({ cancel })
     })
-    const token = sessionStorage.getItem("jwtToken");
+    const token = sessionStorage.getItem("jwt_token") || sessionStorage.getItem("mobile_data_token");
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
         // console.log(config);

@@ -207,8 +207,7 @@ const state = reactive({
         <div class="right-sidebar">
           <el-button @click="handleButtonClick" type="primary"
             style="margin-right: 70%; margin-bottom: 10px">监控状态更新</el-button>
-          <my-collapse @point-selected="handlePointSelected" @stream-changed="handleStreamChanged"
-            @default-streams="handleDefaultStreams"></my-collapse>
+          <my-collapse @point-selected="handlePointSelected" @default-streams="handleDefaultStreams"></my-collapse>
         </div>
       </div>
     </div>

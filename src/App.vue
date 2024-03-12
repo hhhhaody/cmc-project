@@ -1,11 +1,15 @@
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
+import { RouterLink, RouterView, useRouter } from "vue-router";
 import { Decoration5 } from "@kjgl77/datav-vue3";;
 import Swiper from 'swiper/bundle';
+// import * as jwtDecode from 'jwt-decode';
+import { useUserStore } from './stores/store.js';
 
 // import styles bundle
 import 'swiper/css/bundle';
+
+// 使用 Pinia store
+const userStore = useUserStore();
 
 // init Swiper:
 const swiper = new Swiper('.swiper', {
@@ -41,7 +45,7 @@ const videos = [
 
 // test API function
 // import { testAPI } from "./apis/home";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 // const depts = ref([]);
 // const test = async () => {
@@ -67,6 +71,23 @@ const hide = () => {
 const show = () => {
   animation.value = "block";
 };
+
+
+//退出功能
+const router = useRouter(); // 获取 router 实例
+
+const logout = () => {
+  // 清除本地存储的用户信息
+  localStorage.removeItem('jwt_token');
+  sessionStorage.removeItem('mobile_data_token');
+
+  localStorage.removeItem('adminType'); // 清除保存的用户类型
+  // 重置 Pinia store 中的状态
+  userStore.setAdminType('USER'); // 将用户类型重置为默认值
+
+  // 重定向到登录页面
+  router.push('/login');
+};
 </script>
 
 <template>
@@ -79,6 +100,27 @@ const show = () => {
           <!-- <Decoration5 :dur="5" style="width:50%;height:40px;margin: auto;" :color="['#5d8cbd', 'white']" /> -->
         </span>
       </h1>
+
+      <div class="user-avatar">
+        <el-dropdown trigger="hover">
+          <span class="el-dropdown-link">
+            <img src="@/assets/images/user.png" alt="User Avatar" />
+            <i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item v-if="userStore.adminType === '管理员'">
+                <RouterLink to="/UserManagement" @click="hide">用户管理</RouterLink>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <RouterLink to="/PersonalCenter" @click="hide">个人中心</RouterLink>
+              </el-dropdown-item>
+              <el-dropdown-item @click="logout" divided>退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
+
     </header>
     <div>
       <RouterView />
@@ -199,25 +241,25 @@ const show = () => {
     <el-carousel style="z-index: 1;" class="fullscreen" :interval="1440000" :style="{ display: animation }">
       <el-carousel-item style="height: 225%;">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/方通阻焊_V2_231225.mp4" type="video/mp4" />
+          <source src="./assets/videos/fangtong_V2.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
       <el-carousel-item style="height: 225%;">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/V3_231221(1).mp4" type="video/mp4" />
+          <source src="./assets/videos/xinggang_V2.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
       <el-carousel-item style="height: 225%;">gi
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/地面钢网_V2_231221.mp4" type="video/mp4" />
+          <source src="./assets/videos/dimian_V2.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
       <el-carousel-item style="height: 225%;">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/总装工作站_V4_231221.mp4" type="video/mp4" />
+          <source src="./assets/videos/zongzhuang_V2.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
@@ -346,6 +388,26 @@ const show = () => {
   transform: translate(-50%, -50%); */
   /* width: 100%; */
   height: 75vh;
+}
+
+.user-avatar {
+  position: absolute;
+  right: 0;
+  /* 将头像靠右 */
+  top: 50%;
+  /* 垂直居中对齐 */
+  transform: translateY(-60%);
+  /* 确保头像在垂直方向上居中 */
+  margin-right: 120px;
+}
+
+.user-avatar img {
+  width: 45px;
+  /* 头像的宽度 */
+  height: 45px;
+  /* 头像的高度 */
+  border-radius: 50%;
+  /* 如果你想要圆形头像 */
 }
 
 
