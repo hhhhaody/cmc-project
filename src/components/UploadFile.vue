@@ -62,8 +62,8 @@ const customHttpRequest = async (options) => {
     // uidToFileNameMap.value[file.uid] = originalFileName;
 
     // 检查文件大小，如果超过10MB，则提示用户
-    if (file.size > 10485760) { // 10MB的大小限制
-        ElMessage.warning("文件大小超过10MB，请选择一个较小的文件。");
+    if (file.size > 52428800) { // 50MB的大小限制
+        ElMessage.warning("文件大小超过50MB，请选择一个较小的文件。");
         return; // 中断上传流程
     }
 
