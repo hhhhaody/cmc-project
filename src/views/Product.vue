@@ -11,7 +11,8 @@ import UploadImage from "../components/UploadImage.vue";
 import ExportButton from "@/components/ExportButton.vue";
 import { getStationsIdsAPI } from "../apis/productionLine"
 import { getProductAPI, addProductAPI, getByIdAPI, deleteProductAPI, updateProductAPI, addProductOperationAPI, getByBatchAPI } from "../apis/product"
-
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 // 从后端获取数据
 const tableData = reactive([]);
@@ -192,7 +193,7 @@ const checkNumber = (rule, value, callback) => {
   if (value > remainingStock.value) {
     callback(new Error('此批次余量不足'))
   }
-    else {
+  else {
     callback()
   }
 }
@@ -447,7 +448,7 @@ const uploadImage = (uidToFileNameMap) => {
         </div>
         <br />
         <!-- operation -->
-        <div style="display: flex; justify-content: space-between">
+        <div v-if="!userStore.isReadOnly" style="display: flex; justify-content: space-between">
           <span>
             <el-button type="primary" @click="addDialog.dialogVisible = true, dialog = true">
               <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增产品类型
@@ -483,45 +484,45 @@ const uploadImage = (uidToFileNameMap) => {
         <DialogComponent ref="addDialog" :form="addform" dialog-title="新增产品类型" :refreshFunc="getDataFromAPI"
           :confirm-func="addProductAPI" @dialogClose="dialogClose">
           <el-form-item label="产品名称" prop="name" :rules="[
-            { required: true, message: '请输入产品名称', trigger: 'blur' },
-            {
-              min: 1, max: 30,
-              message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+      { required: true, message: '请输入产品名称', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
             <el-input v-model="addform.name" autocomplete="off" placeholder="请输入产品名称" />
           </el-form-item>
           <el-form-item label="规格型号" prop="spec" :rules="[
-            { required: true, message: '请输入规格型号', trigger: 'blur' },
-            {
-              min: 1, max: 30,
-              message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+      { required: true, message: '请输入规格型号', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
             <el-input v-model="addform.spec" autocomplete="off" placeholder="请输入规格型号" />
           </el-form-item>
           <el-form-item label="库存阈值值" prop="threshold" :rules="[
-            { required: true, message: '请输入阈值', trigger: 'blur' },
-            { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-          ]">
+      { required: true, message: '请输入阈值', trigger: 'blur' },
+      { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
+    ]">
             <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入库存阈值值" />
           </el-form-item>
           <el-form-item label="堆料预警值" prop="stackThreshold" :rules="[
-            { required: true, message: '请输入堆料预警值', trigger: 'blur' },
-            { type: 'number', message: '预警值必须是数字', trigger: 'blur' }
-          ]">
+      { required: true, message: '请输入堆料预警值', trigger: 'blur' },
+      { type: 'number', message: '预警值必须是数字', trigger: 'blur' }
+    ]">
             <el-input v-model.number="addform.stackThreshold" autocomplete="off" placeholder="请输入堆料预警值" />
           </el-form-item>
           <el-form-item label="工段名称" prop="section" :rules="[
-            { required: true, message: '请选择工段名称', trigger: 'blur' },
-            {
-              min: 1, max: 30,
-              message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+      { required: true, message: '请选择工段名称', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
             <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="工段名称"
               :searchContent=addform.section field="section" @search="search" database="productionLine" />
           </el-form-item>
           <el-form-item class="form-row" v-for="(item, index) in stations" :key="index" :label="item" :rules="[
-            { required: true, message: '请输入理论耗时', trigger: 'blur' },
-            { type: 'number', message: '理论耗时必须是数字', trigger: 'blur' }]">
+      { required: true, message: '请输入理论耗时', trigger: 'blur' },
+      { type: 'number', message: '理论耗时必须是数字', trigger: 'blur' }]">
             <el-input v-model.number="addform.times[index]" placeholder="请输入理论耗时(秒)"></el-input>
           </el-form-item>
         </DialogComponent>
@@ -529,46 +530,49 @@ const uploadImage = (uidToFileNameMap) => {
         <!-- 编辑弹框 -->
         <DialogComponent ref="editDialog" :form="addform" dialog-title="编辑产品类型" :refreshFunc="getDataFromAPI"
           :confirm-func="updateProductAPI" @dialogClose="dialogClose">
+          <el-form-item label="ID" prop="id">
+            <el-input disabled v-model.number="addform.id" autocomplete="off" />
+          </el-form-item>
           <el-form-item label="产品名称" prop="name" :rules="[
-            { required: true, message: '请输入物料名称', trigger: 'blur' },
-            {
-              min: 1, max: 30,
-              message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+      { required: true, message: '请输入物料名称', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
             <el-input v-model="addform.name" autocomplete="off" placeholder="请输入产品名称" />
           </el-form-item>
           <el-form-item label="规格型号" prop="spec" :rules="[
-            { required: true, message: '请输入规格型号', trigger: 'blur' },
-            {
-              min: 1, max: 30,
-              message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+      { required: true, message: '请输入规格型号', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
             <el-input v-model="addform.spec" autocomplete="off" placeholder="请输入规格型号" />
           </el-form-item>
           <el-form-item label="库存阈值值" prop="threshold" :rules="[
-            { required: true, message: '请输入阈值', trigger: 'blur' },
-            { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-          ]">
+      { required: true, message: '请输入阈值', trigger: 'blur' },
+      { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
+    ]">
             <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入库存阈值值" />
           </el-form-item>
           <el-form-item label="堆料预警值" prop="stackThreshold" :rules="[
-            { required: true, message: '请输入堆料预警值', trigger: 'blur' },
-            { type: 'number', message: '预警值必须是数字', trigger: 'blur' }
-          ]">
+      { required: true, message: '请输入堆料预警值', trigger: 'blur' },
+      { type: 'number', message: '预警值必须是数字', trigger: 'blur' }
+    ]">
             <el-input v-model.number="addform.stackThreshold" autocomplete="off" placeholder="请输入堆料预警值" />
           </el-form-item>
           <el-form-item label="工段名称" prop="section" :rules="[
-            { required: true, message: '请选择工段名称', trigger: 'blur' },
-            {
-              min: 1, max: 30,
-              message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+      { required: true, message: '请选择工段名称', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
             <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="工段名称"
               :search-content=addform.section field="section" @search="search" database="productionLine" />
           </el-form-item>
           <el-form-item class="form-row" v-for="(item, index) in stations" :key="index" :label="item" :rules="[
-            { required: true, message: '请输入理论耗时', trigger: 'blur' },
-            { type: 'number', message: '理论耗时必须是数字', trigger: 'blur' }]">
+      { required: true, message: '请输入理论耗时', trigger: 'blur' },
+      { type: 'number', message: '理论耗时必须是数字', trigger: 'blur' }]">
             <el-input v-model.number="addform.times[index]" placeholder="请输入理论耗时(秒)"></el-input>
           </el-form-item>
         </DialogComponent>
@@ -579,21 +583,21 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="产品名称" prop="name" :rules="[
-                { required: true, message: '请选择产品名称', trigger: 'blur' }]">
+      { required: true, message: '请选择产品名称', trigger: 'blur' }]">
                 <DialogSearch :key="renderKey" :wNo="100" search-title="产品名称" :searchContent=stockform.name field="name"
                   @search="dialogSearchSuggestion" :data="stockform" database="products" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="规格型号" prop="spec" :rules="[
-                { required: true, message: '请选择规格型号', trigger: 'blur' }]">
+      { required: true, message: '请选择规格型号', trigger: 'blur' }]">
                 <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号" :searchContent=stockform.spec field="spec"
                   @search="dialogSearchSuggestion" :data="stockform" database="products" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-form-item label="处理结果" prop="quality" :rules="[
-            { required: true, message: '请选择质量情况', trigger: 'blur' }]">
+      { required: true, message: '请选择质量情况', trigger: 'blur' }]">
             <el-radio-group v-model="stockform.quality">
               <el-radio-button label="合格品" />
               <el-radio-button label="返修件" />
@@ -603,20 +607,20 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="入库人员" prop="operator" :rules="[
-                { required: true, message: '请输入入库人员', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入入库人员', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="入库人员"
                   :searchContent=stockform.operator field="operator" @search="search" database="products/operation" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="入库数量" prop="amount" :rules="[
-                { required: true, message: '请输入数量', trigger: 'blur' },
-                { type: 'number', message: '必须是数字', trigger: 'blur' }
-              ]">
+      { required: true, message: '请输入数量', trigger: 'blur' },
+      { type: 'number', message: '必须是数字', trigger: 'blur' }
+    ]">
                 <el-input v-model.number="stockform.amount" autocomplete="off" />
               </el-form-item>
             </el-col>
@@ -624,25 +628,25 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="入库日期" prop="operateTime" :rules="[
-                { required: true, message: '请输入入库日期', trigger: 'blur' }]">
+      { required: true, message: '请输入入库日期', trigger: 'blur' }]">
                 <el-date-picker v-model="stockform.operateTime" type="datetime" placeholder="选择入库日期"
                   value-format="YYYY-MM-DDTHH:mm:ss" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="生产日期" prop="produceTime" :rules="[
-                { required: true, message: '请输入选择生产日期', trigger: 'blur' }]">
+      { required: true, message: '请输入选择生产日期', trigger: 'blur' }]">
                 <el-date-picker v-model="stockform.produceTime" type="datetime" placeholder="选择生产日期"
                   value-format="YYYY-MM-DDTHH:mm:ss" :disabled-date="disabledDate" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-form-item label="情况说明" prop="detail" :rules="[
-            { required: true, message: '请填写情况说明', trigger: 'blur' }]">
+      { required: true, message: '请填写情况说明', trigger: 'blur' }]">
             <el-input v-model="stockform.detail" autocomplete="off" placeholder="请填写情况说明" />
           </el-form-item>
           <el-form-item label="入库凭证" prop="receipt" :rules="[
-            { required: true, message: '请上传入库凭证', trigger: 'blur' }]">
+      { required: true, message: '请上传入库凭证', trigger: 'blur' }]">
             <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage :limit="3" />
           </el-form-item>
         </DialogComponent>
@@ -665,7 +669,7 @@ const uploadImage = (uidToFileNameMap) => {
             </el-col>
           </el-row>
           <el-form-item label="产品批次" prop="batch" :rules="[
-            { required: true, message: '请选择物料批次', trigger: 'blur' }]">
+      { required: true, message: '请选择物料批次', trigger: 'blur' }]">
             <DialogSearch :key="renderKey" :wNo="100" search-title="产品批次" :searchContent=stockform.batch field="batch"
               @search="dialogSearchSuggestion" :data="stockform" database="products/operation" />
           </el-form-item>
@@ -675,21 +679,21 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="出库人员" prop="operator" :rules="[
-                { required: true, message: '请输入出库人员', trigger: 'blur' },
-                {
-                  min: 1, max: 30,
-                  message: '长度必须在1-30之间', trigger: 'blur'
-                }]">
+      { required: true, message: '请输入出库人员', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
                 <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="出库人员"
                   :searchContent=stockform.operator field="operator" @search="search" database="products/operation" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="出库数量" prop="amount" :rules="[
-                { required: true, message: '请输入数量', trigger: 'blur' },
-                { type: 'number', message: '必须是数字', trigger: 'blur' },
-                { validator: checkNumber, trigger: 'blur' }
-              ]">
+      { required: true, message: '请输入数量', trigger: 'blur' },
+      { type: 'number', message: '必须是数字', trigger: 'blur' },
+      { validator: checkNumber, trigger: 'blur' }
+    ]">
                 <el-input v-model.number="stockform.amount" autocomplete="off" :placeholder="remains" />
               </el-form-item>
             </el-col>
@@ -697,7 +701,7 @@ const uploadImage = (uidToFileNameMap) => {
           <el-row>
             <el-col :span="12">
               <el-form-item label="出库日期" prop="operateTime" :rules="[
-                { required: true, message: '请输入出库日期', trigger: 'blur' }]">
+      { required: true, message: '请输入出库日期', trigger: 'blur' }]">
                 <el-date-picker v-model="stockform.operateTime" type="datetime" placeholder="选择出库日期"
                   value-format="YYYY-MM-DDTHH:mm:ss" />
               </el-form-item>
@@ -709,11 +713,11 @@ const uploadImage = (uidToFileNameMap) => {
             </el-col>
           </el-row>
           <el-form-item label="情况说明" prop="detail" :rules="[
-            { required: true, message: '请填写情况说明', trigger: 'blur' }]">
+      { required: true, message: '请填写情况说明', trigger: 'blur' }]">
             <el-input v-model="stockform.detail" autocomplete="off" placeholder="请填写情况说明" />
           </el-form-item>
           <el-form-item label="出库凭证" prop="receipt" :rules="[
-            { required: true, message: '请上传出库凭证', trigger: 'blur' }]">
+      { required: true, message: '请上传出库凭证', trigger: 'blur' }]">
             <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage :limit="3" />
           </el-form-item>
         </DialogComponent>
@@ -730,7 +734,7 @@ const uploadImage = (uidToFileNameMap) => {
           <el-table-column prop="spec" label="规格型号" align="center" />
           <el-table-column prop="qualified" label="合格品库存数量" align="center" />
           <el-table-column prop="discarded" label="废品库存数量" align="center" />
-          <el-table-column prop="operation" label="操作" align="center">
+          <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="操作" align="center">
             <template #default="scope">
               <el-button class="inline_button"
                 @click="getProductByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, addform.id = scope.row.id">
@@ -793,4 +797,3 @@ const uploadImage = (uidToFileNameMap) => {
   background-color: rgba(37, 54, 83, 0.498);
 }
 </style>
-

@@ -13,7 +13,8 @@ import { addFacilityAPI, getFacilityAPI, deleteFacilityAPI, getByIdAPI, updateFa
 import ExportButton from "@/components/ExportButton.vue";
 import { getAllFolderAPI, getAllFilesInFolderAPI } from "../apis/files";
 import { getSearchSuggestionAPI, getDialogSearchSuggestionAPI } from "../apis/util";
-
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 
 // 从后端获取数据
@@ -583,7 +584,7 @@ const nextImage = () => {
         </div>
         <br />
         <!-- operation -->
-        <div style="display: flex; justify-content: space-between">
+        <div v-if="!userStore.isReadOnly" style="display: flex; justify-content: space-between">
           <span>
             <el-button type="primary" @click="addDialog.dialogVisible = true, dialog = true">
               <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增
@@ -1047,8 +1048,7 @@ const nextImage = () => {
             </template>
           </el-table-column>
           <el-table-column prop="status" label="设备状态" align="center" />
-          <el-table-column prop="operation" label="操作" align="center" min-width="100vh">
-
+          <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="操作" align="center" min-width="100vh">
             <template #default="scope">
               <el-button class="inline_button"
                 @click="getFacilityByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, addform.id = scope.row.id">

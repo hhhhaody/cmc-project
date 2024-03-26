@@ -5,6 +5,8 @@ import SearchComponent from "../components/SearchComponent.vue";
 import PaginationComponent from "../components/PaginationComponent.vue";
 import { getProductionTimeAPI } from "../apis/productionTime";
 import ExportButton from "@/components/ExportButton.vue";
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 // 定义工作站名称
 const sections = ["型钢切割工作站", "地面钢网工作站", "方通组焊工作站", "模块总装工作站"];
@@ -251,7 +253,7 @@ onMounted(async () => {
         <!-- operation -->
         <div style="display: flex; justify-content: space-between">
           <span>
-            <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.data" fileName="生产耗时记录.xlsx"
+            <ExportButton v-if="!userStore.isReadOnly" v-model="selectedRows" :headers="headers" :tableData="tableData.data" fileName="生产耗时记录.xlsx"
               :filterFunction="filterExportData" buttonLabel="导出" />
 
 

@@ -6,6 +6,8 @@ import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
 import { getMaterialOperationAPI, getMaterialOperationByIdAPI, deleteMaterialOperationAPI, updateMaterialOperationAPI } from "../apis/material";
 import ExportButton from "@/components/ExportButton.vue";
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 // 从后端获取数据
 const tableData = reactive([]);
@@ -440,7 +442,7 @@ const nextImage = () => {
                 </div>
                 <br />
                 <!-- operation -->
-                <div style="display: flex; justify-content: space-between">
+                <div v-if="!userStore.isReadOnly" style="display: flex; justify-content: space-between">
                     <span>
                         <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value"
                             fileName="物料操作信息.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
@@ -564,8 +566,7 @@ const nextImage = () => {
                             </el-button>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="operation1" label="业务操作" align="center">
-
+                    <el-table-column v-if="!userStore.isReadOnly" prop="operation1" label="业务操作" align="center">
                         <template #default="scope">
                             <el-button class="inline_button"
                                 @click="getMaterialOperationByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, updateform.id = scope.row.id">

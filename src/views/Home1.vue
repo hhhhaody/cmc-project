@@ -7,6 +7,7 @@ import UsageRecord from "../components/UsageRecord.vue";
 // import GaugeGraph from "../components/GaugeGraph.vue";
 import { ref } from "vue";
 import { useRouter } from 'vue-router';
+import CarbonVue from "../components/Carbon.vue";
 
 const stations = ref(["型钢切割工作站", "地面钢网工作站", "方通组焊工作站", "模块总装工作站"]);
 const radar = ref(stations.value[0]); //耗时统计图形组件
@@ -14,6 +15,9 @@ const bar = ref(stations.value[0]); //产品生产情况图形组件
 const usage = ref(stations.value[0]); //原材料使用情况图形组件
 const line = ref(stations.value[0]);  //能耗统计图形组件
 const router = useRouter();
+
+const carbon = ref(true)
+const showToggle = ref(false)
 
 const navigate = (routeName) => {
   router.push({ name: routeName });
@@ -55,9 +59,23 @@ const changeStation = (type, val) => {
 
 <template>
   <main class="layout">
-    <span class="g4 animate__animated animate__fadeInRight grey">
+    <span v-if="carbon" class="g4 animate__animated animate__fadeInRight grey" @mouseenter="showToggle = true"
+      @mouseleave="showToggle = false">
       <i>
-        <span class="click" @click="navigate('inventory')">能耗统计</span>
+        <span class="click" @click="navigate('lowCarbon')">碳排放总览</span>
+        <div class="tab">
+          <span>当月</span>
+          <el-divider direction="vertical" />
+          <span>前一天</span>
+        </div>
+      </i>
+      <Carbon />
+      <e v-show="showToggle" class="toggleButton" @click="carbon = false">能耗统计</e>
+    </span>
+    <span v-else class="g4 animate__animated animate__fadeInRight grey" @mouseenter="showToggle = true"
+      @mouseleave="showToggle = false">
+      <i>
+        <span class="click" @click="navigate('lowCarbon')">能耗统计</span>
         <el-dropdown class="tab">
           <span class="el-dropdown-link" style="font-size: 15px; font-weight: 500;"> {{ line }} </span>
           <template #dropdown>
@@ -71,6 +89,7 @@ const changeStation = (type, val) => {
         </el-dropdown>
       </i>
       <LineGraph class="graph" :station="line" :stations="stations" />
+      <e v-show="showToggle" class="toggleButton" @click="carbon = true">碳排放</e>
     </span>
     <span class="g3 animate__animated animate__fadeInLeft grey">
       <i>
@@ -264,4 +283,19 @@ i {
 :deep .el-popper__arrow {
   display: none;
 } */
+
+.toggleButton {
+  color: #729fd0;
+  position: fixed;
+  top: 50%;
+  right: 1vh;
+  transform: translateY(-50%);
+  z-index: 1000;
+  writing-mode: vertical-rl !important;
+  /* 从上到下的垂直书写方式 */
+  text-orientation: mixed !important;
+  /* 保持文字正常方向 */
+  cursor: pointer;
+  font-weight: normal;
+}
 </style>

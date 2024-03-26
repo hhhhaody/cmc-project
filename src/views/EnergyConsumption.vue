@@ -9,6 +9,8 @@ import { getEnergyConsumptionRecordsAPI, getFirstEnergyConsumptionRecordsAPI } f
 import ExportButton from "@/components/ExportButton.vue";
 import * as XLSX from 'xlsx';
 import * as echarts from 'echarts';
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 // 可响应的数据存储区域和初始状态
 const sections = reactive([
@@ -294,7 +296,7 @@ watch([dateRange], getDataFromAPI);
         <!-- operation -->
         <div style="display: flex; justify-content: space-between">
           <span>
-            <el-button type="primary">
+            <el-button v-if="!userStore.isReadOnly" type="primary">
               <ExportButton v-model="selectedRows" :headers="headers" :tableData="getCurrentTableData()"
                 fileName="能耗统计记录.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
             </el-button>
@@ -344,7 +346,7 @@ watch([dateRange], getDataFromAPI);
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="operation" label="数据" align="center">
+            <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="数据" align="center">
               <template #default="scope">
                 <div class="flex justify-space-between flex-wrap gap-4">
                   <el-button style="color:rgb(114, 159, 208)" link

@@ -30,8 +30,13 @@
 </template>
  
 <script>
-import { getQueryVariable } from '../router/index.js'
+import { getQueryVariable } from '../router/index.js';
 import { loginUser } from "../apis/login";
+import { ElMessage } from 'element-plus';
+import { useUserStore } from '../stores/store.js';
+import { jwtDecode } from 'jwt-decode';
+
+//登录功能
 export default {
     name: "login",
     data() {
@@ -40,7 +45,8 @@ export default {
             user: {
                 username: "",
                 password: ""
-            }
+            },
+            loading: false
         };
     },
     created() {
@@ -53,34 +59,50 @@ export default {
     },
     methods: {
         async doLogin() {
-
             if (!this.user.username || !this.user.password) {
-                this.$message.error("请输入用户名和密码！");
+                ElMessage.error("请输入用户名和密码！");
                 return;
             }
 
+            this.loading = true;
+
             try {
-                const res = await loginUser(this.user.username, this.user.password);
-                if (res != null) {
-                    // 存储JWT令牌（如果有）
-                    localStorage.setItem('jwt_token', res.token);
-                    sessionStorage.setItem("mobile_data_token", res.token);
-                    // 跳转到主页
-                    this.$router.push({ name: 'home1' });  // 确保路由名称与您的路由配置一致
-                } else {
-                    this.$message.error("登录失败，用户名或密码不正确。");
+                const response = await loginUser(this.user.username, this.user.password);
+                if (response && response.code !== 1) {
+                    ElMessage.error(response.msg || "登录失败");
+                    this.loading = false;
+                    return;
                 }
-            }
-            catch (error) {
-                console.error("登录失败：", error);
-                this.$message.error("登录失败，用户名或密码不正确。");
+
+                localStorage.setItem('jwt_token', response.data); // 保存jwt令牌到localStorage
+                const decodedToken = jwtDecode(response.data);
+                localStorage.setItem('adminType', decodedToken.adminType); // 保存用户角色到 localStorage
+                sessionStorage.setItem("mobile_data_token", response.data); // 保存jwt令牌到sessionStorage
+
+                const userStore = useUserStore();
+                userStore.setAdminType(decodedToken.adminType); // 更新 Pinia store 中的用户角色状态
+
+                userStore.setUserRole(decodedToken.adminType);
+                localStorage.setItem('userRole',decodedToken.adminType);
+
+                // 解码JWT令牌，获取账号角色，并更新全局状态
+                // try {
+                //     const decodedToken = jwtDecode(response.data);
+                //     store.adminType = decodedToken.adminType || 'USER';
+                // } catch (error) {
+                //     console.error("JWT 解码错误:", error);
+                // }
+                this.$router.push({ name: 'home1' });
+            } catch (error) {
+                ElMessage.error(error.response?.data?.msg || "登录异常，请稍后重试");
+            } finally {
+                this.loading = false;
             }
         }
     }
 };
 </script>
  
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .login {
     background-size: cover;
@@ -91,7 +113,7 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 9999;
+    z-index: 2000;
 }
 
 .login-wrap {
@@ -149,5 +171,10 @@ h1 {
 :deep .el-button--primary {
     --el-button-bg-color: #33496169 !important;
     --el-button-border-color: #828d99 !important
+}
+
+.el-message {
+    z-index: 10000;
+    /* 或者更高，确保高于登录页面 */
 }
 </style>

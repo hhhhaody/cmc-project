@@ -8,11 +8,11 @@ import { ref, onMounted, inject, watch } from "vue";
 const BarChartRef = ref();
 
 const props = defineProps({
-  station: { type: String},
-  stations: { type: Array},
+  station: { type: String },
+  stations: { type: Array },
 });
 
-const x = ref(["C型钢", "L型钢","T型钢"])
+const x = ref(["C型钢", "L型钢", "T型钢"])
 const y = ref([]);
 
 y.value = [50, 70, 40];
@@ -113,8 +113,8 @@ watch(
   (newVal) => {
     // console.log(props.station);
     if (props.station === props.stations[0]) {
-      x.value = ["C型钢", "L型钢","T型钢"]
-      y.value = [50, 70, 40]
+      x.value = ["C型钢", "L型钢", "T型钢", "C型钢A", "T型钢A", "L型钢A", "C型钢B", "T型钢B"]
+      y.value = [50, 70, 40, 30, 55, 80, 50, 69]
       // [
       //   {
       //     value:,
@@ -123,8 +123,8 @@ watch(
       // ];
     }
     if (props.station === props.stations[1]) {
-      x.value = ["网片A", "网片B", "网片C", "网片D"]
-      y.value = [2, 7, 4, 2]
+      x.value = ["网片A", "网片B", "网片C", "网片D", "网片e", "网片f", "网片h", "网片g", "网片i"]
+      y.value = [2, 7, 4, 2, 3, 2, 4, 5, 1]
       // [
       //   {
       //     value: ,
@@ -135,23 +135,23 @@ watch(
     if (props.station === props.stations[2]) {
       x.value = ["方通柱"]
       y.value = [80]
-    //   data.value[0].value = [46, 22, 20, 30, 23, 13]
-    //   [
-    //     {
-    //       value: ,
-    //       name: "产品生产情况",
-    //     },
-    //   ];
+      //   data.value[0].value = [46, 22, 20, 30, 23, 13]
+      //   [
+      //     {
+      //       value: ,
+      //       name: "产品生产情况",
+      //     },
+      //   ];
     }
     if (props.station === props.stations[3]) {
       x.value = ["模块A", "模块B"]
       y.value = [2, 1]
-    //   data.value[0].value = [
-    //     {
-    //       value: [50, 14, 28, 26, 42, 21],
-    //       name: "产品生产情况",
-    //     },
-    //   ];
+      //   data.value[0].value = [
+      //     {
+      //       value: [50, 14, 28, 26, 42, 21],
+      //       name: "产品生产情况",
+      //     },
+      //   ];
     }
 
     BarChart.setOption({

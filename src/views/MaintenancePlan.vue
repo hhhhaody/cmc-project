@@ -43,6 +43,8 @@ import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, a
 import { addFacilityAPI, getFacilityAPI, deleteFacilityAPI, updateFacilityAPI, updateFacilityStatusAPI, updateFacilityDailyStatusAPI } from "../apis/facility";
 import ExportButton from "@/components/ExportButton.vue";
 import { getMaintenancePlanAPI, addMaintenancePlanAPI, getByIdAPI, updateMaintenancePlanAPI, updateMaintenancePlanStatusAPI } from "../apis/maintenance"
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -530,7 +532,7 @@ getDefaultDate()
     <h1 style="font-size:21px">设备维护计划</h1>
     <div style="display: flex; justify-content: space-between;margin-left:4vh;width:91%;position:absolute;top:4vh">
       <span>
-        <el-button type="primary" @click="addDialog.dialogVisible = true, dialog = true">
+        <el-button v-if="!userStore.isReadOnly" type="primary" @click="addDialog.dialogVisible = true, dialog = true">
           <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增
         </el-button>
 
@@ -863,14 +865,27 @@ getDefaultDate()
               <el-input v-model="item.info" autocomplete="off" placeholder="请填写维护内容" disabled style="margin-right:1vh" />
             </el-form-item>
           </el-form>
-          <el-button v-if="!item.ongoing" class=" inline_button" style="color:#ff9a02a0"
+          <!--修改代码-->
+          <!-- 检修维护按钮，仅在 !item.ongoing 且用户不是只读角色时显示 -->
+          <el-button v-if="!item.ongoing && !userStore.isReadOnly" class="inline_button" style="color:#ff9a02a0"
+            @click="maintenance(item.id), getDataFromAPI()">
+            检修维护
+          </el-button>
+          <!-- 编辑按钮，对于 !item.ongoing 条件的 else 分支，还需额外确保用户不是只读角色 -->
+          <el-button v-if="item.ongoing && !userStore.isReadOnly" class="inline_button"
+            @click="getMaintenancePlanByID(item.id), editDialog.dialogVisible = true, dialog = true, stockform.id = item.id">
+            编辑
+          </el-button>
+
+          <!--原始代码-->
+          <!-- <el-button v-if="!item.ongoing" class=" inline_button" style="color:#ff9a02a0"
             @click="maintenance(item.id), getDataFromAPI()">
             检修维护
           </el-button>
           <el-button v-else class="inline_button"
             @click="getMaintenancePlanByID(item.id), editDialog.dialogVisible = true, dialog = true, stockform.id = item.id">
             编辑
-          </el-button>
+          </el-button> -->
         </el-card>
       </div>
 

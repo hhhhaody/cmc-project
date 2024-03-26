@@ -4,6 +4,8 @@ import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
 import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
 import { getSectionsAPI, addSectionAPI, deleteSectionAPI, changeSectionNameAPI, getStationsAPI, updateStationsAPI } from "../apis/productionLine"
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 // 从后端获取数据
 const tableData = reactive([]);
@@ -224,7 +226,7 @@ watch([dialog, refresh], (val1, val2) => {
                 <!-- operation -->
                 <div style="display: flex; justify-content: space-between">
                     <span>
-                        <el-button type="primary" @click="addDialog.dialogVisible = true, dialog = true" disabled>
+                        <el-button v-if="!userStore.isReadOnly" type="primary" @click="addDialog.dialogVisible = true, dialog = true" disabled>
                             <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增
                         </el-button>
 
@@ -324,7 +326,7 @@ watch([dialog, refresh], (val1, val2) => {
                     <el-table-column type="selection" align="center" />
                     <el-table-column label="序号" type="index" align="center" min-width="70vh" />
                     <el-table-column prop="section" label="工段名称" align="center" />
-                    <el-table-column prop="operation" label="操作" align="center">
+                    <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="操作" align="center">
                         <template #default="scope">
                             <el-button class="inline_button"
                                 @click="getStationsBySection(scope.row.section), manageDialog.dialogVisible = true, dialog = true, manageform.section = scope.row.section">

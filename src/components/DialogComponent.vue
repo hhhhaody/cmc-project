@@ -32,7 +32,9 @@ const clear = () => {
 
     formRef.value.resetFields()
     dialogVisible.value = false
-    props.refreshFunc()
+    if (props.refreshFunc) { // 添加检查确保 refreshFunc 存在
+        props.refreshFunc();
+    }
     emit("dialogClose");
 
 }

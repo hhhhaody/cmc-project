@@ -8,6 +8,8 @@ import 'font-awesome/css/font-awesome.min.css';
 import { useRouter } from 'vue-router';
 import { createFolderAPI, renameItemAPI, deleteItemAPI, getAllFolderAPI } from "../apis/files";
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 // 初始化变量和响应式数据
 const router = useRouter();
@@ -238,7 +240,7 @@ onMounted(async () => {
         <!-- operation -->
         <div style="display: flex; justify-content: space-between">
           <span>
-            <el-button type="primary" @click="handleAddButtonClick">
+            <el-button v-if="!userStore.isReadOnly" type="primary" @click="handleAddButtonClick">
               <Plus style="width: 1em; height: 1em; margin-right: 8px" />新建文件夹
             </el-button>
 
@@ -297,8 +299,7 @@ onMounted(async () => {
               </template>
             </el-table-column>
 
-            <el-table-column label="操作" align="center">
-
+            <el-table-column v-if="!userStore.isReadOnly" label="操作" align="center">
               <template #default="scope">
                 <el-button class="inline_button" @click="openRenameDialog(scope.row.folderId, scope.row.folderName)">
                   编辑

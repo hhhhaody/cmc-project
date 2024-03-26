@@ -364,7 +364,7 @@ onMounted(() => {
   startTimer()
 });
 
-// 有弹框时或用户编辑搜索条件时停止实时更新 
+// 有弹框时或用户编辑搜索条件时停止实时更新
 watch([dialog, refresh], (val1, val2) => {
   console.log(`dialog visible is ${val1[0]}, refresh is ${val1[1]}`)
   if (val1[0] | !val1[1]) clearInterval(timer.value)
@@ -376,7 +376,7 @@ watch([dialog, refresh], (val1, val2) => {
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //图片上传相关
-//#region 
+//#region
 
 const uploadImage = (uidToFileNameMap) => {
   // console.log("picture uploaded");
@@ -405,35 +405,92 @@ const uploadImage = (uidToFileNameMap) => {
         <!-- <br /> -->
         <!-- record -->
         <!-- <el-card> -->
-        <p style="margin-bottom: 1vh;">CMC智能制造生产线工作站是基于产品的工业化设计,以自动化、智能化的手段赋能模块化建筑的柔性化智能制造生产线.</p>
+        <p style="margin-bottom: 1vh;" class="overview">CMC智能制造生产线工作站是基于产品的工业化设计,以自动化、智能化的手段赋能模块化建筑的柔性化智能制造生产线.</p>
 
-        <el-carousel :interval="1440000">
+        <el-carousel :interval="1440000" style="height: 62vh; width: 100%">
           <el-carousel-item>
-            <el-card>
-              方通阻焊工作站
-              <video id="bgVid" playsinline="" autoplay="" muted="" loop="">
-                <source src="../assets/videos/方通阻焊_V2_231225.mp4" type="video/mp4" />
+            <el-card style="border-radius: 1vh;height: 100%;">
+              <div class="card">
 
-              </video>
+                <div class="description">
+                  <h2>
+                    方通组焊工作站
+                  </h2>
+                  <i class="text">
+                    该工作站通过自动变位机构、柔性自动化夹具、协同焊接机器人等硬件设备，运用全自动高精度非标柔性化加工等多项技术，实现方通高精度自动定位组装、非标自动化焊接、自动下料堆垛等功能。工作站所使用的焊接机器人具备先进的感应和控制系统，能够根据焊接任务的需求进行自动调整，确保焊缝的质量和稳定性。无论是大规模的生产还是复杂的焊接工艺，都能够高效高质地完成，本工作站的生产效率较人工生产效率提升80倍。
+                  </i>
+                </div>
+                <video controls class="video" playsinline="" autoplay="" muted="" loop="">
+                  <source class="scale" src="../assets/videos/fangtong_V2.mp4" type="video/mp4" />
+
+                </video>
+
+              </div>
+
             </el-card>
           </el-carousel-item>
-          <el-carousel-item> 型钢切割工作站
-            <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-              <source src="../assets/videos/V3_231221(1).mp4" type="video/mp4" />
+          <el-carousel-item>
+            <el-card style="border-radius: 1vh;height: 100%;">
+              <div class="card">
 
-            </video>
+                <div class="description">
+                  <h2>
+                    型钢切割工作站
+                  </h2>
+                  <i class="text">
+                    该工作站以自动上料桁架机械手、自动下料堆垛料桁架机械手、主动跟随变位机构、柔性激光切割加工中心等硬件支撑，运用全自动高精度非标柔性化加工技术以及全自动高精度切割技术，实现高精度的切割和打孔加工，可兼容多种不同类型的型钢，能够迅速、精确的满足生产需求，同时利用机械手可实现型钢原材料的自动上料，成品自动下料堆垛，生产效率较人工生产效率提升4倍。
+                  </i>
+                </div>
+                <video controls class="video" playsinline="" autoplay="" muted="" loop="">
+                  <source class="scale" src="../assets/videos/xinggang_V2.mp4" type="video/mp4" />
+
+                </video>
+
+              </div>
+
+            </el-card>
           </el-carousel-item>
-          <el-carousel-item> 地面钢网工作站
-            <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-              <source src="../assets/videos/地面钢网_V2_231221.mp4" type="video/mp4" />
+          <el-carousel-item>
+            <el-card style="border-radius: 1vh;height: 100%;">
+              <div class="card">
 
-            </video>
+                <div class="description">
+                  <h2>
+                    地面钢网工作站
+                  </h2>
+                  <i class="text">
+                    该工作站通过采用自动上下料桁架机械手、钢网柔性全自动焊接中心等硬件设备，运用全自动高精度定位组装、全自动高精度柔性焊接等多项技术，实现型钢高精度自动定位组装，非标钢网结构柔性全自动焊接，钢网自动下料堆垛等功能。工作站所使用的自动上料桁架机械臂及焊接机器人均配备先进的感知设备和控制系统，能够准确识别各种材料的上料位置及焊缝位置，进行自适应的精准定位，高效完成生产任务。本工作站生产效率较人工生产效率提升4倍。
+                  </i>
+                </div>
+                <video controls class="video" playsinline="" autoplay="" muted="" loop="">
+                  <source class="scale" src="../assets/videos/dimian_V2.mp4" type="video/mp4" />
+
+                </video>
+
+              </div>
+
+            </el-card>
           </el-carousel-item>
-          <el-carousel-item> 模块总装工作站
-            <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-              <source src="../assets/videos/总装工作站_V4_231221.mp4" type="video/mp4" />
+          <el-carousel-item>
+            <el-card style="border-radius: 1vh;height: 100%;">
+              <div class="card">
 
-            </video>
+                <div class="description">
+                  <h2>
+                    总装工作站
+                  </h2>
+                  <i class="text">
+                    该工作站通过自动焊接机械臂、移动组装模台、墙板拼装定位固定夹具等硬件，应用全自动高精度定位组装、全自动高精度柔性焊接、模块化自动总装等多项技术,实现模块各种规格尺寸波纹板墙体的拼装焊接及地面钢网的组装焊接等功能，本工作站可以适配不同尺寸模块的焊接工作，生产效率是人工生产效率的3倍。
+                  </i>
+                </div>
+                <video controls class="video" playsinline="" autoplay="" muted="" loop="">
+                  <source class="scale" src="../assets/videos/zongzhuang_V2.mp4" type="video/mp4" />
+
+                </video>
+
+              </div>
+
+            </el-card>
           </el-carousel-item>
 
         </el-carousel>
@@ -489,7 +546,66 @@ const uploadImage = (uidToFileNameMap) => {
   background-color: rgba(37, 54, 83, 0.498);
 }
 
-:deep el-carousel__container {
-  height: 100vh !important
+.overview {
+  font-size: large;
+  text-indent: 4vh;
+  line-height: 2;
+  text-shadow: rgb(128, 164, 196) 1px 1px 1px;
+}
+
+.video {
+  flex-grow: 2;
+  width: 50%;
+  /* height: 56vh; */
+  height: 72%;
+  padding: 5vh;
+  background-color: black;
+  overflow: hidden;
+  border-radius: 2vh;
+  /* padding-bottom: 2vh; */
+}
+
+.scale {
+  transform: scale(2);
+}
+
+:deep .el-carousel__container {
+  height: 100%;
+}
+
+:deep .el-carousel__indicator--horizontal {
+  /* display: none; */
+  background: #e5eef7;
+}
+
+.card {
+  padding: 1vh;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 80vh;
+  margin-bottom: 1vh;
+}
+
+
+.description {
+  padding: 5vh;
+  display: flex;
+  flex-direction: column;
+  width: 100vh;
+  align-items: center;
+  /* justify-content: center; */
+  height: 60vh;
+  font-size: large;
+  text-indent: 4vh;
+  text-align: left;
+  line-height: 2;
+  text-shadow: darkgray 1px 1px 1px;
+}
+
+.text {
+  white-space: pre-line;
+  padding-top: 2vh;
+  font-size: large;
 }
 </style>

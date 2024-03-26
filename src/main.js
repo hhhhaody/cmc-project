@@ -9,6 +9,7 @@ import ElementPlus from 'element-plus'
 
 import App from './App.vue'
 import router from './router'
+import { useUserStore } from './stores/store.js';
 
 const app = createApp(App)
 
@@ -18,5 +19,9 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 app.use(createPinia())
 app.use(router)
 app.use(ElementPlus, { locale: zhCn })
+
+// 初始化用户状态
+const userStore = useUserStore();
+userStore.initializeStore();
 
 app.mount('#app')

@@ -1,12 +1,51 @@
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
+import { RouterLink, RouterView, useRouter } from "vue-router";
 import { Decoration5 } from "@kjgl77/datav-vue3";;
+import Swiper from 'swiper/bundle';
+// import * as jwtDecode from 'jwt-decode';
+import { useUserStore } from './stores/store.js';
+
+// import styles bundle
+import 'swiper/css/bundle';
+
+// 使用 Pinia store
+const userStore = useUserStore();
+
+// init Swiper:
+const swiper = new Swiper('.swiper', {
+  // Optional parameters
+  direction: 'horizontal',
+  autoplay: {
+    delay: 5000,
+  },
+
+  // If we need pagination
+  // pagination: {
+  //   el: '.swiper-pagination',
+  // },
+
+  // Navigation arrows
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+
+  // And if we need scrollbar
+  // scrollbar: {
+  //   el: '.swiper-scrollbar',
+  // },
+});
+
+const videos = [
+  { source: './assets/videos/总装工作站_V4_231221.mp4" type="video/mp4' },
+  { source: './assets/videos/方通阻焊_V1_231222.mp4" type="video/mp4' },
+  // Add more video sources as needed
+];
 
 
 // test API function
 // import { testAPI } from "./apis/home";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 // const depts = ref([]);
 // const test = async () => {
@@ -32,6 +71,23 @@ const hide = () => {
 const show = () => {
   animation.value = "block";
 };
+
+
+//退出功能
+const router = useRouter(); // 获取 router 实例
+
+const logout = () => {
+  // 清除本地存储的用户信息
+  localStorage.removeItem('jwt_token');
+  sessionStorage.removeItem('mobile_data_token');
+
+  localStorage.removeItem('adminType'); // 清除保存的用户类型
+  // 重置 Pinia store 中的状态
+  userStore.setAdminType('USER'); // 将用户类型重置为默认值
+
+  // 重定向到登录页面
+  router.push('/login');
+};
 </script>
 
 <template>
@@ -41,6 +97,27 @@ const show = () => {
         <!-- <img alt="Our logo" src="@/assets/logo.png" /> -->
         <RouterLink to="/about" @click="hide" style="color: white;">CMC产线智能化管理系统</RouterLink>
       </h1>
+
+      <div class="user-avatar">
+        <el-dropdown trigger="hover">
+          <span class="el-dropdown-link">
+            <img src="@/assets/images/user.png" alt="User Avatar" />
+            <i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item v-if="userStore.adminType === '管理员'">
+                <RouterLink to="/UserManagement" @click="hide">用户管理</RouterLink>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <RouterLink to="/PersonalCenter" @click="hide">个人中心</RouterLink>
+              </el-dropdown-item>
+              <el-dropdown-item @click="logout" divided>退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
+
     </header>
     <div>
       <RouterView />
@@ -90,6 +167,12 @@ const show = () => {
         </template>
       </el-dropdown>
 
+      <!-- <span class="el-dropdown-link navItem nav5"> -->
+      <RouterLink to="/quality" @click="hide" class="navItem nav5">质量管理</RouterLink>
+
+      <!-- </span> -->
+
+
       <el-dropdown class="navItem nav3">
         <span class="el-dropdown-link"> 生产管理 </span>
         <template #dropdown>
@@ -104,6 +187,10 @@ const show = () => {
 
             <el-dropdown-item>
               <RouterLink to="/energyConsumption" @click="hide">能耗统计记录</RouterLink>
+            </el-dropdown-item>
+
+            <el-dropdown-item>
+              <RouterLink to="/lowCarbon" @click="hide">碳管理</RouterLink>
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -161,28 +248,29 @@ const show = () => {
     <el-carousel style="z-index: 1;" class="fullscreen" :interval="1440000" :style="{ display: animation }">
       <el-carousel-item style="height: 225%;">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/方通阻焊_V2_231225.mp4" type="video/mp4" />
+          <source src="./assets/videos/fangtong_V2.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
       <el-carousel-item style="height: 225%;">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/V3_231221(1).mp4" type="video/mp4" />
+          <source src="./assets/videos/zongzhuang_V2.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
       <el-carousel-item style="height: 225%;">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/地面钢网_V2_231221.mp4" type="video/mp4" />
+          <source src="./assets/videos/xinggang_V2.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
       <el-carousel-item style="height: 225%;">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/总装工作站_V4_231221.mp4" type="video/mp4" />
+          <source src="./assets/videos/dimian_V2.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
+
 
     </el-carousel>
   </div>
@@ -310,6 +398,26 @@ const show = () => {
   height: 75vh;
 }
 
+.user-avatar {
+  position: absolute;
+  right: 0;
+  /* 将头像靠右 */
+  top: 50%;
+  /* 垂直居中对齐 */
+  transform: translateY(-60%);
+  /* 确保头像在垂直方向上居中 */
+  margin-right: 5vh;
+}
+
+.user-avatar img {
+  width: 40px;
+  /* 头像的宽度 */
+  height: 40px;
+  /* 头像的高度 */
+  border-radius: 50%;
+  /* 如果你想要圆形头像 */
+}
+
 
 
 /* .fullscreenVideo {
@@ -430,21 +538,25 @@ nav .navItem {
 }
 
 nav .nav1 {
-  left: -10%;
+  left: -5%;
 }
 
 nav .nav2 {
-  left: -5%;
+  left: -3%;
   top: -35%;
 }
 
 nav .nav3 {
-  left: 5%;
+  left: 3%;
   top: -35%;
 }
 
 nav .nav4 {
-  left: 10%;
+  left: 5%;
+}
+
+nav .nav5 {
+  top: -50%
 }
 
 nav .link {

@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BarGraph: typeof import('./src/components/BarGraph.vue')['default']
+    Carbon: typeof import('./src/components/Carbon.vue')['default']
     DeviceStatus: typeof import('./src/components/DeviceStatus.vue')['default']
     DialogComponent: typeof import('./src/components/DialogComponent.vue')['default']
     DialogSearch: typeof import('./src/components/DialogSearch.vue')['default']
@@ -29,6 +30,7 @@ declare module 'vue' {
     ElDescriptions: typeof import('element-plus/es')['ElDescriptions']
     ElDescriptionsItem: typeof import('element-plus/es')['ElDescriptionsItem']
     ElDialog: typeof import('element-plus/es')['ElDialog']
+    ElDivider: typeof import('element-plus/es')['ElDivider']
     ElDropdown: typeof import('element-plus/es')['ElDropdown']
     ElDropdownItem: typeof import('element-plus/es')['ElDropdownItem']
     ElDropdownMenu: typeof import('element-plus/es')['ElDropdownMenu']

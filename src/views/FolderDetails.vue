@@ -11,6 +11,8 @@ import { ElMessage, ElMessageBox } from 'element-plus';
 import axios from 'axios';
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 // 初始化变量和响应式数据
 const route = useRoute();
@@ -335,11 +337,11 @@ onMounted(() => {
                 </div>
                 <br />
                 <!-- operation -->
-                <div style="display: flex; justify-content: space-between">
+                <div v-if="!userStore.isReadOnly" style="display: flex">
                     <UploadFile ref="uploadFileRef" :folder-id="route.params.folderId"
                         @file-uploaded="onFileUploaded" />
 
-                    <div style="margin-right: 88%;">
+                    <div style="margin-left: 1vh;">
                         <el-button type="primary" @click="handleBatchDownload">
                             <download style="width: 1em; height: 1em; margin-right: 8px" />批量下载
                         </el-button>
@@ -384,8 +386,7 @@ onMounted(() => {
                             </template>
                         </el-table-column>
 
-                        <el-table-column label="操作" align="center">
-
+                        <el-table-column v-if="!userStore.isReadOnly" label="操作" align="center">
                             <template #default="scope">
                                 <el-button class="inline_button" v-if="scope.row.fileName"
                                     @click.prevent="downloadFile(scope.row.fileId)">下载</el-button>

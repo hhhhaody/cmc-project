@@ -12,7 +12,8 @@ import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, a
 import { addFacilityAPI, getFacilityAPI, deleteFacilityAPI, getByIdAPI, updateFacilityAPI, updateFacilityStatusAPI, updateFacilityDailyStatusAPI } from "../apis/facility";
 import ExportButton from "@/components/ExportButton.vue";
 import { getMaintenancePlanAPI, addMaintenancePlanAPI, updateMaintenancePlanAPI, updateMaintenancePlanStatusAPI } from "../apis/maintenance"
-
+import { useUserStore } from '../stores/store.js';
+const userStore = useUserStore();
 
 
 // 从后端获取数据
@@ -509,7 +510,7 @@ const uploadImage = (uidToFileNameMap) => {
                             <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增
                         </el-button> -->
 
-                        <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value"
+                        <ExportButton v-if="!userStore.isReadOnly" v-model="selectedRows" :headers="headers" :tableData="tableData.value"
                             fileName="日常维护信息.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
                     </span>
                     <span>
@@ -748,7 +749,7 @@ const uploadImage = (uidToFileNameMap) => {
                             '未完成' : '未完成' }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="operation" label="操作" align="center" min-width="110vh">
+                    <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="操作" align="center" min-width="110vh">
                         <template #default="scope">
                             <!-- <el-button v-if="!scope.row.ongoing" class=" inline_button" style="color:#ff9a02a0"
                                 @click="maintenance(scope.row.id), getDataFromAPI()">
