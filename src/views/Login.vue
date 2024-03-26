@@ -74,10 +74,11 @@ export default {
                     return;
                 }
 
-                localStorage.setItem('jwt_token', response.data); // 保存jwt令牌到localStorage
-                const decodedToken = jwtDecode(response.data);
+                localStorage.setItem('jwt_token', response.data.token); // 保存jwt令牌到localStorage
+                localStorage.setItem('userInfo', JSON.stringify(response.data.userInfo));
+                const decodedToken = jwtDecode(response.data.token);
                 localStorage.setItem('adminType', decodedToken.adminType); // 保存用户角色到 localStorage
-                sessionStorage.setItem("mobile_data_token", response.data); // 保存jwt令牌到sessionStorage
+                sessionStorage.setItem("mobile_data_token", response.data.token); // 保存jwt令牌到sessionStorage
 
                 const userStore = useUserStore();
                 userStore.setAdminType(decodedToken.adminType); // 更新 Pinia store 中的用户角色状态

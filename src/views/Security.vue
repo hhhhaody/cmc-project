@@ -33,41 +33,19 @@ onMounted(async () => {
   });
 })
 
-let lastClickTime = null;
-
 // 定义一个函数，该函数在按钮被点击时调用
 const handleButtonClick = async () => {
-  const currentTime = new Date().getTime();
-  const tenMinutes = 10 * 60 * 1000; // 10 分钟转换为毫秒
-
-  if (lastClickTime && currentTime - lastClickTime < tenMinutes) {
-    // 如果距离上次点击不足10分钟
+  const response = await updateVideoInfoAPI({});
+  if (response) {  // 假设你的 API 返回一个判定成功的响应对象
     ElMessage({
-      message: '请勿重复点击',
-      type: 'warning'
+      message: '更新成功',
+      type: 'success'
     });
   } else {
-    lastClickTime = currentTime; // 更新上次点击时间
-    try {
-      const response = await updateVideoInfoAPI({});
-      if (response) {  // 假设你的 API 返回一个判定成功的响应对象
-        ElMessage({
-          message: '更新成功',
-          type: 'success'
-        });
-      } else {
-        ElMessage({
-          message: '更新失败',
-          type: 'error'
-        });
-      }
-    } catch (error) {
-      console.error('更新出错：', error);
-      ElMessage({
-        message: '更新出错',
-        type: 'error'
-      });
-    }
+    ElMessage({
+      message: '更新失败',
+      type: 'error'
+    });
   }
 };
 
@@ -191,8 +169,8 @@ const state = reactive({
 </script>
 
 <template>
-  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-    background-color="#3545659e">
+  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+    :color="['#4f698794', '#4f698794']" background-color="#3545659e">
     <br />
     <h1 style="font-size:21px">远程视频监控</h1>
     <div class="calendar-container">
