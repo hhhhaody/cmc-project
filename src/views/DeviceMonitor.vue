@@ -11,60 +11,14 @@ import UploadImage from "../components/UploadImage.vue";
 import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, addMaterialOperationAPI, getByBatchAPI } from "../apis/material";
 import ExportButton from "@/components/ExportButton.vue";
 import { addFacilityAPI, getFacilityAPI, deleteFacilityAPI, getByIdAPI, updateFacilityAPI, updateFacilityStatusAPI } from "../apis/facility";
-
-// const workstations = reactive([
-//     {
-//         name: "型钢切割工作站",
-//         components: [
-//             { name: "桁架机械手", status: "normal" },
-//             { name: "翻转机", status: "normal" },
-//             { name: "激光切割机", status: "normal" },
-//             { name: "搬运机器人", status: "normal" },
-//         ]
-//     }, {
-//         name: "地面钢网工作站",
-//         components: [
-//             { name: "桁架机械手", status: "normal" },
-//             { name: "焊接机械臂桁架", status: "normal" },
-//             { name: "焊接机器人", status: "normal" },
-//             { name: "焊接夹具", status: "normal" },
-//         ]
-//     }, {
-//         name: "方通组焊工作站",
-//         components: [
-//             { name: "搬运机器人", status: "normal" },
-//             { name: "焊接机台1", status: "normal" },
-//             { name: "焊接机台2", status: "normal" },
-//             { name: "焊接机台3", status: "normal" },
-//             { name: "焊接机台4", status: "normal" },
-//             { name: "焊接机器人A", status: "normal" },
-//             { name: "焊接机器人B", status: "normal" },
-//             { name: "组焊机台", status: "normal" },
-//             { name: "桁架机械手", status: "normal" },
-//             { name: "入料台", status: "normal" },
-//             { name: "出料台", status: "normal" },
-//         ]
-//     }, {
-//         name: "模块总装工作站",
-//         components: [
-//             { name: "移动模台", status: "normal" },
-//             { name: "墙面夹具A", status: "normal" },
-//             { name: "墙面夹具B", status: "normal" },
-//             { name: "机器人桁架", status: "normal" },
-//             { name: "焊接机器人A", status: "normal" },
-//             { name: "焊接机器人B", status: "normal" },
-//         ]
-//     },
-
-// ]);
-
+import { getDeviceAPI, setStatusAPI } from "../apis/data.js"
 
 // 从后端获取数据
 const tableData = reactive([]);
 const total = ref(0)
 const getDataFromAPI = async () => {
-    const res = await getFacilityAPI(null, 99999, null, null, null, null, null);
-    // console.log(res.data);
+    const res = await getDeviceAPI();
+    console.log(res.data);
     const station1 = [];
     const station2 = [];
     const station3 = [];
@@ -73,21 +27,21 @@ const getDataFromAPI = async () => {
     const section2 = { name: '地面钢网工作站', components: [] }
     const section3 = { name: '方通组焊工作站', components: [] }
     const section4 = { name: '模块总装工作站', components: [] }
-    for (const i in res.data.data) {
-        const item = res.data.data[i]
+    for (const i in res.data) {
+        const item = res.data[i]
 
         if (item.section === '型钢切割工作站') {
-            station1.push({ name: item.name, status: item.status === '检修维护' ? 'maintenance' : item.status === '正常使用' ? 'normal' : 'stopped' })
+            station1.push({ name: item.name, id: item.id, status: item.status === '检修维护' ? 'maintenance' : item.status === '正常运行' ? 'normal' : item.status === '报警' ? 'alarm' : 'stopped' })
         }
 
         if (item.section === '地面钢网工作站') {
-            station2.push({ name: item.name, status: item.status === '检修维护' ? 'maintenance' : item.status === '正常使用' ? 'normal' : 'stopped' })
+            station2.push({ name: item.name, id: item.id, status: item.status === '检修维护' ? 'maintenance' : item.status === '正常运行' ? 'normal' : item.status === '报警' ? 'alarm' : 'stopped' })
         }
         if (item.section === '方通组焊工作站') {
-            station3.push({ name: item.name, status: item.status === '检修维护' ? 'maintenance' : item.status === '正常使用' ? 'normal' : 'stopped' })
+            station3.push({ name: item.name, id: item.id, status: item.status === '检修维护' ? 'maintenance' : item.status === '正常运行' ? 'normal' : item.status === '报警' ? 'alarm' : 'stopped' })
         }
         if (item.section === '模块总装工作站') {
-            station4.push({ name: item.name, status: item.status === '检修维护' ? 'maintenance' : item.status === '正常使用' ? 'normal' : 'stopped' })
+            station4.push({ name: item.name, id: item.id, status: item.status === '检修维护' ? 'maintenance' : item.status === '正常运行' ? 'normal' : item.status === '报警' ? 'alarm' : 'stopped' })
         }
     }
     section1.components = station1
@@ -338,51 +292,51 @@ const dialogSearchSuggestion = (title, keyword) => {
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
-//确认删除
+//确认检修
 //#region
 
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-const del = async (id) => {
-    const res = await deleteMaterialAPI(id);
+const set = async (id) => {
+    const res = await setStatusAPI(id);
     if (res.code === 1) {
         getDataFromAPI();
         ElMessage({
             type: 'success',
-            message: '删除成功',
+            message: '检修开始',
         })
     }
     else {
         ElMessage({
             type: 'error',
-            message: '删除失败',
+            message: '检修取消',
         })
     }
 };
 
-const deleteConfirm = (id) => {
+const alarmConfirm = (id) => {
     refresh.value = false
     ElMessageBox.confirm(
-        '确认删除吗？',
+        '确认开始检修吗？',
         '温馨提示',
         {
             confirmButtonText: '确认',
 
             cancelButtonText: '取消',
-            type: 'warning',
+            type: 'info',
         }
     )
         .then(() => {
             refresh.value = true
             // console.log(id);
-            del(id)
+            set(id)
         })
         .catch(() => {
             refresh.value = true
 
             ElMessage({
                 type: 'info',
-                message: '删除取消',
+                message: '检修取消',
             })
         })
 }
@@ -448,8 +402,8 @@ const uploadImage = (uidToFileNameMap) => {
 
 <template>
     <!-- borderbox -->
-    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-        background-color="#3545659e">
+    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+        :color="['#4f698794', '#4f698794']" background-color="#3545659e">
         <!-- body -->
         <el-container class="subNavPage">
             <br />
@@ -504,297 +458,6 @@ const uploadImage = (uidToFileNameMap) => {
                     <RouterLink to="/inventory/operation">操作记录</RouterLink>
                 </div> -->
 
-                <!-- 弹框区 -->
-                <!-- 新增弹框 -->
-                <DialogComponent ref="addDialog" :form="addform" dialog-title="新增物料类型" :refreshFunc="getDataFromAPI"
-                    :confirm-func="addMaterialAPI" @dialogClose="dialogClose">
-                    <el-form-item label="物料名称" prop="name" :rules="[
-                        { required: true, message: '请输入物料名称', trigger: 'blur' },
-                        {
-                            min: 1, max: 30,
-                            message: '长度必须在1-30之间', trigger: 'blur'
-                        }]">
-                        <el-input v-model="addform.name" autocomplete="off" placeholder="请输入物料名称" />
-                    </el-form-item>
-                    <el-form-item label="规格型号" prop="spec" :rules="[
-                        { required: true, message: '请输入规格型号', trigger: 'blur' },
-                        {
-                            min: 1, max: 30,
-                            message: '长度必须在1-30之间', trigger: 'blur'
-                        }]">
-                        <el-input v-model="addform.spec" autocomplete="off" placeholder="请输入规格型号" />
-                    </el-form-item>
-                    <el-form-item label="低库存阈值" prop="threshold" :rules="[
-                        { required: true, message: '请输入阈值', trigger: 'blur' },
-                        { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-                    ]">
-                        <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入低库存阈值" />
-                    </el-form-item>
-                </DialogComponent>
-
-                <!-- 编辑弹框 -->
-                <DialogComponent ref="editDialog" :form="updateform" dialog-title="编辑物料类型" :refreshFunc="getDataFromAPI"
-                    :confirm-func="updateMaterialAPI" @dialogClose="dialogClose">
-                    <el-form-item label="物料名称" prop="name" :rules="[
-                        { required: true, message: '请输入物料名称', trigger: 'blur' },
-                        {
-                            min: 1, max: 30,
-                            message: '长度必须在1-30之间', trigger: 'blur'
-                        }]">
-                        <el-input v-model="updateform.name" autocomplete="off" />
-                    </el-form-item>
-                    <el-form-item label="规格型号" prop="spec" :rules="[
-                        { required: true, message: '请输入规格型号', trigger: 'blur' },
-                        {
-                            min: 1, max: 30,
-                            message: '长度必须在1-30之间', trigger: 'blur'
-                        }]">
-                        <el-input v-model="updateform.spec" autocomplete="off" />
-                    </el-form-item>
-                    <el-form-item label="低库存阈值" prop="threshold" :rules="[
-                        { required: true, message: '请输入阈值', trigger: 'blur' },
-                        { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-                    ]">
-                        <el-input v-model.number="updateform.threshold" autocomplete="off" />
-                    </el-form-item>
-                </DialogComponent>
-
-                <!-- 入库弹框 -->
-                <DialogComponent ref="stockInDialog" :form="stockform" dialog-title="物料入库" :refreshFunc="getDataFromAPI"
-                    :confirm-func="addMaterialOperationAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="物料名称" prop="name" :rules="[
-                                { required: true, message: '请选择物料名称', trigger: 'blur' }]">
-                                <DialogSearch :key="renderKey" :wNo="100" search-title="物料名称" :searchContent=stockform.name
-                                    field="name" @search="dialogSearchSuggestion" :data="stockform" />
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="规格型号" prop="spec" :rules="[
-                                { required: true, message: '请选择规格型号', trigger: 'blur' }]">
-                                <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号" :searchContent=stockform.spec
-                                    field="spec" @search="dialogSearchSuggestion" :data="stockform" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-form-item label="供料单位" prop="supplier" :rules="[
-                        { required: true, message: '请输入供料单位', trigger: 'blur' },
-                        {
-                            min: 1, max: 30,
-                            message: '长度必须在1-30之间', trigger: 'blur'
-                        }]">
-                        <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="供料单位"
-                            :searchContent=stockform.supplier field="supplier" @search="search"
-                            database="materials/operation" />
-                    </el-form-item>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="入库人员" prop="operator" :rules="[
-                                { required: true, message: '请输入操作人员', trigger: 'blur' },
-                                {
-                                    min: 1, max: 30,
-                                    message: '长度必须在1-30之间', trigger: 'blur'
-                                }]">
-                                <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="入库人员"
-                                    :searchContent=stockform.operator field="operator" @search="search"
-                                    database="materials/operation" />
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="入库数量" prop="amount" :rules="[
-                                { required: true, message: '请输入数量', trigger: 'blur' },
-                                { type: 'number', message: '必须是数字', trigger: 'blur' }
-                            ]">
-                                <el-input v-model.number="stockform.amount" autocomplete="off" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="入库日期" prop="operateTime" :rules="[
-                                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
-                                <el-date-picker v-model="stockform.operateTime" type="datetime" placeholder="选择入库日期"
-                                    value-format="YYYY-MM-DDTHH:mm:ss" />
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="供料日期" prop="supplyTime" :rules="[
-                                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
-                                <el-date-picker v-model="stockform.supplyTime" type="datetime" placeholder="选择供料日期"
-                                    value-format="YYYY-MM-DDTHH:mm:ss" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-form-item label="签收凭证" prop="receipt" :rules="[
-                        { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
-                        <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage />
-                    </el-form-item>
-                </DialogComponent>
-
-                <!-- 出库弹框 -->
-                <DialogComponent ref="stockOutDialog" :form="stockform" dialog-title="物料出库" :refreshFunc="getDataFromAPI"
-                    :confirm-func="addMaterialOperationAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="物料名称" prop="name">
-                                <DialogSearch :key="renderKey" :wNo="100" search-title="物料名称" :searchContent=stockform.name
-                                    field="name" @search="dialogSearchSuggestion" :data="stockform"
-                                    database="materials/operation" />
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="规格型号" prop="spec">
-                                <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号" :searchContent=stockform.spec
-                                    field="spec" @search="dialogSearchSuggestion" :data="stockform"
-                                    database="materials/operation" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-form-item label="物料批次" prop="batch" :rules="[
-                        { required: true, message: '请选择物料批次', trigger: 'blur' }]">
-                        <DialogSearch :key="renderKey" :wNo="100" search-title="物料批次" :searchContent=stockform.batch
-                            field="batch" @search="dialogSearchSuggestion" :data="stockform"
-                            database="materials/operation" />
-                    </el-form-item>
-                    <el-form-item label="供料单位" prop="supplier">
-                        <el-input v-model="stockform.supplier" autocomplete="off" placeholder="请输入供料单位" />
-                    </el-form-item>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="出库人员" prop="operator" :rules="[
-                                { required: true, message: '请输入操作人员', trigger: 'blur' },
-                                {
-                                    min: 1, max: 30,
-                                    message: '长度必须在1-30之间', trigger: 'blur'
-                                }]">
-                                <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="出库人员"
-                                    :searchContent=stockform.operator field="operator" @search="search"
-                                    database="materials/operation" />
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="出库数量" prop="amount" :rules="[
-                                { required: true, message: '请输入数量', trigger: 'blur' },
-                                { type: 'number', message: '必须是数字', trigger: 'blur' }
-                            ]">
-                                <el-input v-model.number="stockform.amount" autocomplete="off" :placeholder="remains" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="出库日期" prop="operateTime" :rules="[
-                                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
-                                <el-date-picker v-model="stockform.operateTime" type="datetime" placeholder="选择出库日期"
-                                    value-format="YYYY-MM-DDTHH:mm:ss" />
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="供料日期" prop="supplyTime">
-                                <el-input v-model="formattedTime" autocomplete="off" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-form-item label="出库凭证" prop="receipt" :rules="[
-                        { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
-                        <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage />
-                    </el-form-item>
-                </DialogComponent>
-
-                <!-- 转库弹框 -->
-                <DialogComponent ref="transferDialog" :form="stockform" dialog-title="转入不良物料" :refreshFunc="getDataFromAPI"
-                    :confirm-func="addMaterialOperationAPI" @dialogClose="dialogClose" :image=true @saveImage=saveImage>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="物料名称" prop="name">
-                                <DialogSearch :key="renderKey" :wNo="100" search-title="物料名称" :searchContent=stockform.name
-                                    field="name" @search="dialogSearchSuggestion" :data="stockform"
-                                    database="materials/operation" />
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="规格型号" prop="spec">
-                                <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号" :searchContent=stockform.spec
-                                    field="spec" @search="dialogSearchSuggestion" :data="stockform"
-                                    database="materials/operation" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-form-item label="物料批次" prop="batch" :rules="[
-                        { required: true, message: '请选择物料批次', trigger: 'blur' }]">
-                        <DialogSearch :key="renderKey" :wNo="100" search-title="物料批次" :searchContent=stockform.batch
-                            field="batch" @search="dialogSearchSuggestion" :data="stockform"
-                            database="materials/operation" />
-                    </el-form-item>
-                    <el-form-item label="供料单位" prop="supplier">
-                        <el-input v-model="stockform.supplier" autocomplete="off" placeholder="请输入供料单位" />
-                    </el-form-item>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="转库人员" prop="operator" :rules="[
-                                { required: true, message: '请输入操作人员', trigger: 'blur' },
-                                {
-                                    min: 1, max: 30,
-                                    message: '长度必须在1-30之间', trigger: 'blur'
-                                }]">
-                                <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="转库人员"
-                                    :searchContent=stockform.operator field="operator" @search="search"
-                                    database="materials/operation" />
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="转库数量" prop="amount" :rules="[
-                                { required: true, message: '请输入数量', trigger: 'blur' },
-                                { type: 'number', message: '必须是数字', trigger: 'blur' }
-                            ]">
-                                <el-input v-model.number="stockform.amount" autocomplete="off" :placeholder="remains" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="转库日期" prop="operateTime" :rules="[
-                                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
-                                <el-date-picker v-model="stockform.operateTime" type="datetime" placeholder="选择转库日期"
-                                    value-format="YYYY-MM-DDTHH:mm:ss" />
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="供料日期" prop="supplyTime">
-                                <el-input v-model="formattedTime" autocomplete="off" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-form-item label="转库凭证" prop="receipt" :rules="[
-                        { required: true, message: '请上传签收凭证', trigger: 'blur' }]">
-                        <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage />
-                    </el-form-item>
-                </DialogComponent>
-
-
-                <!-- table -->
-                <!-- <el-table :data="tableData.value" @selection-change="handleSelectionChange"
-                    style="width: 100%; border-radius: 1vh" table-layout="fixed" height="48vh" show-overflow-tooltip>
-                    <el-table-column type="selection" align="center" />
-                    <el-table-column label="序号" type="index" align="center" min-width="70vh" />
-                    <el-table-column prop="name" label="物料名称" align="center" />
-                    <el-table-column prop="spec" label="规格型号" align="center" />
-                    <el-table-column prop="amount" label="库存数量" align="center" />
-                    <el-table-column prop="threshold" label="低库存阈值" align="center" />
-                    <el-table-column prop="operation" label="操作" align="center">
-                        <template #default="scope">
-                            <el-button class="inline_button"
-                                @click="getMaterialByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, updateform.id = scope.row.id">
-                                编辑
-                            </el-button>
-                            <el-button class="inline_button" @click="deleteConfirm(scope.row.id)">
-                                删除
-                            </el-button>
-                        </template>
-                    </el-table-column>
-
-                </el-table> -->
 
                 <!-- 描述每种颜色对应的设备状态的说明部分 -->
                 <div class="status-description">
@@ -823,9 +486,14 @@ const uploadImage = (uidToFileNameMap) => {
                         <ul>
                             <!-- 再次使用v-for指令来遍历工作站的组件数组，为每个组件创建一个列表元素，元素的key是组件的名字，类名是组件的状态，
                          这可以用来通过CSS改变不同状态的组件的颜色 -->
-                            <li v-for="component in workstation.components" :key="component.name" :class="component.status">
+                            <li v-for="component in workstation.components" :key="component.name"
+                                :class="component.status">
                                 <!-- 显示组件的名称 -->
                                 {{ component.name }}
+                                <el-button v-if="component.status == 'alarm'" class="confirm"
+                                    @click="alarmConfirm(component.id)">
+                                    检修
+                                </el-button>
                             </li>
                         </ul>
                     </div>
@@ -1012,6 +680,16 @@ const uploadImage = (uidToFileNameMap) => {
     transform: translateY(-50%);
 }
 
+.confirm {
+    color: #e26237ab;
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    right: -1vh;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 .status-description {
     display: flex;
     width: 20%;
@@ -1076,4 +754,3 @@ const uploadImage = (uidToFileNameMap) => {
     /* transform: translateY(-50%); */
 }
 </style>
-

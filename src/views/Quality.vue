@@ -743,7 +743,8 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="详情" align="center">
                         <template #default="scope">
                             <el-button class="inline_button"
-                                @click="getProductByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, addform.id = scope.row.id">
+                                @click="getProductByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, addform.id = scope.row.id"
+                                disabled>
                                 查看
                             </el-button>
                             <!-- <el-button class="inline_button" @click="deleteConfirm(scope.row.id)">

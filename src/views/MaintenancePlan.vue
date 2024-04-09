@@ -526,8 +526,8 @@ getDefaultDate()
 </script>
 
 <template>
-  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-    background-color="#3545659e">
+  <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+    :color="['#4f698794', '#4f698794']" background-color="#3545659e">
     <br />
     <h1 style="font-size:21px">设备维护计划</h1>
     <div style="display: flex; justify-content: space-between;margin-left:4vh;width:91%;position:absolute;top:4vh">
@@ -571,9 +571,10 @@ getDefaultDate()
           <div class="custom-header">
             <span class="calendar-nav-btn" @click="addYear(-1), getDataFromAPI(currentDate)">&lt;&lt;</span>
             <span class="calendar-nav-btn" @click="addMonth(-1), getDataFromAPI(currentDate)">&lt;</span>
-            <span class="calendar-nav-btn" @click="goToToday(), getDataFromAPI(currentDate)">{{ currentDate.getFullYear()
-            }}年{{ currentDate.getMonth() +
-  1 }}月</span>
+            <span class="calendar-nav-btn" @click="goToToday(), getDataFromAPI(currentDate)">{{
+      currentDate.getFullYear()
+    }}年{{ currentDate.getMonth() +
+      1 }}月</span>
             <span class="calendar-nav-btn" @click="addMonth(1), getDataFromAPI(currentDate)">&gt;</span>
             <span class="calendar-nav-btn" @click="addYear(1), getDataFromAPI(currentDate)">&gt;&gt;</span>
           </div>
@@ -583,9 +584,9 @@ getDefaultDate()
           <div class="date-cell-wrapper"
             @click="selectedDate = new Date(data.day), getTodayPlan(data.day), getDataFromAPI(new Date(data.day)), stockform.plannedTime = data.day + 'T17:30:00'">
             <p class="date-number" :class="[
-              data.isSelected ? 'is-selected' : '',
-              new Date(data.day).getMonth() === currentMonth ? 'current-month' : 'is-other-month'
-            ]">
+      data.isSelected ? 'is-selected' : '',
+      new Date(data.day).getMonth() === currentMonth ? 'current-month' : 'is-other-month'
+    ]">
               {{ new Date(data.day).getDate() }}
               <!-- {{ data.isSelected ? '已选' : '' }} -->
             </p>
@@ -594,15 +595,18 @@ getDefaultDate()
                 style="color:black;width:100%;font-size: 12px;">
                 <div v-if="index < 2">
                   <div v-if="item.value.status === '逾期完成'" style="color: #ff9a02a0;">{{ item.value.name }}-{{
-                    item.value.type }}</div>
+      item.value.type }}</div>
                   <div v-if="item.value.status === '待完成'" style="color: #e26237ab;">{{ item.value.name }}-{{
-                    item.value.type
-                  }}</div>
+      item.value.type
+    }}</div>
                   <div v-if="item.value.status === '已完成'" style="color: #339a528b;">{{ item.value.name }}-{{
-                    item.value.type
-                  }}</div>
+      item.value.type
+    }}</div>
                 </div>
-                <div v-else style="color: #729fd0;">
+                <div v-if="index === 2">
+                  ...
+                </div>
+                <div v-else style="color: #729fd0; display: none;">
                   ...
                 </div>
               </i>
@@ -618,14 +622,14 @@ getDefaultDate()
         <el-row>
           <el-col :span="12">
             <el-form-item label="设备名称" prop="name" :rules="[
-              { required: true, message: '请选择设备名称', trigger: 'blur' }]">
+      { required: true, message: '请选择设备名称', trigger: 'blur' }]">
               <DialogSearch :key="renderKey" :wNo="100" search-title="设备名称" :searchContent=stockform.name field="name"
                 @search="dialogSearchSuggestion" :data="stockform" database="facilities" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="规格型号" prop="spec" :rules="[
-              { required: true, message: '请选择规格型号', trigger: 'blur' }]">
+      { required: true, message: '请选择规格型号', trigger: 'blur' }]">
               <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号" :searchContent=stockform.spec field="spec"
                 @search="dialogSearchSuggestion" :data="stockform" database="facilities" />
             </el-form-item>
@@ -634,14 +638,14 @@ getDefaultDate()
         <el-row>
           <el-col :span="12">
             <el-form-item label="工段名称" prop="section" :rules="[
-              { required: true, message: '请选择工段名称', trigger: 'blur' }]">
+      { required: true, message: '请选择工段名称', trigger: 'blur' }]">
               <DialogSearch :key="renderKey" :wNo="100" search-title="工段名称" :searchContent=stockform.section
                 field="section" @search="dialogSearchSuggestion" :data="stockform" database="facilities" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="设备编号" prop="serialNo" :rules="[
-              { required: true, message: '请选择设备编号', trigger: 'blur' }]">
+      { required: true, message: '请选择设备编号', trigger: 'blur' }]">
               <DialogSearch :key="renderKey" :wNo="100" search-title="设备编号" :searchContent=stockform.serialNo
                 field="serialNo" @search="dialogSearchSuggestion" :data="stockform" database="facilities" />
             </el-form-item>
@@ -650,7 +654,7 @@ getDefaultDate()
         <el-row>
           <el-col :span=12>
             <el-form-item label="维护类型" prop="type" :rules="[
-              { required: true, message: '请选择维修类型', trigger: 'blur' }]">
+      { required: true, message: '请选择维修类型', trigger: 'blur' }]">
               <el-radio-group v-model="stockform.type">
                 <el-radio-button label="临时保养" />
                 <el-radio-button label="一级保养" />
@@ -660,7 +664,7 @@ getDefaultDate()
           </el-col>
           <el-col :span="12">
             <el-form-item label="计划完成时间" prop="plannedTime" :rules="[
-              { required: true, message: '请输入计划完成维护时间', trigger: 'blur' }]">
+      { required: true, message: '请输入计划完成维护时间', trigger: 'blur' }]">
               <el-date-picker v-model="stockform.plannedTime" type="datetime" placeholder="选择计划完成维护时间"
                 value-format="YYYY-MM-DDTHH:mm:ss" :disabled-date="disabledDate" />
             </el-form-item>
@@ -712,25 +716,25 @@ getDefaultDate()
         <el-row>
           <el-col :span="12">
             <el-form-item label="维护人员" prop="maintenanceman" :rules="[
-              { required: true, message: '请输入维护人员', trigger: 'blur' },
-              {
-                min: 1, max: 30,
-                message: '长度必须在1-30之间', trigger: 'blur'
-              }]">
+      { required: true, message: '请输入维护人员', trigger: 'blur' },
+      {
+        min: 1, max: 30,
+        message: '长度必须在1-30之间', trigger: 'blur'
+      }]">
               <el-input v-model="stockform.maintenanceman" autocomplete="off" placeholder="请输入维护人员" />
 
             </el-form-item>
           </el-col>
           <el-col :span=12>
             <el-form-item label="完成维护时间" prop="completeTime" :rules="[
-              { required: true, message: '请输入完成维护时间', trigger: 'blur' }]">
+      { required: true, message: '请输入完成维护时间', trigger: 'blur' }]">
               <el-date-picker v-model="stockform.completeTime" type="datetime" placeholder="选择完成维护时间"
                 value-format="YYYY-MM-DDTHH:mm:ss" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item label="维护内容" prop="info" :rules="[
-          { required: true, message: '请填写维护内容', trigger: 'blur' }]">
+      { required: true, message: '请填写维护内容', trigger: 'blur' }]">
           <el-input v-model="stockform.info" autocomplete="off" placeholder="请填写维护内容" />
         </el-form-item>
       </DialogComponent>
@@ -772,8 +776,8 @@ getDefaultDate()
               </el-col>
               <el-col :span="12">
                 <el-form-item label="上次维护日期" prop="prevDailyTime">
-                  <el-date-picker v-model="item.prevDailyTime" type="datetime" value-format="YYYY-MM-DDTHH:mm:ss" disabled
-                    style="margin-right:1vh" />
+                  <el-date-picker v-model="item.prevDailyTime" type="datetime" value-format="YYYY-MM-DDTHH:mm:ss"
+                    disabled style="margin-right:1vh" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -797,9 +801,9 @@ getDefaultDate()
         <div class="header-section">
           <h2>维保详情：<span class="maintenance-date">
               {{ selectedDate.getFullYear() }}-{{ (selectedDate.getMonth()
-                +
-                1).toString().padStart(2, '0') }}-{{
-    selectedDate.getDate().toString().padStart(2, '0') }}</span></h2>
+      +
+      1).toString().padStart(2, '0') }}-{{
+      selectedDate.getDate().toString().padStart(2, '0') }}</span></h2>
           <!-- <button class="add-button" @click="showContainer = true">新增</button> -->
         </div>
 
@@ -855,14 +859,15 @@ getDefaultDate()
               </el-col>
               <el-col :span="12">
                 <el-form-item label="实际日期" prop="completeTime" v-show="item.completeTime">
-                  <el-date-picker v-model="item.completeTime" type="datetime" value-format="YYYY-MM-DDTHH:mm:ss" disabled
-                    style="margin-right:1vh" />
+                  <el-date-picker v-model="item.completeTime" type="datetime" value-format="YYYY-MM-DDTHH:mm:ss"
+                    disabled style="margin-right:1vh" />
                 </el-form-item>
               </el-col>
             </el-row>
 
             <el-form-item label="维护内容" prop="info" v-show="item.info">
-              <el-input v-model="item.info" autocomplete="off" placeholder="请填写维护内容" disabled style="margin-right:1vh" />
+              <el-input v-model="item.info" autocomplete="off" placeholder="请填写维护内容" disabled
+                style="margin-right:1vh" />
             </el-form-item>
           </el-form>
           <!--修改代码-->
