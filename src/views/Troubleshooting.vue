@@ -459,7 +459,8 @@ const uploadImage = (uidToFileNameMap) => {
                         <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />清空
                     </el-button>
                 </div>
-                <div style="margin-top: 1vh;position:absolute;left:17%" v-if="show">
+                <div style="margin-top: 1vh;position:absolute;left: 50%; transform: translateX(-50%);width: max-content;"
+                    v-if="show">
                     <div style="display: inline-block; position: relative;top: 2px; padding-right: 1vh;">完成维修日期：
                         <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期"
                             end-placeholder="结束日期" :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
@@ -509,7 +510,7 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="设备名称" prop="name" :rules="[
-                                { required: true, message: '请选择设备名称', trigger: 'blur' }]">
+            { required: true, message: '请选择设备名称', trigger: 'blur' }]">
                                 <DialogSearch :key="renderKey" :wNo="100" search-title="设备名称"
                                     :searchContent=stockform.name field="name" @search="dialogSearchSuggestion"
                                     :data="stockform" database="facilities" />
@@ -517,7 +518,7 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="规格型号" prop="spec" :rules="[
-                                { required: true, message: '请选择规格型号', trigger: 'blur' }]">
+            { required: true, message: '请选择规格型号', trigger: 'blur' }]">
                                 <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号"
                                     :searchContent=stockform.spec field="spec" @search="dialogSearchSuggestion"
                                     :data="stockform" database="facilities" />
@@ -527,7 +528,7 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="工段名称" prop="section" :rules="[
-                                { required: true, message: '请选择工段名称', trigger: 'blur' }]">
+            { required: true, message: '请选择工段名称', trigger: 'blur' }]">
                                 <DialogSearch :key="renderKey" :wNo="100" search-title="工段名称"
                                     :searchContent=stockform.section field="section" @search="dialogSearchSuggestion"
                                     :data="stockform" database="facilities" />
@@ -535,7 +536,7 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="设备编号" prop="serialNo" :rules="[
-                                { required: true, message: '请选择设备编号', trigger: 'blur' }]">
+            { required: true, message: '请选择设备编号', trigger: 'blur' }]">
                                 <DialogSearch :key="renderKey" :wNo="100" search-title="设备编号"
                                     :searchContent=stockform.serialNo field="serialNo" @search="dialogSearchSuggestion"
                                     :data="stockform" database="facilities" />
@@ -545,14 +546,14 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="故障时间" prop="errorTime" :rules="[
-                                { required: true, message: '请输入故障时间', trigger: 'blur' }]">
+            { required: true, message: '请输入故障时间', trigger: 'blur' }]">
                                 <el-date-picker v-model="stockform.errorTime" type="datetime" placeholder="选择故障时间"
                                     value-format="YYYY-MM-DDTHH:mm:ss" :disabled-date="disabledDate" />
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-form-item label="故障内容" prop="error" :rules="[
-                        { required: true, message: '请填写故障内容', trigger: 'blur' }]">
+            { required: true, message: '请填写故障内容', trigger: 'blur' }]">
                         <el-input v-model="stockform.error" autocomplete="off" placeholder="请填写故障内容" />
                     </el-form-item>
                 </DialogComponent>
@@ -588,7 +589,7 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="故障时间" prop="errorTime" :rules="[
-                                { required: true, message: '请输入故障时间', trigger: 'blur' }]">
+            { required: true, message: '请输入故障时间', trigger: 'blur' }]">
                                 <el-date-picker v-model="stockform.errorTime" type="datetime" placeholder="选择故障时间"
                                     value-format="YYYY-MM-DDTHH:mm:ss" disabled />
                             </el-form-item>
@@ -600,32 +601,32 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="完成维修时间" prop="completeTime" :rules="[
-                                { required: true, message: '请输入完成维修时间', trigger: 'blur' }]">
+            { required: true, message: '请输入完成维修时间', trigger: 'blur' }]">
                                 <el-date-picker v-model="stockform.completeTime" type="datetime" placeholder="选择完成维修时间"
                                     value-format="YYYY-MM-DDTHH:mm:ss" :disabled-date="disabledDate1" />
                             </el-form-item>
                         </el-col>
                         <el-col :span=12>
                             <el-form-item label="维修人员" prop="repairman" :rules="[
-                                { required: true, message: '请输入维修人员', trigger: 'blur' },
-                                {
-                                    min: 1, max: 30,
-                                    message: '长度必须在1-30之间', trigger: 'blur'
-                                }]">
+            { required: true, message: '请输入维修人员', trigger: 'blur' },
+            {
+                min: 1, max: 30,
+                message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
                                 <el-input v-model="stockform.repairman" autocomplete="off" placeholder="请输入维修人员" />
 
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-form-item label="维修结果" prop="status" :rules="[
-                        { required: true, message: '请选择维修结果', trigger: 'blur' }]">
+            { required: true, message: '请选择维修结果', trigger: 'blur' }]">
                         <el-radio-group v-model="stockform.status">
                             <el-radio-button label="完成维修" />
                             <el-radio-button label="维修失败" />
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="维修内容" prop="info" :rules="[
-                        { required: true, message: '请填写维修内容', trigger: 'blur' }]">
+            { required: true, message: '请填写维修内容', trigger: 'blur' }]">
                         <el-input v-model="stockform.info" autocomplete="off" placeholder="请填写维修内容" />
                     </el-form-item>
                 </DialogComponent>
@@ -726,4 +727,3 @@ const uploadImage = (uidToFileNameMap) => {
     background-color: rgba(37, 54, 83, 0.498);
 }
 </style>
-

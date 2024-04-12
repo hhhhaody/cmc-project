@@ -269,6 +269,7 @@ onMounted(async () => {
                     <el-table :data="tableData.data" @selection-change="handleSelectionChange" show-overflow-tooltip
                         style="width: 100%; margin-top: 1vh;border-radius: 1vh; margin-top: 1vh" table-layout="fixed"
                         height="52vh">
+                        <el-table-column type="selection" align="center" />
                         <el-table-column type="index" label="序号" align="center" min-width="60vh" />
                         <el-table-column prop="type" label="能源类型" align="center" />
                         <el-table-column prop="updateTime" label="日期" align="center"

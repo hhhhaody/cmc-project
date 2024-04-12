@@ -84,7 +84,7 @@ defineExpose({ searchContent });
 <template>
   <template v-if="props.hideTitle === false">{{ props.searchTitle }}:
     <el-autocomplete style="margin: 0 1vh;" :style="{ width: props.wNo + '%' }" v-model="searchContent"
-      :fetch-suggestions="querySearchAsync" :placeholder="placeholder" @select="handleSelect" @change="check"
+      :fetch-suggestions="querySearchAsync" clearable :placeholder="placeholder" @select="handleSelect" @change="check"
       @focus="focus" @blur="blur" />
   </template>
   <template v-else>

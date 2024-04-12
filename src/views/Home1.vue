@@ -17,7 +17,9 @@ const line = ref(stations.value[0]);  //能耗统计图形组件
 const router = useRouter();
 
 const carbon = ref(true)
+const quality = ref(false)
 const showToggle = ref(false)
+const showToggle2 = ref(false)
 
 const navigate = (routeName) => {
   router.push({ name: routeName });
@@ -63,11 +65,11 @@ const changeStation = (type, val) => {
       @mouseleave="showToggle = false">
       <i>
         <span class="click" @click="navigate('lowCarbon')">碳排放总览</span>
-        <div class="tab">
+        <!-- <div class="tab">
           <span>当月</span>
           <el-divider direction="vertical" />
           <span>前一天</span>
-        </div>
+        </div> -->
       </i>
       <Carbon />
       <e v-show="showToggle" class="toggleButton" @click="carbon = false">能耗统计</e>
@@ -91,7 +93,32 @@ const changeStation = (type, val) => {
       <LineGraph class="graph" :station="line" :stations="stations" />
       <e v-show="showToggle" class="toggleButton" @click="carbon = true">碳排放</e>
     </span>
-    <span class="g3 animate__animated animate__fadeInLeft grey">
+
+
+
+    <span v-if="quality" class="g3 animate__animated animate__fadeInLeft grey" @mouseenter="showToggle2 = true"
+      @mouseleave="showToggle2 = false">
+      <i>
+        <span class="click" @click="navigate('quality')">质量检测情况</span>
+        <el-dropdown class="tab">
+          <span class="el-dropdown-link" style="font-size: 15px; font-weight: 500;"> {{ bar }} </span>
+
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="changeStation(2, stations[0])">型钢切割工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(2, stations[1])">地面钢网工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(2, stations[2])">方通组焊工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(2, stations[3])">模块总装工作站</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </i>
+
+      <Quality />
+      <e v-show="showToggle2" class="toggleButton2" @click="quality = false">产品生产情况</e>
+    </span>
+    <span v-else class="g3 animate__animated animate__fadeInLeft grey" @mouseenter="showToggle2 = true"
+      @mouseleave="showToggle2 = false">
       <i>
         <span class="click" @click="navigate('product')">产品生产情况</span>
         <el-dropdown class="tab">
@@ -109,6 +136,7 @@ const changeStation = (type, val) => {
       </i>
 
       <BarGraph class="graph" :station="bar" :stations="stations" />
+      <e v-show="showToggle2" class="toggleButton2" @click="quality = true">质量检测情况</e>
     </span>
     <span class="g2 animate__animated animate__fadeInRight grey">
       <i>
@@ -297,5 +325,22 @@ i {
   /* 保持文字正常方向 */
   cursor: pointer;
   font-weight: normal;
+  letter-spacing: 2px;
+}
+
+.toggleButton2 {
+  color: #729fd0;
+  position: fixed;
+  top: 50%;
+  left: 1vh;
+  transform: translateY(-50%);
+  z-index: 1000;
+  writing-mode: vertical-rl !important;
+  /* 从上到下的垂直书写方式 */
+  text-orientation: mixed !important;
+  /* 保持文字正常方向 */
+  cursor: pointer;
+  font-weight: normal;
+  letter-spacing: 2px;
 }
 </style>

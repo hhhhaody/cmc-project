@@ -9,14 +9,16 @@ const PieChartRef = ref();
 
 const props = defineProps({
   pieName: { type: String, default: "总设备数" },
-  online: { type: Number, default: 1250 },
+  total: { type: Number, default: 1250 },
   offline: { type: Number, default: 320 },
 });
 
-const online = ref(props.online);
+
+const total = ref(props.total);
 const offline = ref(props.offline);
+const online = ref(total.value - offline.value)
 const pieName = ref(props.pieName);
-const space = computed(() => (online.value + offline.value) / 50);
+const space = computed(() => total.value / 50);
 
 const data = ref([]);
 data.value = [
@@ -37,6 +39,7 @@ onMounted(() => {
   // 基于准备好的dom，初始化echarts实例
   const PieChart = echarts.init(PieChartRef.value, "vintage");
   // 绘制图表
+  // console.log(data);
   PieChart.setOption({
     title: {
       text: pieName.value,
@@ -146,7 +149,7 @@ onMounted(() => {
     },
     series: [
       {
-        name: "Devices",
+        name: "设备",
         type: "pie",
         radius: ["60%", "70%"],
         center: ["40%", "50%"],
