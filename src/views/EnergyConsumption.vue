@@ -10,6 +10,8 @@ import ExportButton from "@/components/ExportButton.vue";
 import * as XLSX from 'xlsx';
 import * as echarts from 'echarts';
 import { useUserStore } from '../stores/store.js';
+import { getEnergyAPI, getEnergyDatesAPI } from "../apis/data"
+
 const userStore = useUserStore();
 
 // 可响应的数据存储区域和初始状态
@@ -26,17 +28,33 @@ const showCustomDialog = ref(false);
 const chartData = ref([]);
 
 // 显示特定日期的详细能耗数据并初始化图表
-const showDetails = async (productionDate) => {
-  const params = {
-    page: 1,
-    pageSize: 10,
-    sectionName: selectedSection.value.name,
-    startDate: productionDate,
-    endDate: productionDate
-  };
-  const res = await getEnergyConsumptionRecordsAPI(params);
+// const showDetails = async (productionDate) => {
+//   const params = {
+//     page: 1,
+//     pageSize: 10,
+//     sectionName: selectedSection.value.name,
+//     startDate: productionDate,
+//     endDate: productionDate
+//   };
+//   const res = await getEnergyConsumptionRecordsAPI(params);
+//   if (res.code === 1) {
+//     chartData.value = res.data.data;
+//     showCustomDialog.value = true; // 显示自定义弹窗
+//     console.log(chartData.value); // 检查数据格式
+
+//     await nextTick();
+//     setTimeout(() => {
+//       initCharts();
+//     }, 500); // 增加延时时间
+//   } else {
+//     console.error('数据加载失败:', res.msg);
+//   }
+// };
+const showDetails = async (date) => {
+  const res = await getEnergyAPI(selectedSection.value.name, date);
+  console.log(res.data);
   if (res.code === 1) {
-    chartData.value = res.data.data;
+    chartData.value = res.data;
     showCustomDialog.value = true; // 显示自定义弹窗
     console.log(chartData.value); // 检查数据格式
 
@@ -47,14 +65,16 @@ const showDetails = async (productionDate) => {
   } else {
     console.error('数据加载失败:', res.msg);
   }
-};
+
+}
 
 // 图表初始化函数，用于创建 echarts 图表
-const energyChartRef = ref(null);
-const powerChartRef = ref(null);
+const energyChartRef = ref();
+const powerChartRef = ref();
 const initCharts = () => {
   if (energyChartRef.value && powerChartRef.value) {
-    const formattedTimes = chartData.value.map(item => formatTime(item.timestamp));
+
+    // const formattedTimes = chartData.value.map(item => formatTime(item.timestamp));
     // 初始化能耗图表
     const energyChart = echarts.init(energyChartRef.value);
     const energyOption = {
@@ -66,26 +86,44 @@ const initCharts = () => {
         trigger: 'axis', // 或 'item'，根据需求选择
         // 格式化 tooltip 文本
         formatter: (params) => {
-          return params.map((param) => {
-            return `${param.axisValue}: ${param.value[1]} (能耗值)`;
-          }).join('<br/>');
+          params = params[0];
+          let date = new Date(params.value[0]);
+          let hours = ("0" + date.getHours()).slice(-2); // 保证小时数为两位数
+          let minutes = ("0" + date.getMinutes()).slice(-2); // 保证分钟数为两位数
+          return (
+            hours +
+            ":" +
+            minutes +
+            " 能耗: " +
+            params.value[1]
+          );
         }
       },
       xAxis: {
-        type: 'category',
-        data: formattedTimes
+        type: 'time',
+        splitLine: {
+          show: false,
+        },
+        formatter: '{HH}:{mm}'
       },
-      yAxis: { type: 'value' },
+      yAxis: {
+        type: 'value', boundaryGap: [0, "100%"],
+        splitLine: {
+          show: false,
+        },
+      },
       series: [{
         data: chartData.value.map((item, index) => {
-          return [formattedTimes[index], item.energyConsumed];
+          return [item.date + " " + item.time, item.avgConsumption];
         }),
-        type: 'line'
+        name: "功率",
+        type: "line",
+        // data: data.value,
       }]
     };
     energyChart.setOption(energyOption);
 
-    // 初始化电压图表
+    // 初始化功率图表
     const powerChart = echarts.init(powerChartRef.value);
     const powerOption = {
       title: {
@@ -95,19 +133,35 @@ const initCharts = () => {
       tooltip: {
         trigger: 'axis', // 或 'item'
         formatter: (params) => {
-          return params.map((param) => {
-            return `${param.axisValue}: ${param.value[1]} (功率值)`;
-          }).join('<br/>');
+          params = params[0];
+          let date = new Date(params.value[0]);
+          let hours = ("0" + date.getHours()).slice(-2); // 保证小时数为两位数
+          let minutes = ("0" + date.getMinutes()).slice(-2); // 保证分钟数为两位数
+          return (
+            hours +
+            ":" +
+            minutes +
+            " 功率: " +
+            params.value[1]
+          );
         }
       },
       xAxis: {
-        type: 'category',
-        data: formattedTimes
+        type: 'time',
+        splitLine: {
+          show: false,
+        },
+        formatter: '{HH}:{mm}'
       },
-      yAxis: { type: 'value' },
+      yAxis: {
+        type: 'value', boundaryGap: [0, "100%"],
+        splitLine: {
+          show: false,
+        },
+      },
       series: [{
         data: chartData.value.map((item, index) => {
-          return [formattedTimes[index], item.power];
+          return [item.date + " " + item.time, item.avgPower];
         }),
         type: 'line'
       }]
@@ -117,11 +171,11 @@ const initCharts = () => {
 };
 
 // 格式化日期和时间的辅助函数
-const formatDate = (date) => date.toISOString().substr(0, 10);
-function formatTime(timestamp) {
-  const timePart = timestamp.split('T')[1];
-  return timePart ? timePart.substr(0, 5) : ''; // 返回小时和分钟部分
-}
+// const formatDate = (date) => date.toISOString().substr(0, 10);
+// function formatTime(timestamp) {
+//   const timePart = timestamp.split('T')[1];
+//   return timePart ? timePart.substr(0, 5) : ''; // 返回小时和分钟部分
+// }
 
 // 更改当前选中的工作站部分并获取其数据
 const changeSection = (section) => {
@@ -130,28 +184,39 @@ const changeSection = (section) => {
 };
 
 // 从 API 获取数据的主要函数,获取每个生产日期下的第一条数据
+// const getDataFromAPI = async () => {
+//   let params = {
+//     page: currentPage.value,
+//     pageSize: pageSize.value,
+//     sectionName: selectedSection.value.name,
+//     startDate: dateRange.value[0] ? formatDate(new Date(dateRange.value[0])) : null,
+//     endDate: dateRange.value[1] ? formatDate(new Date(dateRange.value[1])) : null
+//   };
+
+//   console.log("Sending request with params:", params);
+
+//   const res = await getFirstEnergyConsumptionRecordsAPI(params);
+//   if (res.code === 1 && res.data && Array.isArray(res.data.data)) {
+//     console.log("Received filtered data:", res.data.data); // 打印接收到的数据，检查是否已过滤
+//     selectedSection.value.tableData = res.data;
+//     total.value = res.data.total;
+//   } else {
+//     console.error('数据加载失败:', res.msg);
+//     selectedSection.value.tableData = []; // 清空数据以反映没有结果
+//   }
+// };
+
+
 const getDataFromAPI = async () => {
-  let params = {
-    page: currentPage.value,
-    pageSize: pageSize.value,
-    sectionName: selectedSection.value.name,
-    startDate: dateRange.value[0] ? formatDate(new Date(dateRange.value[0])) : null,
-    endDate: dateRange.value[1] ? formatDate(new Date(dateRange.value[1])) : null
-  };
+  const res = await getEnergyDatesAPI(currentPage.value, pageSize.value, selectedSection.value.name, dateRange.value[0], dateRange.value[1]);
+  console.log(res.data);
+  // tableData.value = res.data.data;
+  selectedSection.value.tableData = res.data;
 
-  console.log("Sending request with params:", params);
+  total.value = res.data.total
+  // updateSearchSuggestion()
 
-  const res = await getFirstEnergyConsumptionRecordsAPI(params);
-  if (res.code === 1 && res.data && Array.isArray(res.data.data)) {
-    console.log("Received filtered data:", res.data.data); // 打印接收到的数据，检查是否已过滤
-    selectedSection.value.tableData = res.data;
-    total.value = res.data.total;
-  } else {
-    console.error('数据加载失败:', res.msg);
-    selectedSection.value.tableData = []; // 清空数据以反映没有结果
-  }
 };
-
 
 // 获取当前选中部分的表格数据
 const getCurrentTableData = () => {
@@ -197,35 +262,44 @@ const handleSelectionChange = (selected) => {
 const headers = ref([
   { key: 'id', title: '序号' },
   { key: 'sectionName', title: '工作站名称' },
-  { key: 'productionDate', title: '生产日期' },
-  { key: 'timestamp', title: '时间戳' },
-  { key: 'current', title: '电流' },
-  { key: 'voltage', title: '电压' },
-  { key: 'power', title: '功率' },
-  { key: 'energyConsumed', title: '能耗' },
+  { key: 'date', title: '生产日期' },
+  { key: 'time', title: '时间' },
+  { key: 'avgPower', title: '功率' },
+  { key: 'avgConsumption', title: '能耗' },
 ]);
-const filterExportData = (data) => {
-  return data.map(row => ({
-    ...row,
-    sectionName: selectedSection.value.name
-  }));
+
+const filterExportData = async (data) => {
+  console.log(data);
+  const selectedDates = data.map(row => row.date);
+  console.log(selectedDates);
+  const formattedData = [];
+
+  for (const date of selectedDates) {
+    try {
+      const res = await getEnergyAPI(selectedSection.value.name, date);
+      if (res.code === 1 && Array.isArray(res.data)) {
+        const dailyData = res.data;
+        formattedData.push(...dailyData);
+      } else {
+        console.error('数据加载失败:', res.msg);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+  // console.log(formattedData);
+  return formattedData;
 };
 
-const exportDailyData = async (productionDate) => {
-  let dailyData = chartData.value.filter(row => row.productionDate === productionDate);
+const exportDailyData = async (date) => {
+  let dailyData = chartData.value.filter(row => row.date === date);
 
   // 如果没有找到数据，从后端加载
   if (dailyData.length === 0) {
-    const response = await getEnergyConsumptionRecordsAPI({
-      page: 1,
-      pageSize: 10,
-      sectionName: selectedSection.value.name,
-      startDate: productionDate,
-      endDate: productionDate
-    });
+    const response = await getEnergyAPI(selectedSection.value.name, date);
 
     if (response.code === 1) {
-      dailyData = response.data.data;
+      dailyData = response.data;
     } else {
       console.error('数据加载失败:', response.msg);
       return; // 在这里结束函数，因为没有数据可导出
@@ -234,21 +308,17 @@ const exportDailyData = async (productionDate) => {
 
   const formattedData = dailyData.map(row => ({
     sectionName: selectedSection.value.name,
-    productionDate: row.productionDate,
-    timestamp: row.timestamp,
-    current: row.current,
-    voltage: row.voltage,
-    power: row.power,
-    energyConsumed: row.energyConsumed
+    date: row.date,
+    time: row.time,
+    power: row.avgPower,
+    energyConsumed: row.avgConsumption
   }));
 
   // 定义导出的表头
   const exportHeaders = [
     { header: '工作站名称', key: 'sectionName' },
-    { header: '生产日期', key: 'productionDate' },
-    { header: '时间戳', key: 'timestamp' },
-    { header: '电流', key: 'current' },
-    { header: '电压', key: 'voltage' },
+    { header: '生产日期', key: 'date' },
+    { header: '时间', key: 'time' },
     { header: '功率', key: 'power' },
     { header: '能耗', key: 'energyConsumed' },
   ];
@@ -260,7 +330,7 @@ const exportDailyData = async (productionDate) => {
   // 为工作表设置列的数据类型，确保数据格式正确
   ws['!cols'] = exportHeaders.map(header => ({ wch: header.key.length + 5 })); // 定义列宽度
   XLSX.utils.book_append_sheet(wb, ws, '能耗统计记录');
-  XLSX.writeFile(wb, `能耗统计记录${productionDate}.xlsx`);
+  XLSX.writeFile(wb, `能耗统计记录${date}.xlsx`);
 };
 
 // 页面加载时自动执行的函数，用于获取初始数据
@@ -269,7 +339,14 @@ onMounted(() => {
 });
 
 // 根据日期筛选更改重新获取数据
-watch([dateRange], getDataFromAPI);
+// watch(
+//   [dateRange],
+//   ([newDateRange, oldDateRange]) => {
+//     getDataFromAPI();
+//   }
+// );
+
+
 </script>
 
 <template>
@@ -308,8 +385,8 @@ watch([dateRange], getDataFromAPI);
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item v-for="section in sections" :key="section.name" @click="changeSection(section)">{{
-                    section.name
-                    }}</el-dropdown-item>
+      section.name
+    }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -337,12 +414,11 @@ watch([dateRange], getDataFromAPI);
             style="width: 100%;margin-top: 1vh; border-radius: 1vh; margin-top: 1vh" table-layout="fixed" height="52vh">
             <el-table-column type="selection" align="center" />
             <el-table-column type="index" label="序号" align="center" min-width="60vh" />
-            <el-table-column prop="productionDate" label="生产日期" align="center" />
+            <el-table-column prop="date" label="生产日期" align="center" />
             <el-table-column prop="operation" label="能耗" align="center">
               <template #default="scope">
                 <div class="flex justify-space-between flex-wrap gap-4">
-                  <el-button style="color:rgb(114, 159, 208)" link
-                    @click="showDetails(scope.row.productionDate)">详情</el-button>
+                  <el-button style="color:rgb(114, 159, 208)" link @click="showDetails(scope.row.date)">详情</el-button>
                 </div>
               </template>
             </el-table-column>
@@ -350,7 +426,7 @@ watch([dateRange], getDataFromAPI);
               <template #default="scope">
                 <div class="flex justify-space-between flex-wrap gap-4">
                   <el-button style="color:rgb(114, 159, 208)" link
-                    @click="exportDailyData(scope.row.productionDate)">导出</el-button>
+                    @click="exportDailyData(scope.row.date)">导出</el-button>
                 </div>
               </template>
             </el-table-column>

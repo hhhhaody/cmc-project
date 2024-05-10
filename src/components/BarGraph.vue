@@ -1,21 +1,27 @@
 <template>
   <div>
-    <div ref="BarChartRef" class="echart"></div>
+    <div ref="BarChartRef" class="echart" :key="renderKey"></div>
   </div>
 </template>
 <script setup>
-import { ref, onMounted, inject, watch } from "vue";
+import { ref, onMounted, inject, watch, reactive } from "vue";
+import { getProductAmountAPI } from "../apis/data"
+
+
 const BarChartRef = ref();
+//刷新组件数据
+const renderKey = ref(0)
+const updateGraph = () => {
+  renderKey.value = renderKey.value + 1
+}
 
 const props = defineProps({
   station: { type: String },
   stations: { type: Array },
 });
 
-const x = ref(["C型钢", "L型钢", "T型钢"])
+const x = ref([])
 const y = ref([]);
-
-y.value = [50, 70, 40];
 
 //   // console.log(props.station),
 //   {
@@ -30,6 +36,34 @@ y.value = [50, 70, 40];
 
 // console.log(data.value[1]);
 
+const getDataFromAPI = async () => {
+  const res = await getProductAmountAPI(props.station);
+  console.log(res.data);
+
+  for (const i in res.data) {
+    const item = res.data[i]
+    x.value.push(item.name)
+    y.value.push({ value: item[props.station], spec: item.spec })
+    console.log(x.value);
+    console.log(y.value)
+
+    BarChart.setOption({
+      xAxis: {
+        data: x.value,
+      },
+      series: [
+        {
+          data: y.value,
+        },
+      ],
+    });
+
+  }
+
+};
+
+getDataFromAPI(props.station)
+
 let BarChart;
 
 onMounted(() => {
@@ -42,16 +76,27 @@ onMounted(() => {
     // title: {
     //   text: "Bar Chart",
     // },
-    tooltip: {},
+    tooltip: {
+      // trigger: "item",
+      // axisPointer: {
+      //   type: "shadow", // 鼠标悬浮时显示阴影效果
+      // },
+      formatter(params) { // 自定义提示信息的内容
+        // var station = params[0].name; // 获取柱状图对应的站点名称
+        // var value = params[0].value; // 获取柱状图的值
+        return `规格型号：${params.data.spec} </br> 产量：${params.data.value}`; // 返回自定义的提示信息
+        console.log(params);
+      },
+    },
     xAxis: {
-      indicator: [
-        { name: "Station 1" },
-        { name: "Station 2" },
-        { name: "Station 3" },
-        { name: "Station 4" },
-        { name: "Station 5" },
-        { name: "Station 6" },
-      ],
+      // indicator: [
+      //   { name: "Station 1" },
+      //   { name: "Station 2" },
+      //   { name: "Station 3" },
+      //   { name: "Station 4" },
+      //   { name: "Station 5" },
+      //   { name: "Station 6" },
+      // ],
       data: x.value,
     },
     yAxis: {},
@@ -112,47 +157,9 @@ watch(
   () => props,
   (newVal) => {
     // console.log(props.station);
-    if (props.station === props.stations[0]) {
-      x.value = ["C型钢", "L型钢", "T型钢", "C型钢A", "T型钢A", "L型钢A", "C型钢B", "T型钢B"]
-      y.value = [50, 70, 40, 30, 55, 80, 50, 69]
-      // [
-      //   {
-      //     value:,
-      //     name: "产品生产情况",
-      //   },
-      // ];
-    }
-    if (props.station === props.stations[1]) {
-      x.value = ["网片A", "网片B", "网片C", "网片D", "网片e", "网片f", "网片h", "网片g", "网片i"]
-      y.value = [2, 7, 4, 2, 3, 2, 4, 5, 1]
-      // [
-      //   {
-      //     value: ,
-      //     name: "产品生产情况",
-      //   },
-      // ];
-    }
-    if (props.station === props.stations[2]) {
-      x.value = ["方通柱"]
-      y.value = [80]
-      //   data.value[0].value = [46, 22, 20, 30, 23, 13]
-      //   [
-      //     {
-      //       value: ,
-      //       name: "产品生产情况",
-      //     },
-      //   ];
-    }
-    if (props.station === props.stations[3]) {
-      x.value = ["模块A", "模块B"]
-      y.value = [2, 1]
-      //   data.value[0].value = [
-      //     {
-      //       value: [50, 14, 28, 26, 42, 21],
-      //       name: "产品生产情况",
-      //     },
-      //   ];
-    }
+    x.value = []
+    y.value = []
+    getDataFromAPI(props.station)
 
     BarChart.setOption({
       xAxis: {

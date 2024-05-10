@@ -1,7 +1,7 @@
 {
     "color": [
         "#3ea4ff",
-        "#2c738b",
+        "#80abd5",
         "#626E7A",
         "#9bd0ff",
         "#94ffd6",
@@ -60,27 +60,8 @@
             "shadowBlur": 40,
             "join": "square"
         },
-        "areaStyle": {
-            "color": {
-                "type": "radial",
-                "x": 0.5,
-                "y": 0.5,
-                "r": 0.7,
-                "colorStops": [
-                    {
-                        "offset": 1,
-                        "color": "#3ea4ff"
-                    },
-                    {
-                        "offset": 0,
-                        "color": "#00000000"
-                    }
-                ],
-                "global": false
-            },
-            "opacity": 0.8
-        },
-        "symbol": "none",
+        "symbol": "circle",
+        "symbolSize": 6,
         "smooth": true
     },
     "bar": {

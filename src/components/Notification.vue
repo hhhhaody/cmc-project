@@ -1,13 +1,26 @@
 <script setup>
 import { ref, watch, nextTick } from "vue";
 import NotificationRow from "./NotificationRow.vue";
+import { getMsgAPI } from "../apis/data"
+
 
 const msg = ref([]);
-msg.value.push("设备故障报警");
-msg.value.push("原材料库存量低");
-msg.value.push("成品库存已达上限，请及时处理！");
-msg.value.push("线上产品堆料已达上限，请及时处理！");
-msg.value.push("产线上原材料即将耗尽，请尽快上料！");
+
+const getDataFromAPI = async () => {
+
+  const res = await getMsgAPI(new Date().toISOString().slice(0, 10));
+  // console.log(res.data);
+  msg.value = res.data
+
+};
+
+getDataFromAPI()
+
+// msg.value.push("设备故障报警");
+// msg.value.push("原材料库存量低");
+// msg.value.push("成品库存已达上限，请及时处理！");
+// msg.value.push("线上产品堆料已达上限，请及时处理！");
+// msg.value.push("产线上原材料即将耗尽，请尽快上料！");
 
 // const load = () => {
 //   msg.value.push("产线上原材料即将耗尽，请尽快上料！");
@@ -34,9 +47,11 @@ watch(
 
 function start() {
   setInterval(function () {
-    if (Math.random() > 0.5)
-      //降低推送频率
-      msg.value.push(msg.value[Math.floor(Math.random() * 5)]);
+    getDataFromAPI()
+
+    // if (Math.random() > 0.5)
+    //降低推送频率
+    // msg.value.push(msg.value[Math.floor(Math.random() * 5)]);
     // console.log(msg.value[Math.floor(Math.random() * 5)]);
     // console.log(msg);
   }, 10000);

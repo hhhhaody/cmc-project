@@ -27,7 +27,7 @@ export default {
         },
     },
     methods: {
-        exportData() {
+        async exportData() {
             try {
                 // 确保 modelValue 和 tableData 始终是数组
                 const modelData = this.modelValue || [];
@@ -43,8 +43,9 @@ export default {
                     return;
                 }
 
+
                 // 使用过滤函数处理数据（如果提供了的话）
-                data = this.filterFunction(data);
+                data = await this.filterFunction(data);
 
                 // 重新生成序号，并保持其他数据不变
                 data = data.map((item, index) => {
@@ -72,4 +73,3 @@ export default {
     }
 }
 </script>
-

@@ -15,31 +15,19 @@ const stationData = ref([]);  // 用于保存工位数据
 
 // 定义工位排序映射
 const stationOrderMap = {
-  "桁架上料工位": 17,
-  "型钢翻转工位": 18,
-  "激光切割工位": 19,
-  "机器人下料工位": 20,
-  "桁架下料工位": 21,
-  "搬运机器人工位": 35,
-  "柱头焊接工位1": 36,
-  "柱头焊接工位2": 37,
-  "柱脚焊接工位1": 38,
-  "柱脚焊接工位2": 39,
-  "柱头总装工位": 40,
-  "柱脚总装工位": 41,
-  "整焊机台工位": 42,
-  "桁架上下料工位": 43,
-  "移动模台工位": 46,
-  "装夹工位1": 47,
-  "装夹工位2": 48,
-  "机器人焊接工位1": 49,
-  "机器人焊接工位2": 50,
-  "机器人焊接工位3": 51,
-  "机器人焊接工位4": 52,
-  "移动桁架工位": 53,
-  "桁架上料工位": 110,
-  "机器人焊接工位": 112,
-  "桁架下料工位": 118,
+  "桁架上下料工位": 1,
+  "翻转工位": 2,
+  "激光切割工位": 3,
+  "机器人下料工位": 4,
+  "机器人焊接工位": 2,
+  "链轮车料架工位": 2,
+  "柱头焊接工位": 3,
+  "柱脚焊接工位": 4,
+  "总装工位": 5,
+  "搬运机器人工位": 6,
+  "移动模台工位": 2,
+  "装夹工位": 3,
+  "桁架焊接工位": 4,
 };
 
 //保存后端数据
@@ -55,7 +43,7 @@ const fetchTableData = async (section) => {
     tableData.data = res.data.data.map(item => ({
       ...item,
       stationTimes: item.stationTimes.sort((a, b) => {
-        return (stationOrderMap[a.stationName] || 0) - (stationOrderMap[b.stationName] || 0);
+        return (stationOrderMap[a.stationName] || 99) - (stationOrderMap[b.stationName] || 99);
       })
     }));
     tableData.total = res.data.total;
@@ -68,7 +56,7 @@ const fetchTableData = async (section) => {
       });
     });
     stationData.value = [...allStations].sort((a, b) => {
-      return (stationOrderMap[a] || 0) - (stationOrderMap[b] || 0);
+      return (stationOrderMap[a] || 99) - (stationOrderMap[b] || 99);
     });
   } else {
     stationData.value = [];
@@ -253,8 +241,8 @@ onMounted(async () => {
         <!-- operation -->
         <div style="display: flex; justify-content: space-between">
           <span>
-            <ExportButton v-if="!userStore.isReadOnly" v-model="selectedRows" :headers="headers" :tableData="tableData.data" fileName="生产耗时记录.xlsx"
-              :filterFunction="filterExportData" buttonLabel="导出" />
+            <ExportButton v-if="!userStore.isReadOnly" v-model="selectedRows" :headers="headers"
+              :tableData="tableData.data" fileName="生产耗时记录.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
 
 
           </span>
@@ -264,8 +252,8 @@ onMounted(async () => {
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item v-for="section in sections" :key="section" @click="changeSection(section)">{{
-                    section
-                    }}</el-dropdown-item>
+      section
+    }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -369,4 +357,3 @@ onMounted(async () => {
   background-color: white;
 }
 </style>
-

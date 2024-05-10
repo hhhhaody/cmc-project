@@ -4,10 +4,10 @@ import LineGraph from "../components/LineGraph.vue";
 import BarGraph from "../components/BarGraph.vue";
 import RadarGraph from "../components/RadarGraph.vue";
 import UsageRecord from "../components/UsageRecord.vue";
+import Carbon from "../components/Carbon.vue";
 // import GaugeGraph from "../components/GaugeGraph.vue";
 import { ref } from "vue";
 import { useRouter } from 'vue-router';
-import CarbonVue from "../components/Carbon.vue";
 
 const stations = ref(["型钢切割工作站", "地面钢网工作站", "方通组焊工作站", "模块总装工作站"]);
 const radar = ref(stations.value[0]); //耗时统计图形组件
@@ -20,6 +20,7 @@ const carbon = ref(true)
 const quality = ref(false)
 const showToggle = ref(false)
 const showToggle2 = ref(false)
+const showToggle3 = ref(true)
 
 const navigate = (routeName) => {
   router.push({ name: routeName });
@@ -27,6 +28,13 @@ const navigate = (routeName) => {
 
 // console.log(stations.value[0]);
 // radar.value = "station1";
+
+const changeAllStation = (val) => {
+  changeStation(1, val)
+  changeStation(2, val)
+  changeStation(3, val)
+  changeStation(4, val)
+}
 
 const changeStation = (type, val) => {
   // type: 1 for radar
@@ -61,8 +69,8 @@ const changeStation = (type, val) => {
 
 <template>
   <main class="layout">
-    <span v-if="carbon" class="g4 animate__animated animate__fadeInRight grey" @mouseenter="showToggle = true"
-      @mouseleave="showToggle = false">
+    <span v-if="carbon" class="g4 animate__animated animate__fadeInRight grey" @mouseover="showToggle = true"
+      @mouseout="showToggle = false">
       <i>
         <span class="click" @click="navigate('lowCarbon')">碳排放总览</span>
         <!-- <div class="tab">
@@ -72,12 +80,12 @@ const changeStation = (type, val) => {
         </div> -->
       </i>
       <Carbon />
-      <e v-show="showToggle" class="toggleButton" @click="carbon = false">能耗统计</e>
+      <p v-show="showToggle" class="toggleButton" @click="carbon = false">能耗数据</p>
     </span>
-    <span v-else class="g4 animate__animated animate__fadeInRight grey" @mouseenter="showToggle = true"
-      @mouseleave="showToggle = false">
+    <span v-else class="g4 animate__animated animate__fadeInRight grey" @mouseover="showToggle = true"
+      @mouseout="showToggle = false">
       <i>
-        <span class="click" @click="navigate('lowCarbon')">能耗统计</span>
+        <span class="click" @click="navigate('energyConsumption')">能耗数据</span>
         <el-dropdown class="tab">
           <span class="el-dropdown-link" style="font-size: 15px; font-weight: 500;"> {{ line }} </span>
           <template #dropdown>
@@ -91,13 +99,13 @@ const changeStation = (type, val) => {
         </el-dropdown>
       </i>
       <LineGraph class="graph" :station="line" :stations="stations" />
-      <e v-show="showToggle" class="toggleButton" @click="carbon = true">碳排放</e>
+      <p v-show="showToggle" class="toggleButton" @click="carbon = true">碳排放</p>
     </span>
 
 
 
-    <span v-if="quality" class="g3 animate__animated animate__fadeInLeft grey" @mouseenter="showToggle2 = true"
-      @mouseleave="showToggle2 = false">
+    <span v-if="quality" class="g3 animate__animated animate__fadeInLeft grey" @mouseover="showToggle2 = true"
+      @mouseout="showToggle2 = false">
       <i>
         <span class="click" @click="navigate('quality')">质量检测情况</span>
         <el-dropdown class="tab">
@@ -115,10 +123,10 @@ const changeStation = (type, val) => {
       </i>
 
       <Quality />
-      <e v-show="showToggle2" class="toggleButton2" @click="quality = false">产品生产情况</e>
+      <p v-show="showToggle2" class="toggleButton2" @click="quality = false">产品生产情况</p>
     </span>
-    <span v-else class="g3 animate__animated animate__fadeInLeft grey" @mouseenter="showToggle2 = true"
-      @mouseleave="showToggle2 = false">
+    <span v-else class="g3 animate__animated animate__fadeInLeft grey" @mouseover="showToggle2 = true"
+      @mouseout="showToggle2 = false">
       <i>
         <span class="click" @click="navigate('product')">产品生产情况</span>
         <el-dropdown class="tab">
@@ -136,11 +144,29 @@ const changeStation = (type, val) => {
       </i>
 
       <BarGraph class="graph" :station="bar" :stations="stations" />
-      <e v-show="showToggle2" class="toggleButton2" @click="quality = true">质量检测情况</e>
+      <p v-show="showToggle2" class="toggleButton2" @click="quality = true">质量检测情况</p>
     </span>
     <span class="g2 animate__animated animate__fadeInRight grey">
+      <p style="position: absolute;top: -65px;right:10vh">
+
+        <el-dropdown>
+          <span style="font-size: 15px; font-weight: 500;">
+            <Switch style="width: 2vh; height: 2vh; color:white" />
+          </span>
+
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="changeAllStation(stations[0])">型钢切割工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeAllStation(stations[1])">地面钢网工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeAllStation(stations[2])">方通组焊工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeAllStation(stations[3])">模块总装工作站</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </p>
+
       <i>
-        <span class="click" @click="navigate('timeConsumption')">耗时统计</span>
+        <span class="click" @click="navigate('timeConsumption')">耗时数据</span>
         <el-dropdown class="tab">
           <span class="el-dropdown-link" style="font-size: 15px; font-weight: 500;"> {{ radar }} </span>
 
@@ -178,7 +204,8 @@ const changeStation = (type, val) => {
 
       <UsageRecord class="graph" :station="usage" :stations="stations" />
     </span>
-    <span class="g5"> </span>
+    <span class="g5">
+    </span>
   </main>
 </template>
 
@@ -225,11 +252,13 @@ const changeStation = (type, val) => {
 
   z-index: 100;
   grid-area: graph1;
+
 }
 
 .g2 {
   grid-area: graph2;
   z-index: 100;
+  position: relative;
 
 }
 

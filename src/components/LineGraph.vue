@@ -7,20 +7,21 @@
 <script setup>
 import { ref, onMounted, inject, watch, defineProps, reactive } from "vue";
 import { getEnergyConsumptionRecordsAPI } from "../apis/energyConsumptionRecords";
+import { getEnergyAPI } from "../apis/data"
 
 // 用于获取当前日期和第二天的日期，格式为 "YYYY-MM-DD"，用于 API 请求。
-function getTodayDateRange() {
-  let today = new Date();
-  let tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
+// function getTodayDateRange() {
+//   let today = new Date();
+//   let tomorrow = new Date(today);
+//   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const formatDate = (date) => `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+//   const formatDate = (date) => `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 
-  return {
-    startDate: formatDate(today),
-    endDate: formatDate(tomorrow),
-  };
-}
+//   return {
+//     startDate: formatDate(today),
+//     endDate: formatDate(tomorrow),
+//   };
+// }
 
 const LineChartRef = ref();
 
@@ -29,33 +30,59 @@ const props = defineProps({
   stations: { type: Array },
 });
 
-const data = reactive([]);
+const data = ref([]);
 // 模拟从数据源获取数据的方法
 
-async function getDataFromAPI(station) {
-  const dateRange = getTodayDateRange();
-  try {
-    const response = await getEnergyConsumptionRecordsAPI({
-      page: 1,
-      pageSize: 1000,
-      sectionName: station,
-      startDate: dateRange.startDate,
-      endDate: dateRange.endDate,
-    });
-    if (response.code === 1) {
-      return response.data.data.map(record => ({
-        name: record.timestamp,
-        value: [record.productionDate, record.energyConsumed],
-      }));
-    } else {
-      console.error('Failed to fetch data:', response.msg);
-      return [];
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    return [];
+// async function getDataFromAPI(station) {
+//   const dateRange = getTodayDateRange();
+//   try {
+//     const response = await getEnergyConsumptionRecordsAPI({
+//       page: 1,
+//       pageSize: 1000,
+//       sectionName: station,
+//       startDate: dateRange.startDate,
+//       endDate: dateRange.endDate,
+//     });
+//     if (response.code === 1) {
+//       return response.data.data.map(record => ({
+//         name: record.timestamp,
+//         value: [record.productionDate, record.energyConsumed],
+//       }));
+//     } else {
+//       console.error('Failed to fetch data:', response.msg);
+//       return [];
+//     }
+//   } catch (error) {
+//     console.error('Error fetching data:', error);
+//     return [];
+//   }
+// }
+
+const getDataFromAPI = async () => {
+
+  const res = await getEnergyAPI(props.station, new Date().toISOString().slice(0, 10));
+  console.log(res.data);
+
+  for (const i in res.data) {
+    const item = res.data[i]
+    // console.log(data);
+    data.value.push({ name: "功率", value: [item.date + " " + item.time, item.avgPower] })
+
+    console.log(data.value);
+
   }
-}
+  LineChart.setOption({
+    series: [
+      {
+        data: data.value,
+      },
+    ],
+  });
+
+};
+
+getDataFromAPI(props.station)
+
 
 let LineChart;
 
@@ -65,80 +92,68 @@ onMounted(() => {
   // 基于准备好的dom，初始化echarts实例
   LineChart = echarts.init(LineChartRef.value, "vintage");
 
-  // 使用立即执行的异步函数来获取初始数据
-  (async () => {
-    const initialData = await getDataFromAPI(props.station);
-    data.splice(0, data.length, ...initialData);
-
-    // 绘制图表
-    LineChart.setOption({
-
-      tooltip: {
-        trigger: "axis",
-        formatter: function (params) {
-          params = params[0];
-          let date = new Date(params.name);
-          return (
-            date.getMonth() +
-            1 +
-            "/" +
-            date.getDate() +
-            "/" +
-            date.getFullYear() +
-            " " +
-            date.getHours() +
-            ":" +
-            date.getMinutes() +
-            " : " +
-            params.value[1]
-          );
-        },
-
+  LineChart.setOption({
+    tooltip: {
+      trigger: "axis",
+      formatter: function (params) {
+        params = params[0];
+        let date = new Date(params.value[0]);
+        let hours = ("0" + date.getHours()).slice(-2); // 保证小时数为两位数
+        let minutes = ("0" + date.getMinutes()).slice(-2); // 保证分钟数为两位数
+        return (
+          hours +
+          ":" +
+          minutes +
+          " 功率: " +
+          params.value[1]
+        );
       },
-      xAxis: {
-        type: "time",
-        splitLine: {
-          show: false,
-        },
+    },
+    xAxis: {
+      type: "time",
+      splitLine: {
+        show: false,
       },
-      yAxis: {
-        type: "value",
-        boundaryGap: [0, "100%"],
-        splitLine: {
-          show: false,
-        },
+      formatter: '{HH}:{mm}'
+    },
+    yAxis: {
+      type: "value",
+      boundaryGap: [0, "100%"],
+      splitLine: {
+        show: false,
       },
-      series: [
-        {
-          name: "Fake Data",
-          type: "line",
-          showSymbol: false,
-          data: data, // 使用data.value来表示折线图的数据
-        },
-      ],
-    });
-  })();
+    },
+    series: [
+      {
+        name: "功率",
+        type: "line",
+        showSymbol: true,
+        data: data.value,
+      },
+    ],
+  });
+
 });
 
 watch(
-  () => props.station,
-  async (newVal) => {
-    if (newVal) {
-      const newData = await getDataFromAPI(newVal);
-      data.splice(0, data.length, ...newData);
-      LineChart.setOption({
-        series: [{
-          data: data
-        }]
-      });
-    }
+  () => props,
+  (newVal) => {
+    // console.log(props.station);
+    data.value = []
+    getDataFromAPI(props.station)
+
+    LineChart.setOption({
+      series: [
+        {
+          data: data.value,
+        },
+      ],
+    });
   },
   {
-    immediate: true,
     deep: true,
   }
 );
-
 
 </script>
 <style lang="scss" scoped>

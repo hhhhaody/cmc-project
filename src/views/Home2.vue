@@ -39,7 +39,7 @@ const navigate = (routeName) => {
     </span>
     <span class="g1 animate__animated animate__fadeInLeft grey">
       <i>
-        <span class="click" @click="navigate('deviceStatus')">监测设备统计</span>
+        <span class="click" @click="navigate('deviceMonitor')">监测设备统计</span>
       </i>
       <DeviceStatus />
 
