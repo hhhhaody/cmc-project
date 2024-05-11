@@ -270,6 +270,7 @@ const addform = reactive({
   spec: '',
   station: '',
   section: '',
+  serialNo: '',
   purchaseTime: '',
   supplier: '',
   contact: '',
@@ -365,6 +366,7 @@ const getFacilityByID = async (id) => {
     addform.spec = res.data.spec
     addform.section = res.data.section
     addform.station = res.data.station
+    addform.serialNo = res.data.serialNo
     addform.supplier = res.data.supplier
     addform.purchaseTime = res.data.purchaseTime
     addform.contact = res.data.contact

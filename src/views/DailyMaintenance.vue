@@ -510,8 +510,9 @@ const uploadImage = (uidToFileNameMap) => {
                             <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增
                         </el-button> -->
 
-                        <ExportButton v-if="!userStore.isReadOnly" v-model="selectedRows" :headers="headers" :tableData="tableData.value"
-                            fileName="日常维护信息.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
+                        <ExportButton v-if="!userStore.isReadOnly" v-model="selectedRows" :headers="headers"
+                            :tableData="tableData.value" fileName="日常维护信息.xlsx" :filterFunction="filterExportData"
+                            buttonLabel="导出" />
                     </span>
                     <span>
 
@@ -534,11 +535,12 @@ const uploadImage = (uidToFileNameMap) => {
             text-decoration: underline;
             color: #729fd0;
             position: relative;
-            left: 97%;
+            left: 94%;
             width: fit-content;
             cursor: pointer;
           ">
                     <RouterLink to="/maintenancePlan">日历</RouterLink>
+                    <RouterLink to="/maintenancePlan/maintenanceList" style="margin-left: 2vh;">列表</RouterLink>
                 </div>
 
                 <!-- 弹框区 -->
@@ -548,7 +550,7 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="设备名称" prop="name" :rules="[
-                                { required: true, message: '请选择设备名称', trigger: 'blur' }]">
+            { required: true, message: '请选择设备名称', trigger: 'blur' }]">
                                 <DialogSearch :key="renderKey" :wNo="100" search-title="设备名称"
                                     :searchContent=stockform.name field="name" @search="dialogSearchSuggestion"
                                     :data="stockform" database="facilities" />
@@ -556,7 +558,7 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="规格型号" prop="spec" :rules="[
-                                { required: true, message: '请选择规格型号', trigger: 'blur' }]">
+            { required: true, message: '请选择规格型号', trigger: 'blur' }]">
                                 <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号"
                                     :searchContent=stockform.spec field="spec" @search="dialogSearchSuggestion"
                                     :data="stockform" database="facilities" />
@@ -566,7 +568,7 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="工段名称" prop="section" :rules="[
-                                { required: true, message: '请选择工段名称', trigger: 'blur' }]">
+            { required: true, message: '请选择工段名称', trigger: 'blur' }]">
                                 <DialogSearch :key="renderKey" :wNo="100" search-title="工段名称"
                                     :searchContent=stockform.section field="section" @search="dialogSearchSuggestion"
                                     :data="stockform" database="facilities" />
@@ -574,7 +576,7 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="设备编号" prop="serialNo" :rules="[
-                                { required: true, message: '请选择设备编号', trigger: 'blur' }]">
+            { required: true, message: '请选择设备编号', trigger: 'blur' }]">
                                 <DialogSearch :key="renderKey" :wNo="100" search-title="设备编号"
                                     :searchContent=stockform.serialNo field="serialNo" @search="dialogSearchSuggestion"
                                     :data="stockform" database="facilities" />
@@ -584,7 +586,7 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span=12>
                             <el-form-item label="维护类型" prop="type" :rules="[
-                                { required: true, message: '请选择维修类型', trigger: 'blur' }]">
+            { required: true, message: '请选择维修类型', trigger: 'blur' }]">
                                 <el-radio-group v-model="stockform.type">
                                     <el-radio-button label="临时保养" />
                                     <el-radio-button label="一级保养" />
@@ -594,7 +596,7 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="计划完成时间" prop="plannedTime" :rules="[
-                                { required: true, message: '请输入计划完成维护时间', trigger: 'blur' }]">
+            { required: true, message: '请输入计划完成维护时间', trigger: 'blur' }]">
                                 <el-date-picker v-model="stockform.plannedTime" type="datetime" placeholder="选择计划完成维护时间"
                                     value-format="YYYY-MM-DDTHH:mm:ss" />
                             </el-form-item>
@@ -634,11 +636,11 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span=12>
                             <el-form-item label="维护人员" prop="prevMaintenanceman" :rules="[
-                                { required: true, message: '请输入维护人员', trigger: 'blur' },
-                                {
-                                    min: 1, max: 30,
-                                    message: '长度必须在1-30之间', trigger: 'blur'
-                                }]">
+            { required: true, message: '请输入维护人员', trigger: 'blur' },
+            {
+                min: 1, max: 30,
+                message: '长度必须在1-30之间', trigger: 'blur'
+            }]">
                                 <el-input v-model="stockform.prevMaintenanceman" autocomplete="off"
                                     placeholder="请输入维护人员" />
 
@@ -652,7 +654,7 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                     </el-row>
                     <el-form-item label="维护内容" prop="prevInfo" :rules="[
-                        { required: true, message: '请填写维护内容', trigger: 'blur' }]">
+            { required: true, message: '请填写维护内容', trigger: 'blur' }]">
                         <el-input v-model="stockform.prevInfo" autocomplete="off" placeholder="请填写维护内容" />
                     </el-form-item>
                 </DialogComponent>
@@ -745,11 +747,12 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-table-column label="维护状态" align="center">
                         <template #default="scope">
                             {{ scope.row.prevDailyTime ? isSameDay(new Date(), new Date(scope.row.prevDailyTime)) ?
-                            '已完成' :
-                            '未完成' : '未完成' }}
+            '已完成' :
+            '未完成' : '未完成' }}
                         </template>
                     </el-table-column>
-                    <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="操作" align="center" min-width="110vh">
+                    <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="操作" align="center"
+                        min-width="110vh">
                         <template #default="scope">
                             <!-- <el-button v-if="!scope.row.ongoing" class=" inline_button" style="color:#ff9a02a0"
                                 @click="maintenance(scope.row.id), getDataFromAPI()">
@@ -836,4 +839,3 @@ const uploadImage = (uidToFileNameMap) => {
     display: none !important;
 }
 </style>
-

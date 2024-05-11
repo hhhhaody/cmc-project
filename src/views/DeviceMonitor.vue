@@ -354,8 +354,8 @@ const startTimer = () => {
     timer.value = setInterval(() => {
         console.log("实时刷新中");
         //FIXME: 调试时修改此处
-        // getDataFromAPI()
-    }, 5000)
+        getDataFromAPI()
+    }, 10000)
 }
 
 

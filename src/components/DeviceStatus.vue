@@ -34,7 +34,7 @@ const tableData = reactive([]);
 const total = ref(0)
 const getDataFromAPI = async () => {
   const res = await getDeviceAPI();
-  console.log(res.data);
+  // console.log(res.data);
   const station1 = [];
   const station2 = [];
   const station3 = [];
@@ -89,7 +89,7 @@ const getDataFromAPI = async () => {
   offline3.value = stopped3.length
   offline4.value = stopped4.length
 
-  console.log(offline1.value);
+  // console.log(offline1.value);
   tableData.value = [section1, section2, section3, section4]
   // console.log(tableData);
   // tableData.value = res.data.data;
@@ -99,8 +99,21 @@ const getDataFromAPI = async () => {
 
 };
 
-
+//定时获取最新数据
 getDataFromAPI()
+
+let id
+
+function start() {
+  id = setInterval(function () {
+    getDataFromAPI()
+  }, 60000);
+}
+setTimeout(start, 1000);
+
+onUnmounted(() => {
+  clearInterval(id);
+});
 </script>
 <style scoped>
 .pieRow {

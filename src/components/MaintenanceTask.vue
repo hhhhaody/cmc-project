@@ -1,10 +1,10 @@
-<script lang="ts" setup>
-import { ref } from "vue";
+<script setup>
+import { ref, onUnmounted } from "vue";
 import { getMaintenancePlanAPI } from "../apis/maintenance"
 import { getFacilityAPI } from "../apis/facility";
 
 const activeNames = ref(["1", "0"]);
-const handleChange = (val: string[]) => {
+const handleChange = () => {
   //   console.log(val);
 };
 const plan = ref([])
@@ -30,11 +30,13 @@ const level4No = ref()
  * 4：逾期二级保养
  */
 
+
+
 const getTodayPlan = async (day) => {
   const res = await getMaintenancePlanAPI('', 9999, '', '', '', '', '', new Date(day));
-  console.log(res.data);
+  // console.log(res.data);
   for (const obj of res.data.data) {
-    if (obj.status === '未完成') {
+    if (obj.status === '待完成') {
       if (obj.type === '一级保养') {
         obj.task = 1
       }
@@ -44,19 +46,21 @@ const getTodayPlan = async (day) => {
       plan.value.push(obj);
     }
   }
-  console.log(plan.value);
+  // console.log(plan.value);
 
 };
 
 const getPlan = async (day) => {
   const res = await getMaintenancePlanAPI('', 9999, '', '', '', '', '', '');
-  console.log(res.data);
+  // console.log(res.data);
   const today = new Date(day);
   for (const obj of res.data.data) {
     const plannedTime = new Date(obj.plannedTime);
+    // console.log(obj.status);
+
     if (today > plannedTime) {
 
-      if (obj.status === '未完成') {
+      if (obj.status === '待完成') {
         if (obj.type === '一级保养') {
           obj.task = 3
         }
@@ -83,9 +87,6 @@ const getPlan = async (day) => {
 
 };
 
-
-
-
 const getDailyPlan = async () => {
   const res = await getFacilityAPI('', 99999, '', '', '', '', '', true);
   // console.log(res.data);
@@ -100,7 +101,26 @@ const getDailyPlan = async () => {
     }
 
   }
-  console.log(plan.value);
+  // console.log(plan.value);
+}
+
+function isSameDay(date1, date2) {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
+}
+
+const getDataFromAPI = async () => {
+  plan.value = []
+  await Promise.all([
+    getPlan(Date.now()),
+    getTodayPlan(Date.now()),
+    getDailyPlan(),
+  ]);
+
+  // console.log(plan.value)
   routine.value = plan.value.filter((device) => device.task === 0);
   level1.value = plan.value.filter((device) => device.task === 1);
   level2.value = plan.value.filter((device) => device.task === 2);
@@ -113,24 +133,30 @@ const getDailyPlan = async () => {
   level3No.value = level3.value.length
   level4No.value = level4.value.length
 
-  console.log(routineNo.value);
-
-
-
+  // console.log(routineNo.value);
+  // console.log(level1.value);
+  // console.log(level2.value);
+  // console.log(level3.value);
+  // console.log(level4.value);
 }
 
-function isSameDay(date1, date2) {
-  return (
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate()
-  );
+
+getDataFromAPI()
+
+//定时获取最新数据
+let id
+
+function start() {
+  id = setInterval(function () {
+    console.log("获取维保数据");
+    getDataFromAPI()
+  }, 10000);
 }
+setTimeout(start, 1000);
 
-getPlan(Date.now())
-getTodayPlan(Date.now())
-getDailyPlan()
-
+onUnmounted(() => {
+  clearInterval(id);
+});
 
 
 /**
@@ -251,6 +277,7 @@ getDailyPlan()
 //     task: 4,
 //   },
 // ]);
+
 
 </script>
 

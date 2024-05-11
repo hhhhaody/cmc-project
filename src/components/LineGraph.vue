@@ -5,9 +5,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, inject, watch, defineProps, reactive } from "vue";
+import { ref, onMounted, inject, watch, defineProps, reactive, onUnmounted } from "vue";
 import { getEnergyConsumptionRecordsAPI } from "../apis/energyConsumptionRecords";
 import { getEnergyAPI } from "../apis/data"
+import 'echarts/lib/component/dataZoom';
+
 
 // 用于获取当前日期和第二天的日期，格式为 "YYYY-MM-DD"，用于 API 请求。
 // function getTodayDateRange() {
@@ -59,16 +61,18 @@ const data = ref([]);
 // }
 
 const getDataFromAPI = async () => {
+  data.value = []
+
 
   const res = await getEnergyAPI(props.station, new Date().toISOString().slice(0, 10));
-  console.log(res.data);
+  // console.log(res.data);
 
   for (const i in res.data) {
     const item = res.data[i]
     // console.log(data);
     data.value.push({ name: "功率", value: [item.date + " " + item.time, item.avgPower] })
 
-    console.log(data.value);
+    // console.log(data.value);
 
   }
   LineChart.setOption({
@@ -93,6 +97,13 @@ onMounted(() => {
   LineChart = echarts.init(LineChartRef.value, "vintage");
 
   LineChart.setOption({
+    dataZoom: [
+      {
+        type: 'inside', // 内置型 dataZoom 组件，支持缩放和拖拽
+        start: 0, // 默认起始位置为 0%
+        end: 100, // 默认结束位置为 100%
+      }
+    ],
     tooltip: {
       trigger: "axis",
       formatter: function (params) {
@@ -105,7 +116,8 @@ onMounted(() => {
           ":" +
           minutes +
           " 功率: " +
-          params.value[1]
+          params.value[1] +
+          "W"
         );
       },
     },
@@ -139,7 +151,6 @@ watch(
   () => props,
   (newVal) => {
     // console.log(props.station);
-    data.value = []
     getDataFromAPI(props.station)
 
     LineChart.setOption({
@@ -154,6 +165,21 @@ watch(
     deep: true,
   }
 );
+
+//定时获取最新数据
+let id
+
+function start() {
+  id = setInterval(function () {
+    console.log("获取能耗数据");
+    getDataFromAPI()
+  }, 60000);
+}
+setTimeout(start, 1000);
+
+onUnmounted(() => {
+  clearInterval(id);
+});
 
 </script>
 <style lang="scss" scoped>

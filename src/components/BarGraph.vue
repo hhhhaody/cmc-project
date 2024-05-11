@@ -4,7 +4,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted, inject, watch, reactive } from "vue";
+import { ref, onMounted, inject, watch, reactive, onUnmounted } from "vue";
 import { getProductAmountAPI } from "../apis/data"
 
 
@@ -37,8 +37,12 @@ const y = ref([]);
 // console.log(data.value[1]);
 
 const getDataFromAPI = async () => {
+
+  x.value = []
+  y.value = []
+
   const res = await getProductAmountAPI(props.station);
-  console.log(res.data);
+  // console.log(res.data);
 
   for (const i in res.data) {
     const item = res.data[i]
@@ -62,9 +66,10 @@ const getDataFromAPI = async () => {
 
 };
 
-getDataFromAPI(props.station)
 
 let BarChart;
+
+getDataFromAPI(props.station)
 
 onMounted(() => {
   // 注入echarts实例
@@ -157,8 +162,6 @@ watch(
   () => props,
   (newVal) => {
     // console.log(props.station);
-    x.value = []
-    y.value = []
     getDataFromAPI(props.station)
 
     BarChart.setOption({
@@ -176,6 +179,21 @@ watch(
     deep: true,
   }
 );
+
+//定时获取最新数据
+let id
+
+function start() {
+  id = setInterval(function () {
+    console.log("获取产品生产数据");
+    getDataFromAPI()
+  }, 10000);
+}
+setTimeout(start, 1000);
+
+onUnmounted(() => {
+  clearInterval(id);
+});
 
 </script>
 <style lang="scss" scoped>

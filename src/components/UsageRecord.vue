@@ -82,6 +82,12 @@ export default {
   },
   mounted() {
     this.getData(this.station);
+    // 每隔一段时间获取数据
+    this.startTimer();
+  },
+  // 组件销毁时停止定时器
+  beforeUnmount() {
+    this.stopTimer();
   },
   watch: {
     station: {
@@ -96,10 +102,21 @@ export default {
   },
   methods: {
     async getData(station) {
-      console.log("get data");
+      // console.log("get data");
       const res = await getMaterialUsageAPI(station);
       this.tableData = res.data;
-      console.log(res.data);
+      // console.log(res.data);
+    },
+    startTimer() {
+      // 每隔一段时间调用 getData 方法
+      this.timerId = setInterval(() => {
+        console.log("获取原材料使用数据");
+        this.getData(this.station);
+      }, 10000); // 每隔 10 秒获取一次数据
+    },
+    stopTimer() {
+      // 停止定时器
+      clearInterval(this.timerId);
     },
     headerRowStyle({ row, rowIndex }) {
       return {

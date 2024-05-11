@@ -175,33 +175,33 @@ onMounted(() => {
   window.onresize = function () {
     PieChart.resize();
   };
-  function start() {
-    setInterval(function () {
-      online.value += 50;
-      //   console.log(online.value);
-      offline.value += 2;
+  // function start() {
+  //   setInterval(function () {
+  //     online.value += 50;
+  //     //   console.log(online.value);
+  //     offline.value += 2;
 
-      PieChart.setOption({
-        series: [
-          {
-            data: [
-              {
-                value: space.value,
-                name: "none",
-              },
+  //     PieChart.setOption({
+  //       series: [
+  //         {
+  //           data: [
+  //             {
+  //               value: space.value,
+  //               name: "none",
+  //             },
 
-              { value: online.value, name: "在线" },
-              {
-                value: space.value,
-                name: "none",
-              },
-              { value: offline.value, name: "离线" },
-            ],
-          },
-        ],
-      });
-    }, 1000);
-  }
+  //             { value: online.value, name: "在线" },
+  //             {
+  //               value: space.value,
+  //               name: "none",
+  //             },
+  //             { value: offline.value, name: "离线" },
+  //           ],
+  //         },
+  //       ],
+  //     });
+  //   }, 1000);
+  // }
 
   //   setTimeout(start, 2000);
 });

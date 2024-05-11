@@ -4,7 +4,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted, inject, watch, nextTick } from "vue";
+import { ref, onMounted, inject, watch, nextTick, onUnmounted } from "vue";
 import { getTimesAPI } from "../apis/data"
 
 const RadarChartRef = ref();
@@ -23,6 +23,12 @@ const real = ref([])
 
 
 const getDataFromAPI = async () => {
+
+  indicator.value = []
+  indicators.value = []
+  theoretical.value = []
+  real.value = []
+
   const res = await getTimesAPI(props.station);
   // console.log(res.data);
   const theo = res.data[1].stationInfo.split(',')
@@ -118,7 +124,6 @@ const getDataFromAPI = async () => {
 
 };
 
-getDataFromAPI(props.station)
 
 // console.log(indicator.value);
 
@@ -192,6 +197,9 @@ onMounted(() => {
     ],
   });
 });
+
+getDataFromAPI(props.station)
+
 watch(showToolTip, (newValue) => {
   RadarChart.setOption({
     tooltip: {
@@ -218,10 +226,6 @@ watch(
   () => props,
   (newVal) => {
     // console.log(props.station);
-    indicator.value = []
-    indicators.value = []
-    theoretical.value = []
-    real.value = []
     getDataFromAPI(props.station)
 
 
@@ -230,6 +234,23 @@ watch(
     deep: true,
   }
 );
+
+//定时获取最新数据
+let id
+
+function start() {
+  id = setInterval(function () {
+    console.log("获取耗时数据");
+    getDataFromAPI()
+  }, 10000);
+}
+setTimeout(start, 1000);
+
+onUnmounted(() => {
+  clearInterval(id);
+});
+
+
 </script>
 <style lang="scss" scoped>
 .echart {

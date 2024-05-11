@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, nextTick } from "vue";
+import { ref, watch, nextTick, onUnmounted } from "vue";
 import NotificationRow from "./NotificationRow.vue";
 import { getMsgAPI } from "../apis/data"
 
@@ -45,19 +45,20 @@ watch(
   }
 );
 
-function start() {
-  setInterval(function () {
-    getDataFromAPI()
+//定时获取最新数据
+let id
 
-    // if (Math.random() > 0.5)
-    //降低推送频率
-    // msg.value.push(msg.value[Math.floor(Math.random() * 5)]);
-    // console.log(msg.value[Math.floor(Math.random() * 5)]);
-    // console.log(msg);
+function start() {
+  id = setInterval(function () {
+    console.log("获取信息数据");
+    getDataFromAPI()
   }, 10000);
 }
-
 setTimeout(start, 1000);
+
+onUnmounted(() => {
+  clearInterval(id);
+});
 </script>
 
 <template>

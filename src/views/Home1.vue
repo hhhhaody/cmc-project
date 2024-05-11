@@ -16,7 +16,7 @@ const usage = ref(stations.value[0]); //原材料使用情况图形组件
 const line = ref(stations.value[0]);  //能耗统计图形组件
 const router = useRouter();
 
-const carbon = ref(true)
+const carbon = ref(false)
 const quality = ref(false)
 const showToggle = ref(false)
 const showToggle2 = ref(false)

@@ -71,6 +71,22 @@ const showDetails = async (date) => {
 // 图表初始化函数，用于创建 echarts 图表
 const energyChartRef = ref();
 const powerChartRef = ref();
+const style = {
+  color: { 0: "#729fd0" },
+  series: {
+
+    itemStyle: {
+      borderWidth: "2"
+    },
+    lineStyle: {
+      width: "2",
+      opacity: 0.6
+    },
+    symbolSize: "6",
+    symbol: "none",
+    smooth: true
+  }
+}
 const initCharts = () => {
   if (energyChartRef.value && powerChartRef.value) {
 
@@ -80,7 +96,7 @@ const initCharts = () => {
     const energyOption = {
       title: {
         text: '能耗',
-        left: 'center' // 将标题居中
+        left: 'center', // 将标题居中
       },
       tooltip: {
         trigger: 'axis', // 或 'item'，根据需求选择
@@ -94,8 +110,9 @@ const initCharts = () => {
             hours +
             ":" +
             minutes +
-            " 能耗: " +
-            params.value[1]
+            " 能耗：" +
+            params.value[1] +
+            "kW·h"
           );
         }
       },
@@ -122,6 +139,8 @@ const initCharts = () => {
       }]
     };
     energyChart.setOption(energyOption);
+    energyChart.setOption(style);
+
 
     // 初始化功率图表
     const powerChart = echarts.init(powerChartRef.value);
@@ -141,8 +160,9 @@ const initCharts = () => {
             hours +
             ":" +
             minutes +
-            " 功率: " +
-            params.value[1]
+            " 功率：" +
+            params.value[1] +
+            "W"
           );
         }
       },
@@ -167,6 +187,7 @@ const initCharts = () => {
       }]
     };
     powerChart.setOption(powerOption);
+    powerChart.setOption(style);
   }
 };
 

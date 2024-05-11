@@ -455,9 +455,17 @@ const maintenance = async (id) => {
         type: "error"
       })
     }
+    else {
+      ElNotification({
+        title: '成功',
+        message: '开始检修',
+        duration: 3000,
+        type: "success"
+      })
+    }
 
-    dialogVisible.value = false
-    props.refreshFunc()
+    // dialogVisible.value = false
+    // props.refreshFunc()
   }
   // console.log(res);
   getTodayPlan(selectedDate.value)
