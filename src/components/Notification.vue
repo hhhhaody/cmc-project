@@ -2,16 +2,29 @@
 import { ref, watch, nextTick, onUnmounted } from "vue";
 import NotificationRow from "./NotificationRow.vue";
 import { getMsgAPI } from "../apis/data"
+import { useRouter } from 'vue-router';
+
+
 
 
 const msg = ref([]);
+const received = ref([])
 
 const getDataFromAPI = async () => {
 
   const res = await getMsgAPI(new Date().toISOString().slice(0, 10));
   // console.log(res.data);
-  msg.value = res.data
+  if (msg.value.length != res.data.length) {
+    msg.value = res.data
 
+  }
+
+};
+
+
+const router = useRouter();
+const navigate = (routeName) => {
+  router.push({ name: routeName });
 };
 
 getDataFromAPI()
@@ -64,11 +77,12 @@ onUnmounted(() => {
 <template>
   <ul class="list" ref="list">
     <li v-for="item in msg" :key="item">
-      <NotificationRow v-if="item.search(re) > 0" :red="true">
-        <template #msg>{{ item }}</template>
+      <NotificationRow v-if="item.msg.search(re) > 0" :red="true" style="cursor:pointer"
+        @click="navigate('deviceMonitor')">
+        <template #msg>{{ item.msg }}</template>
       </NotificationRow>
       <NotificationRow v-else :red="false">
-        <template #msg>{{ item }}</template>
+        <template #msg>{{ item.msg }}</template>
       </NotificationRow>
     </li>
   </ul>
@@ -76,7 +90,7 @@ onUnmounted(() => {
 
 <style scoped>
 .list {
-  height: 30vh;
+  height: 28vh;
   margin-top: 1vh;
   overflow: auto;
 }

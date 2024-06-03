@@ -122,8 +122,8 @@ const handleDateChange = (newDates) => {
 
 </script>
 <template>
-    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn" :color="['#4f698794', '#4f698794']"
-        background-color="#3545659e">
+    <dv-border-box1 ref="borderRef" class="subNavPage animate__animated animate__zoomIn"
+        :color="['#4f698794', '#4f698794']" background-color="#3545659e">
         <el-container class="subNavPage">
             <br />
             <h1>安全抓拍记录</h1>
@@ -131,7 +131,7 @@ const handleDateChange = (newDates) => {
                 <div class="input-row">
                     <div>
                         <el-date-picker v-model="selectedDates" type="daterange" start-placeholder="开始日期"
-                            end-placeholder="结束日期" @change="handleDateChange" />
+                            end-placeholder="结束日期" @change="handleDateChange" value-format="YYYY-MM-DDTHH:mm:ss" />
                     </div>
                     <el-button @click="searchByDate" type="primary" style="margin-left: 10px; width: 7%">
                         <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
@@ -216,4 +216,3 @@ const handleDateChange = (newDates) => {
     --el-text-color-regular: #729fd0;
 }
 </style>
-

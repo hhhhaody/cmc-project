@@ -30,7 +30,7 @@ const getDataFromAPI = async () => {
   real.value = []
 
   const res = await getTimesAPI(props.station);
-  // console.log(res.data);
+  console.log(res.data);
   const theo = res.data[1].stationInfo.split(',')
   const actual = res.data[0].stationInfo.split(',')
 

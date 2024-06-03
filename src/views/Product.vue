@@ -209,6 +209,17 @@ const addform = reactive({
   times: []
 })
 
+const updateform = reactive({
+  id: '',
+  name: '',
+  spec: '',
+  threshold: '',
+  stackThreshold: '',
+  section: '',
+  stations: [],
+  times: []
+})
+
 const stockform
   = reactive({
     name: '',
@@ -234,10 +245,42 @@ watch(
 );
 
 
+watch(() => updateform.section, async (newval, oldval) => {
+  // console.log("props uploaded changed");
+  // console.log("new", newval);
+  // console.log("old", oldval);
+  console.log(newval);
+  if (newval) {
+    const res = await getStationsIdsAPI(newval);
+    console.log(res.data);
+    const ids = []
+
+    for (const obj of res.data) {
+      stations.value.push(obj.station)
+      ids.push(obj.id);
+    }
+
+    console.log(stations);
+    if (res.code === 1) {
+      updateform.stations = ids
+    }
+
+  }
+
+  else {
+    stations.value = []
+  }
+
+
+  // 其他操作...
+}, { deep: true });
+
+
 watch(() => addform.section, async (newval, oldval) => {
   // console.log("props uploaded changed");
   // console.log("new", newval);
   // console.log("old", oldval);
+  addform.times = []
   console.log(newval);
   if (newval) {
     const res = await getStationsIdsAPI(newval);
@@ -264,8 +307,6 @@ watch(() => addform.section, async (newval, oldval) => {
   // 其他操作...
 }, { deep: true });
 
-
-
 //编辑相关
 //数据回显API
 
@@ -273,14 +314,15 @@ const getProductByID = async (id) => {
   const res = await getByIdAPI(id);
   if (res.code === 1) {
     console.log(res.data);
-    addform.name = res.data.name
-    addform.spec = res.data.spec
-    addform.threshold = res.data.threshold
-    addform.stackThreshold = res.data.stackThreshold
-    addform.section = res.data.section
-    addform.times = res.data.times
+    updateform.id = res.data.id
+    updateform.name = res.data.name
+    updateform.spec = res.data.spec
+    updateform.threshold = res.data.threshold
+    updateform.stackThreshold = res.data.stackThreshold
+    updateform.section = res.data.section
+    updateform.times = res.data.times
     updateSearchSuggestion()
-    console.log(addform);
+    console.log(updateform);
   }
 };
 
@@ -528,10 +570,10 @@ const uploadImage = (uidToFileNameMap) => {
         </DialogComponent>
 
         <!-- 编辑弹框 -->
-        <DialogComponent ref="editDialog" :form="addform" dialog-title="编辑产品类型" :refreshFunc="getDataFromAPI"
+        <DialogComponent ref="editDialog" :form="updateform" dialog-title="编辑产品类型" :refreshFunc="getDataFromAPI"
           :confirm-func="updateProductAPI" @dialogClose="dialogClose">
           <el-form-item label="ID" prop="id">
-            <el-input disabled v-model.number="addform.id" autocomplete="off" />
+            <el-input disabled v-model.number="updateform.id" autocomplete="off" />
           </el-form-item>
           <el-form-item label="产品名称" prop="name" :rules="[
       { required: true, message: '请输入物料名称', trigger: 'blur' },
@@ -540,7 +582,7 @@ const uploadImage = (uidToFileNameMap) => {
         message: '长度必须在1-30之间', trigger: 'blur'
       }]
       ">
-            <el-input v-model="addform.name" autocomplete="off" placeholder="请输入产品名称" />
+            <el-input v-model="updateform.name" autocomplete="off" placeholder="请输入产品名称" />
           </el-form-item>
           <el-form-item label="规格型号" prop="spec" :rules="[
       { required: true, message: '请输入规格型号', trigger: 'blur' },
@@ -549,21 +591,21 @@ const uploadImage = (uidToFileNameMap) => {
         message: '长度必须在1-30之间', trigger: 'blur'
       }]
       ">
-            <el-input v-model="addform.spec" autocomplete="off" placeholder="请输入规格型号" />
+            <el-input v-model="updateform.spec" autocomplete="off" placeholder="请输入规格型号" />
           </el-form-item>
           <el-form-item label="库存阈值" prop="threshold" :rules="[
       { required: true, message: '请输入阈值', trigger: 'blur' },
       { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
     ]
       ">
-            <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入库存阈值" />
+            <el-input v-model.number="updateform.threshold" autocomplete="off" placeholder="请输入库存阈值" />
           </el-form-item>
           <el-form-item label="堆料预警值" prop="stackThreshold" :rules="[
       { required: true, message: '请输入堆料预警值', trigger: 'blur' },
       { type: 'number', message: '预警值必须是数字', trigger: 'blur' }
     ]
       ">
-            <el-input v-model.number="addform.stackThreshold" autocomplete="off" placeholder="请输入堆料预警值" />
+            <el-input v-model.number="updateform.stackThreshold" autocomplete="off" placeholder="请输入堆料预警值" />
           </el-form-item>
           <el-form-item label="工段名称" prop="section" :rules="[
       { required: true, message: '请选择工段名称', trigger: 'blur' },
@@ -573,13 +615,13 @@ const uploadImage = (uidToFileNameMap) => {
       }]
       ">
             <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="工段名称"
-              :search-content=addform.section field="section" @search="search" database="productionLine" />
+              :search-content=updateform.section field="section" @search="search" database="productionLine" />
           </el-form-item>
           <el-form-item class="form-row" v-for="( item, index ) in  stations " :key="index" :label="item" :rules="[
       { required: true, message: '请输入理论耗时', trigger: 'blur' },
       { type: 'number', message: '理论耗时必须是数字', trigger: 'blur' }]
       ">
-            <el-input v-model.number="addform.times[index]" placeholder="请输入理论耗时(秒)"></el-input>
+            <el-input v-model.number="updateform.times[index]" placeholder="请输入理论耗时(秒)"></el-input>
           </el-form-item>
         </DialogComponent>
 

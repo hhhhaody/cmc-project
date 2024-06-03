@@ -497,7 +497,7 @@ getFacilityByID(id)
                 <!-- table -->
                 <el-table :data="tableData.value" @selection-change="handleSelectionChange"
                     style="width: 100%;margin-top: 1vh; border-radius: 1vh;" table-layout="fixed" show-overflow-tooltip
-                    height="42vh">
+                    height="30vh">
                     <!-- <el-table-column type="selection" align="center" min-width="20vh" /> -->
                     <el-table-column label="序号" type="index" align="center" min-width="40vh" />
                     <el-table-column prop="updateTime" label="更新时间" align="center" min-width="120vh">
@@ -644,11 +644,15 @@ getFacilityByID(id)
 
 :deep .el-descriptions__body {
     border-radius: 1vh !important;
-    padding: 2vh
+    padding: 2vh;
 }
 
 :deep .el-card.is-always-shadow {
     border-radius: 1vh !important;
     margin-right: 1vh;
+}
+
+:deep .el-descriptions__body .el-descriptions__table .el-descriptions__cell {
+    width: 15vh !important;
 }
 </style>

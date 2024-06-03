@@ -360,6 +360,7 @@ watch([() => addform.warrantyNo, () => addform.firstLevelMaintenanceNo, () => ad
 
 const getFacilityByID = async (id) => {
   const res = await getByIdAPI(id);
+  console.log(res.data);
   if (res.code === 1) {
     addform.id = res.data.id
     addform.name = res.data.name
@@ -369,6 +370,7 @@ const getFacilityByID = async (id) => {
     addform.serialNo = res.data.serialNo
     addform.supplier = res.data.supplier
     addform.purchaseTime = res.data.purchaseTime
+    addform.dailyMaintenance = res.data.dailyMaintenance
     addform.contact = res.data.contact
     addform.contactNo = res.data.contactNo
     addform.picture = res.data.picture

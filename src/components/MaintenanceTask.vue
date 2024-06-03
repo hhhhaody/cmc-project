@@ -417,10 +417,11 @@ onUnmounted(() => {
 
 <style scoped>
 .collapse {
-  height: 30vh;
-  margin: 1vh;
+  height: 27vh;
+  margin: 2vh 1vh;
   overflow: auto;
   border-radius: 1vh;
+  margin-bottom: 0vh
 }
 
 ::-webkit-scrollbar {

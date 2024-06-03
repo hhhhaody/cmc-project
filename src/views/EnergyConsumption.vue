@@ -380,7 +380,7 @@ onMounted(() => {
         <div class="input-row">
           <div>生产时间：
             <el-date-picker v-model="dateRange" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期"
-              title="日期范围" />
+              title="日期范围" value-format="YYYY-MM-DDTHH:mm:ss" />
           </div>
 
           <el-button @click="getDataFromAPI" type="primary" style="margin-left: 10px; width: 7%">
@@ -406,8 +406,8 @@ onMounted(() => {
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item v-for="section in sections" :key="section.name" @click="changeSection(section)">{{
-      section.name
-    }}</el-dropdown-item>
+                    section.name
+                    }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>

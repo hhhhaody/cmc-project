@@ -128,21 +128,7 @@ const headers = ref([
 const filterExportData = (data) => {
     // 过滤或转换数据的逻辑
     // 遍历tableData.data中的项目，对每个项目的stationTimes按照stationOrderMap中定义的顺序进行排序。排序后的数据将被用于导出。
-    return data.map(item => {
-        // 对 stationTimes 进行排序
-        const sortedStationTimes = item.stationTimes.sort((a, b) => {
-            return (stationOrderMap[a.stationName] || 0) - (stationOrderMap[b.stationName] || 0);
-        });
-
-        // 重构 stationInfo 字段
-        const stationInfo = sortedStationTimes.map(station => `${station.stationName}:${station.timeSpent}`).join(', ');
-
-        return {
-            ...item,
-            stationTimes: sortedStationTimes,
-            stationInfo: stationInfo // 使用新的 stationInfo
-        };
-    });
+    return data
 };
 
 // 搜索功能相关
@@ -230,7 +216,8 @@ onMounted(async () => {
 
                     <div>日期：
                         <el-date-picker v-model="dateRange" type="daterange" start-placeholder="开始日期"
-                            end-placeholder="结束日期" title="日期范围" @change="updateDates" />
+                            end-placeholder="结束日期" title="日期范围" @change="updateDates"
+                            value-format="YYYY-MM-DDTHH:mm:ss" />
                     </div>
 
                     <el-button type="primary" style="margin-left: 10px; width: 7%" @click="handleSearch">

@@ -199,7 +199,7 @@ onMounted(async () => {
 
           <div>生产时间：
             <el-date-picker :key="datePickerKey" v-model="startDate" type="daterange" start-placeholder="开始日期"
-              end-placeholder="结束日期" title="日期范围" />
+              end-placeholder="结束日期" title="日期范围" value-format="YYYY-MM-DDTHH:mm:ss" />
           </div>
 
           <el-button type="primary" style="margin-left: 10px; width: 7%" @click="update">
@@ -213,8 +213,8 @@ onMounted(async () => {
         <!-- operation -->
         <div style="display: flex; justify-content: space-between">
           <span>
-            <ExportButton v-if="!userStore.isReadOnly" v-model="selectedRows" :headers="headers" :tableData="tableData.value" fileName="实际产量记录.xlsx"
-              :filterFunction="filterExportData" buttonLabel="导出" />
+            <ExportButton v-if="!userStore.isReadOnly" v-model="selectedRows" :headers="headers"
+              :tableData="tableData.value" fileName="实际产量记录.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
           </span>
         </div>
 
@@ -286,4 +286,3 @@ onMounted(async () => {
   position: relative;
 }
 </style>
-

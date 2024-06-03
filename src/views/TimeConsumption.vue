@@ -227,7 +227,7 @@ onMounted(async () => {
 
           <div>时间：
             <el-date-picker v-model="dateRange" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期"
-              title="日期范围" @change="updateDates" />
+              title="日期范围" @change="updateDates" value-format="YYYY-MM-DDTHH:mm:ss" />
           </div>
 
           <el-button type="primary" style="margin-left: 10px; width: 7%" @click="handleSearch">
@@ -252,8 +252,8 @@ onMounted(async () => {
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item v-for="section in sections" :key="section" @click="changeSection(section)">{{
-      section
-    }}</el-dropdown-item>
+                    section
+                    }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>

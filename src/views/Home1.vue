@@ -218,7 +218,7 @@ const changeStation = (type, val) => {
   /* padding: 0 2em; */
 
   grid-template-columns: repeat(auto-fit, minmax(20vh, 1fr));
-  grid-template-rows: repeat(auto-fit, minmax(35vh, 1fr));
+  grid-template-rows: repeat(auto-fit, minmax(32vh, 1fr));
   grid-template-areas:
     "graph1 graph5 graph5 graph2"
     "graph3 graph5 graph5 graph4";
@@ -229,7 +229,7 @@ const changeStation = (type, val) => {
 }
 
 .graph {
-  height: 35vh;
+  height: 32vh;
 }
 
 .click {
