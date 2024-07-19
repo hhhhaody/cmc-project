@@ -137,7 +137,6 @@ const reset = () => {
     search1.value.searchContent = "";
     search2.value.searchContent = "";
     search3.value.searchContent = "";
-    search4.value.searchContent = "";
     search5.value.searchContent = "";
     getDataFromAPI()
 };

@@ -379,7 +379,7 @@ onMounted(() => {
       <el-main style="overflow: hidden">
         <div class="input-row">
           <div>生产时间：
-            <el-date-picker v-model="dateRange" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期"
+            <el-date-picker v-model="dateRange" type="daterange" start-placeholder="开始日期" end-placeholder="结c束日期"
               title="日期范围" value-format="YYYY-MM-DDTHH:mm:ss" />
           </div>
 
@@ -406,8 +406,8 @@ onMounted(() => {
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item v-for="section in sections" :key="section.name" @click="changeSection(section)">{{
-                    section.name
-                    }}</el-dropdown-item>
+      section.name
+    }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -438,17 +438,12 @@ onMounted(() => {
             <el-table-column prop="date" label="生产日期" align="center" />
             <el-table-column prop="operation" label="能耗" align="center">
               <template #default="scope">
-                <div class="flex justify-space-between flex-wrap gap-4">
-                  <el-button style="color:rgb(114, 159, 208)" link @click="showDetails(scope.row.date)">详情</el-button>
-                </div>
+                <el-button class="inline_button" @click="showDetails(scope.row.date)">详情</el-button>
               </template>
             </el-table-column>
             <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="数据" align="center">
               <template #default="scope">
-                <div class="flex justify-space-between flex-wrap gap-4">
-                  <el-button style="color:rgb(114, 159, 208)" link
-                    @click="exportDailyData(scope.row.date)">导出</el-button>
-                </div>
+                <el-button class="inline_button" @click="exportDailyData(scope.row.date)">导出</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -518,6 +513,15 @@ onMounted(() => {
   align-items: center;
   margin-bottom: 12px;
   position: relative;
+}
+
+.inline_button {
+  padding: 0 2px;
+  margin: 0;
+  text-decoration: underline;
+  color: #729fd0;
+  border: none;
+  width: min-content;
 }
 
 .tab {

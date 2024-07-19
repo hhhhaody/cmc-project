@@ -282,6 +282,11 @@ const getTroubleshootingRecordByID = async (id) => {
         stockform.errorTime = res.data.errorTime
         stockform.serialNo = res.data.serialNo
         stockform.updateTime = res.data.updateTime
+        stockform.completeTime = res.data.completeTime
+        stockform.repairman = res.data.repairman
+        stockform.status = res.data.status
+        stockform.info = res.data.info
+
         updateSearchSuggestion()
         console.log(stockform);
     }

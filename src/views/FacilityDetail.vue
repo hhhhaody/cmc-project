@@ -451,8 +451,7 @@ getFacilityByID(id)
                             {{ addform.name }}</div>
                         <div style="height: 4vh;line-height: 4vh;">
                             {{ addform.spec }}</div>
-                        <div
-                            style="height: 4vh;line-height: 4vh;text-decoration: underline; color: #729fd0; width: fit-content;">
+                        <div style="height: 4vh;line-height: 4vh;text-decoration: underline; color: #729fd0;">
                             {{ addform.status }}</div>
                     </el-card>
 
@@ -474,7 +473,7 @@ getFacilityByID(id)
                         <el-descriptions-item label="联系人">{{ addform.contact }}</el-descriptions-item>
                         <el-descriptions-item label="联系方式">{{ addform.contactNo }}</el-descriptions-item>
                         <el-descriptions-item label="附件">
-                            {{ addform.attachment }}
+                            {{ addform.attachment.substring(0, 20) }}
                             <el-button type="primary" @click="downloadAttachment"
                                 style="margin-left: 10px;  align-items: center; justify-content: center;">下载</el-button>
                         </el-descriptions-item>

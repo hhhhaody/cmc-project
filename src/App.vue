@@ -12,35 +12,36 @@ import 'swiper/css/bundle';
 const userStore = useUserStore();
 
 // init Swiper:
-const swiper = new Swiper('.swiper', {
-  // Optional parameters
-  direction: 'horizontal',
-  autoplay: {
-    delay: 5000,
-  },
+// const swiper = new Swiper('.swiper', {
+//   // Optional parameters
+//   direction: 'horizontal',
+//   autoplay: {
+//     delay: 5000,
+//   },
 
-  // If we need pagination
-  // pagination: {
-  //   el: '.swiper-pagination',
-  // },
+//   // If we need pagination
+//   // pagination: {
+//   //   el: '.swiper-pagination',
+//   // },
 
-  // Navigation arrows
-  navigation: {
-    nextEl: '.swiper-button-next',
-    prevEl: '.swiper-button-prev',
-  },
+//   // Navigation arrows
+//   navigation: {
+//     nextEl: '.swiper-button-next',
+//     prevEl: '.swiper-button-prev',
+//   },
 
-  // And if we need scrollbar
-  // scrollbar: {
-  //   el: '.swiper-scrollbar',
-  // },
-});
+//   // And if we need scrollbar
+//   // scrollbar: {
+//   //   el: '.swiper-scrollbar',
+//   // },
+// });
 
-const videos = [
-  { source: './assets/videos/总装工作站_V4_231221.mp4" type="video/mp4' },
-  { source: './assets/videos/方通阻焊_V1_231222.mp4" type="video/mp4' },
-  // Add more video sources as needed
-];
+// 判断是pc还是移动端
+const isPc = ref(true);
+
+const handleResize = () => {
+  isPc.value = !window.matchMedia('(max-width: 768px)').matches;
+};
 
 
 // test API function
@@ -88,10 +89,15 @@ const logout = () => {
   // 重定向到登录页面
   router.push('/login');
 };
+
+
+handleResize(); // 初始化时执行一次
+window.addEventListener('resize', handleResize);
+
 </script>
 
 <template>
-  <main class="bg">
+  <main class="bg" v-if="isPc">
     <header class="animate__animated animate__fadeInDown" style="z-index: 1;">
       <h1>
         <!-- <img alt="Our logo" src="@/assets/logo.png" /> -->
@@ -167,10 +173,20 @@ const logout = () => {
         </template>
       </el-dropdown>
 
-      <!-- <span class="el-dropdown-link navItem nav5"> -->
-      <RouterLink to="/quality" @click="hide" class="navItem nav5">质量管理</RouterLink>
 
-      <!-- </span> -->
+      <el-dropdown class="navItem nav5">
+        <span class="el-dropdown-link"> 问题追溯 </span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item>
+              <RouterLink to="/quality" @click="hide">质量管理</RouterLink>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/materialQuality" @click="hide">来料检测</RouterLink>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
 
 
       <el-dropdown class="navItem nav3">
@@ -244,7 +260,7 @@ const logout = () => {
   </main>
 
 
-  <div class="videoContainer">
+  <div class="videoContainer" v-if="isPc">
     <el-carousel style="z-index: 1;" class="fullscreen" :interval="1440000" :style="{ display: animation }">
       <el-carousel-item style="height: 225%;">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
@@ -273,6 +289,23 @@ const logout = () => {
 
 
     </el-carousel>
+  </div>
+
+  <div v-else>
+    手机端
+    <!-- <el-dropdown class="navItem nav5">
+      <span class="el-dropdown-link"> 问题追溯 </span>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item>
+            <RouterLink to="/quality" @click="hide">质量管理</RouterLink>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <RouterLink to="/materialQuality" @click="hide">来料检测</RouterLink>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown> -->
   </div>
 
 

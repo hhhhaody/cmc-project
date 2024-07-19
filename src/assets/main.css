@@ -155,7 +155,7 @@ ul {
   }
 } */
 
-/* @media (min-width: 1024px) {
+/* @media screen and (max-width: 932px) {
   body {
     display: flex;
     place-items: top;

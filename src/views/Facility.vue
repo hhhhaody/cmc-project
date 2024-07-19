@@ -131,7 +131,7 @@ const validatePhoneNumber = (rule, value, callback) => {
   if (!value) {
     return callback(new Error('手机号码不能为空'));
   }
-  if (!/^[0-9]{10,11}$/.test(value)) {
+  if (!/^[0-9]{11}$/.test(value)) {
     callback(new Error('请输入有效的手机号码'));
   } else {
     callback();
@@ -902,7 +902,7 @@ const nextImage = () => {
         message: '长度必须在1-30之间', trigger: 'blur'
       }]">
                 <el-date-picker v-model="addform.purchaseTime" type="datetime" placeholder="选择购买日期"
-                  value-format="YYYY-MM-DDTHH:mm:ss" />
+                  value-format="YYYY-MM-DDTHH:mm:ss" :disabled-date="disabledDate" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -913,15 +913,18 @@ const nextImage = () => {
       {
         min: 1, max: 30,
         message: '长度必须在1-30之间', trigger: 'blur'
-      }]">
+      }]
+      ">
                 <el-input v-model="addform.contact" autocomplete="off" placeholder="请输入联系人" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="联系方式" prop="contactNo" :rules="[
       { required: true, message: '请输入联系方式', trigger: 'blur' },
+      { validator: validatePhoneNumber, trigger: 'blur' },
       { type: 'number', message: '必须是数字', trigger: 'blur' }
-    ]">
+    ]
+      ">
                 <el-input v-model.number="addform.contactNo" autocomplete="off" placeholder="请输入联系方式" />
               </el-form-item>
             </el-col>
@@ -933,7 +936,8 @@ const nextImage = () => {
               <el-form-item label="质保期" prop="warrantyNo" :rules="[
       { required: true, message: '请输入质保期', trigger: 'blur' },
       { type: 'number', message: '必须是数字', trigger: 'blur' }
-    ]">
+    ]
+      ">
                 <el-input v-model.number="addform.warrantyNo" autocomplete="off" placeholder="请输入质保期" />
               </el-form-item>
 
@@ -947,7 +951,8 @@ const nextImage = () => {
           </el-row>
 
           <el-form-item label="保养周期" prop="dailyMaintenance" :rules="[
-      { required: true, message: '请输入保养周期', trigger: 'blur' }]">
+      { required: true, message: '请输入保养周期', trigger: 'blur' }]
+      ">
             日常保养
             <el-switch v-model="addform.dailyMaintenance" />
           </el-form-item>
@@ -957,7 +962,8 @@ const nextImage = () => {
               <el-form-item prop="firstLevelMaintenanceNo" :rules="[
       { required: true, message: '请输入保养周期', trigger: 'blur' },
       { type: 'number', message: '必须是数字', trigger: 'blur' }
-    ]">
+    ]
+      ">
                 <span style="display:flex; line-height:100%;height:100%">
                   <i style="line-height:100%;min-width:fit-content;display:flex;align-items:center">一级保养</i>
                   <el-input v-model.number="addform.firstLevelMaintenanceNo" autocomplete="off" placeholder="请输入保养周期"
@@ -979,7 +985,8 @@ const nextImage = () => {
               <el-form-item prop="secondLevelMaintenanceNo" :rules="[
       { required: true, message: '请输入保养周期', trigger: 'blur' },
       { type: 'number', message: '必须是数字', trigger: 'blur' }
-    ]">
+    ]
+      ">
                 <span style="display:flex; line-height:100%;height:100%">
                   <i style="line-height:100%;min-width:fit-content;display:flex;align-items:center">二级保养</i>
                   <el-input v-model.number="addform.secondLevelMaintenanceNo" autocomplete="off" placeholder="请输入保养周期"
@@ -1000,7 +1007,8 @@ const nextImage = () => {
       {
         min: 1, max: 999,
         message: '长度必须在1-999之间', trigger: 'blur'
-      }]">
+      }]
+      ">
             <div style="
             text-decoration: underline;
             color: #729fd0;
@@ -1010,7 +1018,8 @@ const nextImage = () => {
           </el-form-item>
 
           <el-form-item label="图片" prop="picture" :rules="[
-      { required: true, message: '请上传图片', trigger: 'blur' }]">
+      { required: true, message: '请上传图片', trigger: 'blur' }]
+      ">
             <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage :uploaded="uploaded" />
           </el-form-item>
         </DialogComponent>
@@ -1045,8 +1054,7 @@ const nextImage = () => {
           <el-table-column prop="picture" label="图片" align="center">
 
             <template #default="scope">
-              <el-button v-if="scope.row.picture !== null && scope.row.picture !== {}" class="inline_button"
-                @click="detail(scope.row.picture)">
+              <el-button v-if="scope.row.picture !== null" class="inline_button" @click="detail(scope.row.picture)">
                 查看
               </el-button>
             </template>

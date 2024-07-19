@@ -1,6 +1,7 @@
 <template>
     <div class="total">
-        <div class="top">
+        <div class="top" style="
+    height: 12vh;">
             <div style="margin-bottom: 1vh;">碳排放总量</div>
             <div> <i class="number">3500</i> tCO2</div>
         </div>
@@ -27,6 +28,7 @@
     display: flex;
     flex-direction: column;
     width: 90%;
+    height: 28vh;
     background-color: rgba(107, 127, 145, 0.194);
     border-radius: 2vh;
 }
@@ -40,13 +42,12 @@
 .top {
     display: flex;
     flex-direction: column;
-    height: 12vh;
     align-items: center;
     justify-content: center;
 }
 
 .bottom {
-    height: 12vh;
+    height: 11vh;
     display: flex;
     flex-direction: row;
     align-items: center;

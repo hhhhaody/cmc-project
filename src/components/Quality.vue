@@ -1,5 +1,5 @@
 <template>
-    <div style="margin: 2vh;margin-top: 5vh; margin-right: 5vh; height: 28vh;">
+    <div style="margin: 2vh;margin-top: 5vh; margin-right: 5vh;">
         <div class="row">
             方通柱
             <el-progress :text-inside="true" :stroke-width="24" :percentage="70" />

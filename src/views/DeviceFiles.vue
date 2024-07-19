@@ -41,7 +41,7 @@ const fetchData = async (currentPageVal = currentPage.value, currentSizeVal = pa
     tableData.value = response.data.data;
     folderTotal.value = response.data.total;
   }
-  updateSearchSuggestion();
+  // updateSearchSuggestion();
 };
 
 // 创建新的文件夹
@@ -208,6 +208,7 @@ const search = (title, keyword) => {
 const resetSearch = () => {
   searchKeyword.value = "";  // 重置搜索关键字
   fetchData(currentPage.value, pageSize.value, "");  // 获取所有数据
+  search1.value.searchContent = "";
 };
 
 onMounted(async () => {
