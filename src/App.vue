@@ -1,12 +1,9 @@
 <script setup>
 import { RouterLink, RouterView, useRouter } from "vue-router";
 import { Decoration5 } from "@kjgl77/datav-vue3";;
-import Swiper from 'swiper/bundle';
 // import * as jwtDecode from 'jwt-decode';
 import { useUserStore } from './stores/store.js';
 
-// import styles bundle
-import 'swiper/css/bundle';
 
 // 使用 Pinia store
 const userStore = useUserStore();
@@ -291,8 +288,8 @@ window.addEventListener('resize', handleResize);
     </el-carousel>
   </div>
 
-  <div v-else>
-    手机端
+  <div v-else class="app">
+    <RouterView />
     <!-- <el-dropdown class="navItem nav5">
       <span class="el-dropdown-link"> 问题追溯 </span>
       <template #dropdown>
@@ -736,5 +733,10 @@ nav a:first-of-type {
 
 .el-carousel__item:nth-child(2n + 1) {
   background-color: #d3dce6;
+}
+
+.app {
+  width: 100%;
+  height: 100%;
 }
 </style>

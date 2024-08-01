@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AppPage: typeof import('./src/components/Mobile/app-page.vue')['default']
     BarGraph: typeof import('./src/components/BarGraph.vue')['default']
     Carbon: typeof import('./src/components/Carbon.vue')['default']
     DeviceStatus: typeof import('./src/components/DeviceStatus.vue')['default']
