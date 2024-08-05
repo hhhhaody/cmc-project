@@ -40,6 +40,7 @@ const route = useRoute()
 
     .app-main {
         padding-top: 1em;
+        padding-bottom: 1em;
         flex: 1;
         overflow: auto;
     }

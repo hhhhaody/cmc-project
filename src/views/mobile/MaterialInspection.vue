@@ -8,17 +8,48 @@
                         @finish="onFinish" />
                 </van-popup>
             </van-cell-group>
-            <van-cell-group v-if="formItems.length > 0">
-                <div v-for="(item, index) in formItems" :key="index">
-                    <van-field v-if="item.type === 'input'" v-model="item.value" :label="item.label" />
-                    <van-checkbox-group v-else-if="item.type === 'checkbox'" v-model="item.value">
-                        <van-checkbox v-for="option in item.options" :key="option" :name="option">{{ option
-                            }}</van-checkbox>
-                    </van-checkbox-group>
-                    <!-- 其他类型的表单项可以继续添加 -->
-                </div>
+            <van-cell-group v-if="formItems.length > 0" inset>
+                <template v-for="(item, index) in formItems" :key="index">
+                    <van-field v-if="item.type === 'input'" v-model="item.value" :label="item.label" clearable>
+                    </van-field>
+                    <van-field v-if="item.type === 'num'" v-model="item.value" :label="item.label" readonly clickable
+                        @click="item.readonly ? activeKeyboardIndex = index : activeKeyboardIndex = null"
+                        :label-align="item.labelAlign">
+                        <template #label v-if="item.info">
+                            <span>{{ item.label }}</span>
+                            <van-icon name="question-o" @click.stop="showDetail(index)" />
+                        </template>
+                    </van-field>
+                    <van-field v-if="item.type === 'radio'" :label="item.label">
+                        <template #input>
+                            <van-radio-group v-model="item.value" direction="horizontal">
+                                <van-radio v-for="(option, idx) in item.options" :key="idx" :name="option">{{ option
+                                    }}</van-radio>
+                            </van-radio-group>
+                        </template>
+                        <template #label>
+                            <span>{{ item.label }}</span>
+                            <van-icon name="question-o" @click.stop="showDetail(index)" />
+                        </template>
+                    </van-field>
+                </template>
+
             </van-cell-group>
+
+            <div v-if="formItems.length > 0" style=" margin: 16px;">
+                <van-button round block type="primary" native-type="submit">
+                    提交
+                </van-button>
+            </div>
         </van-form>
+
+        <van-number-keyboard v-if="activeKeyboardIndex !== null" v-model="formItems[activeKeyboardIndex].value"
+            :show="true" :maxlength="10" @blur="activeKeyboardIndex = null" extra-key="." />
+        <van-popup v-model:show="detailPopup.show" round :style="{ padding: '1em' }">
+            <p>{{ detailPopup.content }}</p>
+        </van-popup>
+
+
     </app-page>
 </template>
 <script setup>
@@ -28,6 +59,16 @@ const material = ref('')
 const spec = ref('')
 const show = ref(false)
 const formItems = ref([]);
+const activeKeyboardIndex = ref(null);
+const detailPopup = ref({ show: false, content: '' });
+
+const showDetail = (index) => {
+    const item = formItems.value[index];
+    detailPopup.value = {
+        show: true,
+        content: `${item.info}`
+    };
+};
 
 // 选项列表，children 代表子选项，支持多级嵌套
 const options = [
@@ -84,15 +125,152 @@ const onFinish = ({ selectedOptions }) => {
 const generateFormItems = (material) => {
     switch (material) {
         case '钢板 t=5mm 380x132mm':
+        case '钢板 t=5mm 380x152mm':
             return [
-                { type: 'input', label: '长度', value: '' },
-                { type: 'input', label: '宽度', value: '' },
-                { type: 'checkbox', label: '是否涂漆', value: [], options: ['是', '否'] }
+                { type: 'input', label: '批次号', value: '' },
+                { type: 'radio', label: '外表面', value: [], options: ['合格', '不合格'], info: '钢材表面应平整光洁，无裂缝、折边、夹渣、锈斑等' },
+                { type: 'radio', label: '切面', value: [], options: ['合格', '不合格'], info: '切割面或剪切面应无裂纹、夹渣、毛刺和分层' },
+                { type: 'num', readonly: true, label: '长度', value: '', info: '±1.0' },
+                { type: 'num', readonly: true, label: '宽度', value: '', info: '±1.0' },
+                { type: 'num', readonly: true, label: '厚度', value: '', info: '（-0.05，0.03）' },
+                { type: 'num', readonly: true, label: '平整度', value: '', info: '（0，0.5）' },
+                { type: 'radio', label: '除锈等级', value: [], options: ['合格', '不合格'], info: 'Sa2.5' },
+                { type: 'input', label: '检测人', value: '' },
+            ];
+        case '钢板 t=8mm 360x180mm':
+        case '钢板 t=8mm 450x200mm':
+            return [
+                { type: 'input', label: '批次号', value: '' },
+                { type: 'radio', label: '外表面', value: [], options: ['合格', '不合格'], info: '钢材表面应平整光洁，无裂缝、折边、夹渣、锈斑等' },
+                { type: 'radio', label: '切面', value: [], options: ['合格', '不合格'], info: '切割面或剪切面应无裂纹、夹渣、毛刺和分层' },
+                { type: 'num', readonly: true, label: '长度', value: '', info: '±1.0' },
+                { type: 'num', readonly: true, label: '宽度', value: '', info: '（0，-1.0）' },
+                { type: 'num', readonly: true, label: '厚度', value: '', info: '（-0.05，0.03）' },
+                { type: 'num', readonly: true, label: '平整度', value: '', info: '（0，0.5）' },
+                { type: 'radio', label: '除锈等级', value: [], options: ['合格', '不合格'], info: 'Sa2.5' },
+                { type: 'input', label: '检测人', value: '' },
             ];
         case '方通 t=4mm 180x180mm':
+        case '方通 t=4mm 200x200mm':
             return [
-                { type: 'input', label: '高度', value: '' },
-                { type: 'input', label: '厚度', value: '' }
+                { type: 'input', label: '批次号', value: '' },
+                { type: 'radio', label: '外观质量', value: [], options: ['合格', '不合格'], info: '表面不应有裂缝、焊渣、焊疤、灰尘、油污、水、毛刺等' },
+                { type: 'num', readonly: false, label: '方通折角', value: '', info: '△<1.0' },
+                { type: 'num', readonly: true, label: 'A(1-2)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(2-1)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(2-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(3-2)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(3-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(4-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(4-1)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(1-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(1-2)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(2-1)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(2-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(3-2)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(3-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(4-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(4-1)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(1-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(1-2)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(2-1)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(2-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(3-2)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(3-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(4-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(4-1)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(1-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: false, label: '截面尺寸', value: '', info: '±0.5' },
+                { type: 'num', readonly: true, label: 'A(1-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(2-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(1-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(2-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(1-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(2-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: false, label: '表面弯曲度', value: '', info: '(0,1.0)' },
+                { type: 'num', readonly: true, label: '1长', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '1宽', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '2长', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '2宽', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '3长', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '3宽', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '4长', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '4宽', labelAlign: 'center', value: '' },
+                { type: 'radio', label: '除锈等级', value: [], options: ['合格', '不合格'], info: 'Sa2.5' },
+                { type: 'input', label: '检测人', value: '' },
+            ];
+        case '方通 t=8mm 180x180mm':
+        case '方通 t=8mm 200x200mm':
+            return [
+                { type: 'input', label: '批次号', value: '' },
+                { type: 'radio', label: '外观质量', value: [], options: ['合格', '不合格'], info: '表面不应有裂缝、焊渣、焊疤、灰尘、油污、水、毛刺等，且要求：无缝钢管' },
+                { type: 'num', readonly: false, label: '方通折角', value: '', info: '△<1.0' },
+                { type: 'num', readonly: true, label: 'A(1-2)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(2-1)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(2-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(3-2)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(3-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(4-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(4-1)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(1-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(1-2)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(2-1)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(2-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(3-2)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(3-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(4-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(4-1)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(1-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(1-2)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(2-1)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(2-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(3-2)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(3-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(4-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(4-1)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(1-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: false, label: '截面尺寸', value: '', info: '±0.5' },
+                { type: 'num', readonly: true, label: 'A(1-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(2-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(1-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(2-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(1-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(2-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: false, label: '表面弯曲度', value: '', info: '(0,1.0)' },
+                { type: 'num', readonly: true, label: '1长', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '1宽', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '2长', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '2宽', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '3长', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '3宽', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '4长', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '4宽', labelAlign: 'center', value: '' },
+                { type: 'radio', label: '除锈等级', value: [], options: ['合格', '不合格'], info: 'Sa2.5' },
+                { type: 'input', label: '检测人', value: '' },
+            ];
+        case '方通 t=8mm 80x80mm':
+        case '方通 t=8mm 100x100mm':
+            return [
+                { type: 'input', label: '批次号', value: '' },
+                { type: 'radio', label: '外观质量', value: [], options: ['合格', '不合格'], info: '表面不应有裂缝、焊渣、焊疤、灰尘、油污、水、毛刺等' },
+                { type: 'num', readonly: false, label: '截面尺寸', value: '', info: '±0.5' },
+                { type: 'num', readonly: true, label: 'A(1-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'A(2-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(1-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'B(2-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(1-3)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: 'C(2-4)', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: false, label: '表面弯曲度', value: '', info: '(0,1.0)' },
+                { type: 'num', readonly: true, label: '1长', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '1宽', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '2长', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '2宽', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '3长', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '3宽', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '4长', labelAlign: 'center', value: '' },
+                { type: 'num', readonly: true, label: '4宽', labelAlign: 'center', value: '' },
+                { type: 'radio', label: '除锈等级', value: [], options: ['合格', '不合格'], info: 'Sa2.5' },
+                { type: 'input', label: '检测人', value: '' },
             ];
         // 其他材料的表单项...
         default:
@@ -104,4 +282,21 @@ const generateFormItems = (material) => {
 watch(material, (newValue) => {
     formItems.value = generateFormItems(newValue);
 });
+
+// 提交表单
+const onSubmit = () => {
+    console.log('submit');
+
+    // 执行提交操作，例如上交API
+    console.log('提交表单', formItems.value);
+    // 例如：提交到服务器
+    // axios.post('/api/submit', formItems.value)
+    //     .then(response => {
+    //         console.log('提交成功', response);
+    //     })
+    //     .catch(error => {
+    //         console.error('提交失败', error);
+    //     });
+    formItems.value.forEach(item => item.value = '');
+};
 </script>

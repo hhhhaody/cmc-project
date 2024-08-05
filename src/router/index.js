@@ -46,6 +46,7 @@ const routes = [
   {
 
     path: '/inventory/operation',
+    name: 'inventoryOperation',
     component: () => import('../views/InventoryOperation.vue')
 
   },
@@ -97,6 +98,7 @@ const routes = [
     component: () => import('../views/maintenanceCalendar.vue')
   }, {
     path: '/maintenancePlan/maintenanceList',
+    name: 'maintenancePlanList',
     component: () => import('../views/MaintenanceList.vue')
   },
   {
@@ -145,6 +147,7 @@ const routes = [
   {
 
     path: '/product/operation',
+    name: 'productOperation',
     component: () => import('../views/ProductOperation.vue')
 
   },
@@ -216,6 +219,12 @@ const mobileRoutes = [
     meta: { title: '来料检测' },
     component: () => import('../views/mobile/MaterialInspection.vue')
   },
+  {
+    path: '/materialQuality',
+    name: 'mobile/materialQuality',
+    meta: { title: '来料检测' },
+    component: () => import('../views/mobile/MaterialInspection.vue')
+  },
   // 其他移动端特定路由
 ];
 
@@ -231,9 +240,9 @@ window.onresize = () => {
 // 监听页面宽度
 watch(screenWidth, (newVal, oldVal) => {
   console.log(screenWidth.value);
-  if (newVal <= 758 && oldVal > 758) {
+  if (newVal < 1240 && oldVal >= 1240) {
     window.location.reload()
-  } else if (newVal > 758 && oldVal <= 758) {
+  } else if (newVal > 1240 && oldVal <= 500) {
     window.location.reload()
   }
   // 重绘页面

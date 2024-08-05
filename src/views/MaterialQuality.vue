@@ -9,6 +9,7 @@ import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
 import UploadImage from "../components/UploadImage.vue";
 import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, getByIdAPI, addMaterialOperationAPI, getByBatchAPI } from "../apis/material";
+import { getMaterialQualityAPI } from "../apis/materialQuality";
 import ExportButton from "@/components/ExportButton.vue";
 import { useUserStore } from '../stores/store.js';
 const userStore = useUserStore();
@@ -18,7 +19,7 @@ const userStore = useUserStore();
 const tableData = reactive([]);
 const total = ref(0)
 const getDataFromAPI = async () => {
-    const res = await getMaterialAPI(currentPage.value, pageSize.value, name.value, spec.value);
+    const res = await getMaterialQualityAPI(currentPage.value, pageSize.value, name.value, spec.value);
     // console.log(res.data);
     tableData.value = res.data.data;
     total.value = res.data.total
@@ -847,16 +848,26 @@ const uploadImage = (uidToFileNameMap) => {
 
 
                 <!-- table -->
-                <!-- <el-table :data="tableData.value" @selection-change="handleSelectionChange"
+                <el-table :data="tableData.value" @selection-change="handleSelectionChange"
                     style="width: 100%; margin-top: 1vh;border-radius: 1vh" table-layout="fixed" height="52vh"
                     show-overflow-tooltip>
                     <el-table-column type="selection" align="center" />
                     <el-table-column label="序号" type="index" align="center" min-width="70vh" />
                     <el-table-column prop="name" label="物料名称" align="center" />
                     <el-table-column prop="spec" label="规格型号" align="center" />
-                    <el-table-column prop="amount" label="库存数量" align="center" />
-                    <el-table-column prop="threshold" label="低库存阈值" align="center" />
-                    <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="操作" align="center">
+                    <el-table-column prop="batch" label="批次号" align="center" />
+                    <el-table-column prop="surface" label="外表面" align="center" />
+                    <el-table-column prop="cutFace" label="切面" align="center" />
+                    <el-table-column prop="length" label="长度" align="center" />
+                    <el-table-column prop="width" label="宽度" align="center" />
+                    <el-table-column prop="thickness" label="厚度" align="center" />
+                    <el-table-column prop="flatness" label="平整度" align="center" />
+                    <el-table-column prop="derust" label="除锈等级" align="center" />
+                    <el-table-column prop="rAngle" label="R角" align="center" />
+                    <el-table-column prop="crossSection" label="截面尺寸" align="center" />
+                    <el-table-column prop="inspector" label="检测人" align="center" />
+                    <!-- <el-table-column prop="inspectionTime" label="检测时间" align="center" /> -->
+                    <!-- <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="操作" align="center">
                         <template #default="scope">
                             <el-button class="inline_button"
                                 @click="getMaterialByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, updateform.id = scope.row.id">
@@ -866,9 +877,9 @@ const uploadImage = (uidToFileNameMap) => {
                                 删除
                             </el-button>
                         </template>
-</el-table-column>
+                    </el-table-column> -->
 
-</el-table> -->
+                </el-table>
             </el-main>
             <!-- pagination -->
             <el-footer style="display: flex; justify-content: center">
