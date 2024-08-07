@@ -23,12 +23,12 @@ function isMobileDevice() {
 const routes = [
   {
     path: '/',
-    name: 'home1',
+    name: 'home',
     component: Home2
   },
   {
     path: '/home',
-    name: 'home',
+    name: 'home1',
     component: Home1
   },
   {

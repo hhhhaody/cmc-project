@@ -37,7 +37,7 @@ const userStore = useUserStore();
 const isPc = ref(true);
 
 const handleResize = () => {
-  isPc.value = !window.matchMedia('(max-width: 768px)').matches;
+  isPc.value = !window.matchMedia('(max-width: 430px)').matches;
 };
 
 
