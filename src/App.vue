@@ -315,25 +315,25 @@ const backScreenVideo = (value) => {
       :style="{ display: animation }">
       <el-carousel-item style="height: 225%;" class="video1">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/fangtong_V3.mp4" type="video/mp4" />
+          <source src="./assets/videos/fangtong_1107.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
       <el-carousel-item style="height: 225%;" class="video1">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/zongzhuang_V2.mp4" type="video/mp4" />
+          <source src="./assets/videos/zongzhuang_1107.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
       <el-carousel-item style="height: 225%;" class="video1">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/xinggang_V2.mp4" type="video/mp4" />
+          <source src="./assets/videos/xinggang_1107.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
       <el-carousel-item style="height: 225%;" class="video1">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/dimian_V2.mp4" type="video/mp4" />
+          <source src="./assets/videos/dimian_1107.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>

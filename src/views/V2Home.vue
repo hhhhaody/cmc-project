@@ -172,61 +172,61 @@ watch(showAllSpans, (newValue) => {
             <i v-if="wall"
                 style="z-index: 1; cursor: pointer;text-align: center;border-image: linear-gradient(to right,transparent 10%,#6ea3d7 40%,#f3f7fcbb 50%,#6ea3d7 60%,transparent 90%) 2 10;top:1vh"
                 class="animate__animated animate__fadeInUp" @click="toggleSpans">
-                {{ showAllSpans ? '总览' : '返回' }} </i>
+                {{ showAllSpans ? '总览' : '返回首页' }} </i>
 
             <div v-if="!showAllSpans" class="video animate__animated animate__fadeIn" style="width: 100%; height: 100%;"
                 :class="isFadingOut ? 'animate__fadeOut' : 'animate__fadeIn'">
                 <div class="button">
                     <i class="b" style="flex: 1.2" :class="{ 'active': activeButtonIndex === 11 }"
-                        @click="toggleMedia(11, 'src/assets/videos/【12】反面补钉&下料工位v3.mp4')">墙板补钉及吊装下料</i>
+                        @click="toggleMedia(11, 'src/assets/videos/station12.mp4')">墙板补钉及吊装下料</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 10 }"
-                        @click="toggleMedia(10, 'src/assets/videos/【11】质检工位v3.mp4')">自动尺寸检测</i>
+                        @click="toggleMedia(10, 'src/assets/videos/station11.mp4')">自动尺寸检测</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 9 }"
-                        @click="toggleMedia(9, 'src/assets/videos/【10】打钉工位v3.mp4')">水泥板打钉</i>
+                        @click="toggleMedia(9, 'src/assets/videos/station10.mp4')">水泥板打钉</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 8 }"
-                        @click="toggleMedia(8, 'src/assets/videos/【9】铺板工位v3.mp4')">水泥板铺装</i>
+                        @click="toggleMedia(8, 'src/assets/videos/station9.mp4')">水泥板铺装</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 7 }"
-                        @click="toggleMedia(7, 'src/assets/videos/【8】翻转工位v3.mp4')">墙板翻转机</i>
+                        @click="toggleMedia(7, 'src/assets/videos/station8.mp4')">墙板翻转机</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 6 }"
-                        @click="toggleMedia(6, 'src/assets/videos/【7】正面补钉工位v3.mp4')">水泥板人工补钉</i>
+                        @click="toggleMedia(6, 'src/assets/videos/station7.mp4')">水泥板人工补钉</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 5 }"
-                        @click="toggleMedia(5, 'src/assets/videos/【6】打钉工位v3.mp4')">水泥板打钉</i>
+                        @click="toggleMedia(5, 'src/assets/videos/station6.mp4')">水泥板打钉</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 4 }"
-                        @click="toggleMedia(4, 'src/assets/videos/【5】铺板工位v3.mp4')">水泥板铺装</i>
+                        @click="toggleMedia(4, 'src/assets/videos/station5.mp4')">水泥板铺装</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 3 }"
-                        @click="toggleMedia(3, 'src/assets/videos/【4】反面补焊工位v3.mp4')">钢结构反面焊接</i>
+                        @click="toggleMedia(3, 'src/assets/videos/station4.mp4')">钢结构反面焊接</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 2 }"
-                        @click="toggleMedia(2, 'src/assets/videos/【3】翻转工位v3.mp4')">墙板翻转</i>
+                        @click="toggleMedia(2, 'src/assets/videos/station3.mp4')">墙板翻转</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 1 }"
-                        @click="toggleMedia(1, 'src/assets/videos/【2】人工穿筋工位v3.mp4')">钢筋组装焊接</i>
+                        @click="toggleMedia(1, 'src/assets/videos/station2.mp4')">钢筋组装焊接</i>
                     <i class="b" style="flex: 4" :class="{ 'active': activeButtonIndex === 0 }"
-                        @click="toggleMedia(0, 'src/assets/videos/【1】焊接工位v3.mp4')">钢结构组装焊接</i>
+                        @click="toggleMedia(0, 'src/assets/videos/station1.mp4')">钢结构组装焊接</i>
 
                 </div>
                 <div v-if="showImage" class="dot animate__animated animate__fadeIn">
-                    <div class="d" style="left: 5%;" @click="toggleMedia(11, 'src/assets/videos/【12】反面补钉&下料工位v3.mp4')">
+                    <div class="d" style="left: 5%;" @click="toggleMedia(11, 'src/assets/videos/station12.mp4')">
                     </div>
-                    <div class="d" style="left: 11%;" @click="toggleMedia(10, 'src/assets/videos/【11】质检工位v3.mp4')">
+                    <div class="d" style="left: 11%;" @click="toggleMedia(10, 'src/assets/videos/station11.mp4')">
                     </div>
-                    <div class="d" style="left: 18%;" @click="toggleMedia(9, 'src/assets/videos/【10】打钉工位v3.mp4')">
+                    <div class="d" style="left: 18%;" @click="toggleMedia(9, 'src/assets/videos/station10.mp4')">
                     </div>
-                    <div class="d" style="left: 25%;" @click="toggleMedia(8, 'src/assets/videos/【9】铺板工位v3.mp4')">
+                    <div class="d" style="left: 25%;" @click="toggleMedia(8, 'src/assets/videos/station9.mp4')">
                     </div>
-                    <div class="d" style="left: 32%;" @click="toggleMedia(7, 'src/assets/videos/【8】翻转工位v3.mp4')">
+                    <div class="d" style="left: 32%;" @click="toggleMedia(7, 'src/assets/videos/station8.mp4')">
                     </div>
-                    <div class="d" style="left: 39%;" @click="toggleMedia(6, 'src/assets/videos/【7】正面补钉工位v3.mp4')">
+                    <div class="d" style="left: 39%;" @click="toggleMedia(6, 'src/assets/videos/station7.mp4')">
                     </div>
-                    <div class="d" style="left: 46%;" @click="toggleMedia(5, 'src/assets/videos/【6】打钉工位v3.mp4')">
+                    <div class="d" style="left: 46%;" @click="toggleMedia(5, 'src/assets/videos/station6.mp4')">
                     </div>
-                    <div class="d" style="right: 47%;" @click="toggleMedia(4, 'src/assets/videos/【5】铺板工位v3.mp4')">
+                    <div class="d" style="right: 47%;" @click="toggleMedia(4, 'src/assets/videos/station5.mp4')">
                     </div>
-                    <div class="d" style="right: 40%;" @click="toggleMedia(3, 'src/assets/videos/【4】反面补焊工位v3.mp4')">
+                    <div class="d" style="right: 40%;" @click="toggleMedia(3, 'src/assets/videos/station4.mp4')">
                     </div>
-                    <div class="d" style="right: 32%;" @click="toggleMedia(2, 'src/assets/videos/【3】翻转工位v3.mp4')">
+                    <div class="d" style="right: 32%;" @click="toggleMedia(2, 'src/assets/videos/station3.mp4')">
                     </div>
-                    <div class="d" style="right: 26%;" @click="toggleMedia(1, 'src/assets/videos/【2】人工穿筋工位v3.mp4')">
+                    <div class="d" style="right: 26%;" @click="toggleMedia(1, 'src/assets/videos/station2.mp4')">
                     </div>
-                    <div class="d" style="right: 13%;" @click="toggleMedia(0, 'src/assets/videos/【1】焊接工位v3.mp4')">
+                    <div class="d" style="right: 13%;" @click="toggleMedia(0, 'src/assets/videos/station1.mp4')">
                     </div>
                 </div>
                 <!-- <img v-if="showImage" src="../assets/images/全览1.png" style="width: 100%; height: 100%; " class="img"

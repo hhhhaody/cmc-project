@@ -168,7 +168,7 @@ const handleDefaultStreams = async (defaultIndexCodes) => {
 // 在 state 对象中加入一个标识符
 const state = reactive({
   // currentStreams: Array(4).fill(''),
-  currentStreams: ['src/assets/videos/方通组焊_防抖.mp4', 'src/assets/videos/型钢切割_柱尾柱身加工_V1_241021.mp4'],
+  currentStreams: ['src/assets/videos/fangtong_real.mp4', 'src/assets/videos/xinggang_real.mp4'],
   isDefaultStreamsLoaded: false,  // 添加这个标识符
 });
 
