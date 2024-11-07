@@ -93,3 +93,11 @@ export const updateProductOperationAPI = (data) => {
         data
     })
 }
+
+export const addRectangularAPI = (data) => {
+    return httpInstance({
+        url: '/rectangular/add',
+        method: 'post',
+        data
+    })
+}

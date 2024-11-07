@@ -225,6 +225,12 @@ const mobileRoutes = [
     meta: { title: '来料检测' },
     component: () => import('../views/mobile/MaterialInspection.vue')
   },
+  {
+    path: '/productInspection',
+    name: 'mobile/productInspection',
+    meta: { title: '成品检测' },
+    component: () => import('../views/mobile/ProductInspection.vue')
+  },
   // 其他移动端特定路由
 ];
 

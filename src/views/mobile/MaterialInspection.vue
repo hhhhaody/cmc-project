@@ -11,7 +11,7 @@
                 <template v-for="(item, index) in formItems" :key="index">
                     <van-field v-if="item.type === 'input'" v-model="form[item.value]" :label="item.label" clearable>
                     </van-field>
-                    <van-field v-if="item.type === 'num'" v-model="form[item.value]" :label="item.label" clickable
+                    <van-field v-if="item.type === 'num'" v-model="form[item.value]" :label="item.label" clickable readonly
                         @click="item.readonly ? activeKeyboardIndex = index : activeKeyboardIndex = null"
                         :label-align="item.labelAlign">
                         <template #label v-if="item.info">
