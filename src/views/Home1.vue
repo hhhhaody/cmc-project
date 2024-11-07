@@ -10,10 +10,10 @@ import { ref } from "vue";
 import { useRouter } from 'vue-router';
 
 const stations = ref(["型钢切割工作站", "地面钢网工作站", "方通组焊工作站", "模块总装工作站"]);
-const radar = ref(stations.value[0]); //耗时统计图形组件
-const bar = ref(stations.value[0]); //产品生产情况图形组件
-const usage = ref(stations.value[0]); //原材料使用情况图形组件
-const line = ref(stations.value[0]);  //能耗统计图形组件
+const radar = ref(stations.value[2]); //耗时统计图形组件
+const bar = ref(stations.value[2]); //产品生产情况图形组件
+const usage = ref(stations.value[2]); //原材料使用情况图形组件
+const line = ref(stations.value[2]);  //能耗统计图形组件
 const router = useRouter();
 
 const carbon = ref(false)

@@ -70,11 +70,11 @@ const getDataFromAPI = async () => {
   if (props.station === '墙板生产线') {
     // console.log(new Date().toISOString().slice(0, 10));
 
-    res = await getEnergyAPI('方通组焊工作站', '2024-04-24');
+    res = await getEnergyAPI('方通组焊工作站', '2024-11-07');
 
   }
   else if (props.station === '总装工作站') {
-    res = await getEnergyAPI('方通组焊工作站', '2024-04-23');
+    res = await getEnergyAPI('方通组焊工作站', '2024-11-06');
 
   }
   else {

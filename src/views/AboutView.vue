@@ -421,7 +421,7 @@ const uploadImage = (uidToFileNameMap) => {
                   </i>
                 </div>
                 <video controls class="video" playsinline="" autoplay="" muted="" loop="">
-                  <source class="scale" src="../assets/videos/fangtong_V3.mp4" type="video/mp4" />
+                  <source class="scale" src="../assets/videos/fangtong_1107.mp4" type="video/mp4" />
 
                 </video>
 
@@ -442,7 +442,7 @@ const uploadImage = (uidToFileNameMap) => {
                   </i>
                 </div>
                 <video controls class="video" playsinline="" autoplay="" muted="" loop="">
-                  <source class="scale" src="../assets/videos/xinggang_V2.mp4" type="video/mp4" />
+                  <source class="scale" src="../assets/videos/xinggang_1107.mp4" type="video/mp4" />
 
                 </video>
 
@@ -463,7 +463,7 @@ const uploadImage = (uidToFileNameMap) => {
                   </i>
                 </div>
                 <video controls class="video" playsinline="" autoplay="" muted="" loop="">
-                  <source class="scale" src="../assets/videos/dimian_V2.mp4" type="video/mp4" />
+                  <source class="scale" src="../assets/videos/dimian_1107.mp4" type="video/mp4" />
 
                 </video>
 
@@ -484,7 +484,7 @@ const uploadImage = (uidToFileNameMap) => {
                   </i>
                 </div>
                 <video controls class="video" playsinline="" autoplay="" muted="" loop="">
-                  <source class="scale" src="../assets/videos/zongzhuang_V2.mp4" type="video/mp4" />
+                  <source class="scale" src="../assets/videos/zongzhuang_1107.mp4" type="video/mp4" />
 
                 </video>
 
@@ -506,7 +506,7 @@ const uploadImage = (uidToFileNameMap) => {
                   </i>
                 </div>
                 <video controls class="video" playsinline="" autoplay="" muted="" loop="">
-                  <source class="scale" src="../assets/videos/zongzhuang2-V3.mp4" type="video/mp4" />
+                  <source class="scale" src="../assets/videos/zongzhuang2_1107.mp4" type="video/mp4" />
 
                 </video>
 
@@ -528,7 +528,7 @@ const uploadImage = (uidToFileNameMap) => {
                   </i>
                 </div>
                 <video controls class="video" playsinline="" autoplay="" muted="" loop="">
-                  <source class="scale" src="../assets/videos/qiangban__V4_241105.mp4" type="video/mp4" />
+                  <source class="scale" src="../assets/videos/qiangban_1107.mp4" type="video/mp4" />
 
                 </video>
 

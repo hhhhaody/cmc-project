@@ -214,16 +214,16 @@ const backScreenVideo = (value) => {
       </el-dropdown>
 
 
-      <el-dropdown class="navItem nav5">
+      <el-dropdown class="navItem nav5" placement="top">
         <span class="el-dropdown-link"> 问题追溯 </span>
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>
               <RouterLink to="/quality" @click="hide">质量管理</RouterLink>
             </el-dropdown-item>
-            <el-dropdown-item>
+            <!-- <el-dropdown-item>
               <RouterLink to="/materialQuality" @click="hide">来料检测</RouterLink>
-            </el-dropdown-item>
+            </el-dropdown-item> -->
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -346,13 +346,13 @@ const backScreenVideo = (value) => {
       @change="handleCarouselChange">
       <el-carousel-item style="height: 225%;" class="video2">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/zongzhuang2-v3.mp4" type="video/mp4" />
+          <source src="./assets/videos/zongzhuang2_1107.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
       <el-carousel-item style="height: 225%;" class="video2">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/qiangban__V4_241105.mp4" type="video/mp4" />
+          <source src="./assets/videos/qiangban_1107.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
@@ -557,7 +557,7 @@ const backScreenVideo = (value) => {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 50%;
-  height: 100%;
+  height: 120%;
 }
 
 .fullscreen {
