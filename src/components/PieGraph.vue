@@ -154,6 +154,7 @@ onMounted(() => {
         radius: ["60%", "70%"],
         center: ["40%", "50%"],
         avoidLabelOverlap: true,
+        padAngle: 5,
         label: {
           show: false,
         },

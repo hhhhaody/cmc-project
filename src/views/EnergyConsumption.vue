@@ -379,7 +379,7 @@ onMounted(() => {
       <el-main style="overflow: hidden">
         <div class="input-row">
           <div>生产时间：
-            <el-date-picker v-model="dateRange" type="daterange" start-placeholder="开始日期" end-placeholder="结c束日期"
+            <el-date-picker v-model="dateRange" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期"
               title="日期范围" value-format="YYYY-MM-DDTHH:mm:ss" />
           </div>
 

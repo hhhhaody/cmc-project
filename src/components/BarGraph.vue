@@ -41,13 +41,20 @@ const getDataFromAPI = async () => {
   x.value = []
   y.value = []
 
-  const res = await getProductAmountAPI(props.station);
+  let res
+
+
+  res = await getProductAmountAPI(props.station);
+
+
+
   // console.log(res.data);
 
   for (const i in res.data) {
     const item = res.data[i]
     x.value.push(item.name)
     y.value.push({ value: item[props.station], spec: item.spec })
+
     console.log(x.value);
     console.log(y.value)
 
@@ -58,6 +65,7 @@ const getDataFromAPI = async () => {
       series: [
         {
           data: y.value,
+          name: '预计产量'
         },
       ],
     });
@@ -153,7 +161,7 @@ onMounted(() => {
         // emphasis: {
         //   disabled: true,
         // },
-      },
+      }
     ],
   });
 });

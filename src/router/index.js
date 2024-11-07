@@ -32,6 +32,20 @@ const routes = [
     component: Home1
   },
   {
+    path: '/v2home',
+    name: 'v2home',
+    component: () => import('../views/V2Home.vue'),
+    props: route => ({ wall: route.params.wall })
+
+  },
+  {
+    path: '/v2home2',
+    name: 'v2home2',
+    component: () => import('../views/V2Home2.vue'),
+    props: route => ({ wall: route.params.wall })
+
+  },
+  {
     path: '/about',
     name: 'about',
     component: () => import('../views/AboutView.vue'),
@@ -214,16 +228,10 @@ const mobileRoutes = [
     component: () => import('../views/mobile/Login.vue')
   },
   {
-    path: '/materialInspection',
-    name: 'mobile/materialInspection',
-    meta: { title: '来料检测' },
-    component: () => import('../views/mobile/MaterialInspection.vue')
-  },
-  {
     path: '/materialQuality',
     name: 'mobile/materialQuality',
     meta: { title: '来料检测' },
-    component: () => import('../views/mobile/MaterialInspection.vue')
+    component: () => import('../views/mobile/MaterialQuality.vue')
   },
   // 其他移动端特定路由
 ];
@@ -277,7 +285,11 @@ router.beforeEach((to, from, next) => {
     } else {
       if (to.name !== 'mobile/login' && !isAuthenticated()) {
         next({ name: 'mobile/login', query: { pid: pid || '' } });
-      } else {
+      } else if (to.name === 'mobile/login' && isAuthenticated()) {
+        // 已登录用户访问移动端登录页面时跳转到移动端首页
+        next({ name: 'mobile/home' });
+      }
+      else {
         next();
       }
     }
@@ -293,7 +305,11 @@ router.beforeEach((to, from, next) => {
     } else {
       if (to.name !== 'login' && !isAuthenticated()) {
         next({ name: 'login', query: { pid: pid || '' } });
-      } else {
+      } else if (to.name === 'login' && isAuthenticated()) {
+        // 已登录用户访问PC端登录页面时跳转到PC端首页
+        next({ name: '/' });
+      }
+      else {
         next();
       }
     }

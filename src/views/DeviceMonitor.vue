@@ -18,15 +18,18 @@ const tableData = reactive([]);
 const total = ref(0)
 const getDataFromAPI = async () => {
     const res = await getDeviceAPI();
+
     console.log(res.data);
     const station1 = [];
     const station2 = [];
     const station3 = [];
     const station4 = [];
+    const station5 = [];
     const section1 = { name: '型钢切割工作站', components: [] };
     const section2 = { name: '地面钢网工作站', components: [] }
     const section3 = { name: '方通组焊工作站', components: [] }
-    const section4 = { name: '模块总装工作站', components: [] }
+    const section4 = { name: '总装工作站', components: [] }
+    const section5 = { name: '墙板生产线', components: [] }
     for (const i in res.data) {
         const item = res.data[i]
 
@@ -40,16 +43,98 @@ const getDataFromAPI = async () => {
         if (item.section === '方通组焊工作站') {
             station3.push({ name: item.name, id: item.id, status: item.status === '检修维护' ? 'maintenance' : item.status === '正常运行' ? 'normal' : item.status === '报警' ? 'alarm' : 'stopped' })
         }
-        if (item.section === '模块总装工作站') {
+        // if (item.section === '模块总装工作站') {
+        //     station4.push({ name: item.name, id: item.id, status: item.status === '检修维护' ? 'maintenance' : item.status === '正常运行' ? 'normal' : item.status === '报警' ? 'alarm' : 'stopped' })
+        // }
+    }
+    res.data = [
+        { name: '左侧夹具', section: '总装工作站', status: '正常运行' },
+        { name: '右侧夹具', section: '总装工作站', status: '正常运行' },
+        { name: '焊接桁架A', section: '总装工作站', status: '正常运行' },
+        { name: '焊接桁架B', section: '总装工作站', status: '正常运行' },
+        { name: '焊接机器人A', section: '总装工作站', status: '正常运行' },
+        { name: '焊接机器人B', section: '总装工作站', status: '正常运行' },
+        { name: '焊接机器人C', section: '总装工作站', status: '正常运行' },
+        { name: '焊接机器人D', section: '总装工作站', status: '正常运行' },
+        { name: '左侧移动模台小车', section: '总装工作站', status: '正常运行' },
+        { name: '右侧移动模台小车', section: '总装工作站', status: '正常运行' },
+
+        { name: '桁架焊接机器人A', section: '墙板生产线', status: '正常运行' },
+        { name: '桁架焊接机器人B', section: '墙板生产线', status: '正常运行' },
+        { name: '桁架焊接机器人C', section: '墙板生产线', status: '正常运行' },
+        { name: '桁架焊接机器人D', section: '墙板生产线', status: '正常运行' },
+        { name: '焊接夹具A', section: '墙板生产线', status: '正常运行' },
+        { name: '焊接夹具B', section: '墙板生产线', status: '正常运行' },
+        { name: '龙门吊', section: '墙板生产线', status: '正常运行' },
+        { name: '吊具', section: '墙板生产线', status: '正常运行' },
+
+        { name: '辅助工装', section: '墙板生产线', status: '正常运行' },
+        { name: '板链输送线', section: '墙板生产线', status: '正常运行' },
+        { name: '手工焊机', section: '墙板生产线', status: '正常运行' },
+        { name: '人工作业平台', section: '墙板生产线', status: '正常运行' },
+        { name: '滚筒输送线', section: '墙板生产线', status: '正常运行' },
+        { name: '固定工装', section: '墙板生产线', status: '正常运行' },
+        { name: '翻转机', section: '墙板生产线', status: '正常运行' },
+        { name: '桁架焊接机器人A', section: '墙板生产线', status: '正常运行' },
+        { name: '桁架焊接机器人B', section: '墙板生产线', status: '正常运行' },
+        { name: '板链输送线', section: '墙板生产线', status: '正常运行' },
+        { name: '地轨铺板机器人', section: '墙板生产线', status: '正常运行' },
+        { name: '板链输送线', section: '墙板生产线', status: '正常运行' },
+        { name: '水泥纤维板二次定位台', section: '墙板生产线', status: '正常运行' },
+
+        { name: '钻孔打钉组件', section: '墙板生产线', status: '正常运行' },
+        { name: '二级料仓', section: '墙板生产线', status: '正常运行' },
+        { name: '供料器', section: '墙板生产线', status: '正常运行' },
+        { name: '打钉桁架机台', section: '墙板生产线', status: '正常运行' },
+        { name: '板链输送线', section: '墙板生产线', status: '正常运行' },
+
+        { name: '板链输送线', section: '墙板生产线', status: '正常运行' },
+        { name: '阻挡装置', section: '墙板生产线', status: '正常运行' },
+        { name: '滚筒输送线', section: '墙板生产线', status: '正常运行' },
+        { name: '翻转机', section: '墙板生产线', status: '正常运行' },
+        { name: '固定工装', section: '墙板生产线', status: '正常运行' },
+        { name: '地轨铺板机器人', section: '墙板生产线', status: '正常运行' },
+        { name: '板链输送线', section: '墙板生产线', status: '正常运行' },
+        { name: '水泥纤维板二次定位台', section: '墙板生产线', status: '正常运行' },
+
+        { name: '钻孔打钉组件', section: '墙板生产线', status: '正常运行' },
+        { name: '二级料仓', section: '墙板生产线', status: '正常运行' },
+        { name: '供料器', section: '墙板生产线', status: '正常运行' },
+        { name: '打钉桁架机台', section: '墙板生产线', status: '正常运行' },
+        { name: '板链输送线', section: '墙板生产线', status: '正常运行' },
+
+        { name: '视觉检测桁架', section: '墙板生产线', status: '正常运行' },
+        { name: '板链输送线', section: '墙板生产线', status: '正常运行' },
+        { name: '视觉检测系统', section: '墙板生产线', status: '正常运行' },
+        { name: '阻挡装置', section: '墙板生产线', status: '正常运行' },
+
+        { name: '板链输送线', section: '墙板生产线', status: '正常运行' },
+        { name: '阻挡装置', section: '墙板生产线', status: '正常运行' },
+
+        { name: '水泥板切割机', section: '墙板生产线', status: '正常运行' },
+        { name: '上料机器人', section: '墙板生产线', status: '正常运行' },
+        { name: '下料机器人', section: '墙板生产线', status: '正常运行' },
+        { name: '视觉识别模组', section: '墙板生产线', status: '正常运行' },
+        { name: '打码贴标机', section: '墙板生产线', status: '正常运行' },
+
+    ]
+
+    for (const i in res.data) {
+        const item = res.data[i]
+        if (item.section === '总装工作站') {
             station4.push({ name: item.name, id: item.id, status: item.status === '检修维护' ? 'maintenance' : item.status === '正常运行' ? 'normal' : item.status === '报警' ? 'alarm' : 'stopped' })
+        }
+        if (item.section === '墙板生产线') {
+            station5.push({ name: item.name, id: item.id, status: item.status === '检修维护' ? 'maintenance' : item.status === '正常运行' ? 'normal' : item.status === '报警' ? 'alarm' : 'stopped' })
         }
     }
     section1.components = station1
     section2.components = station2
     section3.components = station3
     section4.components = station4
+    section5.components = station5
     // console.log(section1);
-    tableData.value = [section1, section2, section3, section4]
+    tableData.value = [section1, section2, section3, section4, section5]
     // console.log(tableData);
     // tableData.value = res.data.data;
     // total.value = res.data.total
@@ -563,6 +648,7 @@ const uploadImage = (uidToFileNameMap) => {
     /*提高堆叠顺序，以避免其他内容覆盖其上*/
     padding-top: 25px;
     margin-top: -25px;
+    text-align: center;
 }
 
 .workstations {
@@ -611,7 +697,7 @@ const uploadImage = (uidToFileNameMap) => {
 .workstation li {
     /* margin: 1vh 0; */
     /* 增加垂直边距 */
-    padding: 5px;
+    padding: 1vh;
     /* 增加内边距 */
     position: relative;
 }
@@ -639,7 +725,7 @@ const uploadImage = (uidToFileNameMap) => {
     height: 15px;
     background-color: #339a528b;
     border-radius: 50%;
-    right: 3vh;
+    right: 2vh;
     top: 50%;
     transform: translateY(-50%);
 }
@@ -651,7 +737,7 @@ const uploadImage = (uidToFileNameMap) => {
     height: 15px;
     background-color: grey;
     border-radius: 50%;
-    right: 3vh;
+    right: 2vh;
     top: 50%;
     transform: translateY(-50%);
 }
@@ -663,7 +749,7 @@ const uploadImage = (uidToFileNameMap) => {
     height: 15px;
     background-color: #ff9a02a0;
     border-radius: 50%;
-    right: 3vh;
+    right: 2vh;
     top: 50%;
     transform: translateY(-50%);
 }
@@ -675,7 +761,7 @@ const uploadImage = (uidToFileNameMap) => {
     height: 15px;
     background-color: #e26237ab;
     border-radius: 50%;
-    right: 3vh;
+    right: 2vh;
     top: 50%;
     transform: translateY(-50%);
 }

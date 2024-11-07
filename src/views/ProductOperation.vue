@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, reactive, onUnmounted, watch } from "vue";
+import { ref, onMounted, reactive, onUnmounted, watch, nextTick } from "vue";
 import { BorderBox1 as DvBorderBox1 } from "@kjgl77/datav-vue3";
 import SearchComponent from "../components/SearchComponent.vue";
 import PaginationComponent from "../components/PaginationComponent.vue";
@@ -7,6 +7,8 @@ import DialogComponent from "../components/DialogComponent.vue";
 import { getMaterialOperationAPI, getMaterialOperationByIdAPI, deleteMaterialOperationAPI, updateMaterialOperationAPI } from "../apis/material";
 import { getProductOperationAPI, getProductOperationByIdAPI, deleteProductOperationAPI, updateProductOperationAPI } from "../apis/product";
 import { useUserStore } from '../stores/store.js';
+import * as pdfjsLib from "pdfjs-dist/build/pdf"
+
 const userStore = useUserStore();
 
 // 从后端获取数据
@@ -394,6 +396,101 @@ const nextImage = () => {
     }
 }
 //#endregion
+
+//---------------------------------------------------------------------------------------------------------------------------
+//pdf预览
+//#region
+let pdfDoc = reactive({}); // 保存加载的pdf文件流
+let pdfPages = ref(0); // pdf文件的页数
+//pdf文件的链接
+let pdfUrl = ref("https://cmc.eos-chengdu-1.cmecloud.cn/receipt/588191665399791616.pdf");
+let pdfScale = ref(1);
+
+//获取pdf文档流与pdf文件的页数
+const loadFile = async (url) => {
+    //注意我的pdfjs-dist的版本是3.9.179，其他的版本需要更换版本号，不然运行时会报版本不匹配的错
+    //外部链接引入，存在安全性问题
+    //pdfjsLib.GlobalWorkerOptions.workerSrc =
+    //"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.worker.min.js";
+    //内部链接引入
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "../../node_modules/pdfjs-dist/build/pdf.worker.min.mjs";
+    const loadingTask = pdfjsLib.getDocument(url);
+    loadingTask.promise.then((pdf) => {
+        console.log(pdf);
+        pdfDoc = pdf;                 //获取pdf文档流
+        pdfPages.value = pdf.numPages;//获取pdf文件的页数
+        nextTick(() => {
+            renderPage(1);
+        });
+    });
+};
+
+const renderPage = (num) => {
+    pdfDoc.getPage(num).then((page) => {
+        const canvasId = "pdf-canvas-" + num;
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext("2d");
+        const dpr = window.devicePixelRatio || 1;
+        const bsr =
+            ctx.webkitBackingStorePixelRatio ||
+            ctx.mozBackingStorePixelRatio ||
+            ctx.msBackingStorePixelRatio ||
+            ctx.oBackingStorePixelRatio ||
+            ctx.backingStorePixelRatio ||
+            1;
+        const ratio = dpr / bsr;
+        const viewport = page.getViewport({ scale: pdfScale.value });
+        canvas.width = viewport.width * ratio;
+        canvas.height = viewport.height * ratio;
+        canvas.style.width = viewport.width + "px";
+        canvas.style.height = viewport.height + "px";
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        const renderContext = {
+            canvasContext: ctx,
+            viewport: viewport,
+        };
+        page.render(renderContext);
+        if (num < pdfPages.value) {
+            renderPage(num + 1);
+        }
+    });
+};
+
+const pdf = ref(false)
+
+watch(
+    [imageUrls, currentIndex],
+    ([newImageUrls, newIndex], [oldImageUrls, oldIndex]) => {
+
+        // console.log('New imageUrls:', newImageUrls);
+        // console.log('Old imageUrls:', oldImageUrls);
+
+        // console.log('New currentIndex:', newIndex);
+        // console.log('Old currentIndex:', oldIndex);
+
+        console.log(newImageUrls[newIndex]);
+
+
+        if (newImageUrls[newIndex].endsWith('.pdf')) {
+            console.log('pdf');
+
+            // dialogPdfUrl.value = file.url!
+            pdfUrl = ref(newImageUrls[newIndex]);
+            pdf.value = true
+
+            loadFile(pdfUrl.value)
+        }
+        else {
+            // dialogImageUrl.value = file.url!
+            pdf.value = false
+        }
+    },
+    { deep: true }  // 启用深度监控
+);
+
+
+//#endregion
 </script>
 
 <template>
@@ -604,7 +701,9 @@ const nextImage = () => {
     <!-- 图片详情弹框 -->
     <el-dialog v-model="dialogVisible" style="width: fit-content;border-radius: 1vh;">
         <ArrowLeft @click="prevImage" v-if="currentIndex > 0" style="width: 5vh; height: 5vh" class="prev-button" />
-        <img w-full :src="imageUrls[currentIndex]" alt="无图片" class="image" />
+        <canvas v-if="pdf" v-for="pageIndex in pdfPages" :id="`pdf-canvas-` + pageIndex" :key="pageIndex"
+            style="display: block;"></canvas>
+        <img v-else w-full :src="imageUrls[currentIndex]" alt="无图片" class="image" />
         <ArrowRight @click="nextImage" v-if="currentIndex < imageUrls.length - 1" style="width: 5vh; height: 5vh"
             class="next-button" />
 

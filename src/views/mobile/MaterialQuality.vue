@@ -12,7 +12,7 @@
                     <van-field v-if="item.type === 'input'" v-model="form[item.value]" :label="item.label" clearable>
                     </van-field>
                     <van-field v-if="item.type === 'num'" v-model="form[item.value]" :label="item.label" clickable
-                        @click="item.readonly ? activeKeyboardIndex = index : activeKeyboardIndex = null"
+                        readonly @click="item.readonly ? activeKeyboardIndex = index : activeKeyboardIndex = null"
                         :label-align="item.labelAlign">
                         <template #label v-if="item.info">
                             <span>{{ item.label }}</span>
@@ -73,45 +73,7 @@ const form
         derust: '',
         rAngle: '',
         crossSection: '',
-        inspector: '',
-        // A1_2: '',
-        // A2_1: '',
-        // A2_3: '',
-        // A3_2: '',
-        // A3_4: '',
-        // A4_3: '',
-        // A4_1: '',
-        // A1_4: '',
-        // B1_2: '',
-        // B2_1: '',
-        // B2_3: '',
-        // B3_2: '',
-        // B3_4: '',
-        // B4_3: '',
-        // B4_1: '',
-        // B1_4: '',
-        // C1_2: '',
-        // C2_1: '',
-        // C2_3: '',
-        // C3_2: '',
-        // C3_4: '',
-        // C4_3: '',
-        // C4_1: '',
-        // C1_4: '',
-        // A1_3: '',
-        // A2_4: '',
-        // B1_3: '',
-        // B2_4: '',
-        // C1_3: '',
-        // C2_4: '',
-        // l1: '',
-        // w1: '',
-        // l2: '',
-        // w2: '',
-        // l3: '',
-        // w3: '',
-        // l4: '',
-        // w4: '',
+        inspector: ''
     })
 
 const showDetail = (index) => {
@@ -156,10 +118,15 @@ const options = [
                 ]
             },
             {
-                text: 't=8mm', value: 't=10mm',
+                text: 't=8mm', value: 't=8mm',
                 children: [
                     { text: '80x80mm', value: '80x80mm' },
                     { text: '100x100mm', value: '100x100mm' },
+                ]
+            },
+            {
+                text: 't=10mm', value: 't=10mm',
+                children: [
                     { text: '180x180mm', value: '180x180mm' },
                     { text: '200x200mm', value: '200x200mm' }
                 ]
@@ -253,8 +220,8 @@ const generateFormItems = (material) => {
                 { type: 'radio', label: '除锈等级', value: 'derust', options: ['合格', '不合格'], info: 'Sa2.5' },
                 { type: 'input', label: '检测人', value: 'inspector' },
             ];
-        case '方通 t=8mm 180x180mm':
-        case '方通 t=8mm 200x200mm':
+        case '方通 t=10mm 180x180mm':
+        case '方通 t=10mm 200x200mm':
             return [
                 { type: 'input', label: '批次号', value: '' },
                 { type: 'radio', label: '外观质量', value: [], options: ['合格', '不合格'], info: '表面不应有裂缝、焊渣、焊疤、灰尘、油污、水、毛刺等，且要求：无缝钢管' },
@@ -352,7 +319,6 @@ const onSubmit = (values) => {
 
     // 集合 crossSection 的值
     const keys2 = ['A(1-3)', 'A(2-4)', 'B(1-3)', 'B(2-4)', 'C(1-3)', 'C(2-4)'];
-    console.log(keys2);
     form.crossSection = keys2.map(key => `${key}: ${form[key] || 0}`).join(', ');
     // console.log(`截面尺寸: ${form.crossSection}`);
 

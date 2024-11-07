@@ -2,8 +2,7 @@
   <div class="demo-collapse">
     <!-- 使用Element Plus的Collapse组件 -->
     <!-- activeNames指定了默认打开的面板，@change绑定了面板切换事件的处理函数 -->
-    <el-collapse v-model="activeNames" @change="handleChange" 
-      style="
+    <el-collapse v-model="activeNames" @change="handleChange" style="
         --el-collapse-border-color: transparent;    /* 面板的边框颜色 */
       ">
       <!-- 遍历每一个工作站 -->
@@ -20,7 +19,7 @@
     </el-collapse>
   </div>
 </template>
-  
+
 <script>
 import { ElCollapse, ElCollapseItem } from 'element-plus';
 import { ref, reactive, onMounted, nextTick } from 'vue'
@@ -33,7 +32,8 @@ export default {
   },
   setup(props, { emit }) {
     // 保存默认打开的面板的名称
-    const activeNames = ref(["0", "1", "2", "3"])
+    // const activeNames = ref(["0", "1", "2", "3"])
+    const activeNames = ref(["0", "2"])
 
     // 面板切换事件的处理函数
     const handleChange = (val) => {
@@ -135,7 +135,7 @@ export default {
 };
 
 </script>
-  
+
 <style scoped>
 /* 每个折叠项标题的背景和文本颜色 */
 ::v-deep .el-collapse-item__header {

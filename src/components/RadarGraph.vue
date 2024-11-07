@@ -29,9 +29,84 @@ const getDataFromAPI = async () => {
   theoretical.value = []
   real.value = []
 
-  const res = await getTimesAPI(props.station);
-  console.log(res.data);
+
+
+
+
+  //TODO: 2.0端口未联通 为了不提示连接失败，redirect到地面钢网
+  let res
+  //cmc2.0展示数据
+
+  if (props.station === '总装工作站' || props.station === '墙板生产线') {
+    res = await getTimesAPI('地面钢网工作站');
+  }
+  else {
+    res = await getTimesAPI(props.station);
+  }
+
+
+
+  // console.log(res.data);
+
+  //如无数据，则重置图表
+  // 如果无数据，为了展示用途，使用已有数据
+
+  if (!res.data[0] || !res.data[1]) {
+
+    if (props.station === '总装工作站') {
+      // console.log("zongzhuang");
+      //理论用时
+      res.data[1] = {
+        stationInfo: '装夹工位:49,双边双出左工位:44,桁架焊接工位:22,双边双出右工位:44'
+      }
+      //实际用时
+      res.data[0] = {
+        stationInfo: '装夹工位:48,双边双出左工位:40,桁架焊接工位:20,双边双出右工位:0'
+      }
+    }
+    else if (props.station === '墙板生产线') {
+      // console.log("qiangban");
+      res.data[1] = {
+        stationInfo: '钢结构组拼焊接工位:12,钢筋组装焊接工位:12,墙板翻转工位1:8,钢结构反面焊接工位:10,' +
+          '水泥板铺装工位1:10,水泥板打钉工位1:10,水泥板人工补钉工位:8,墙板翻转机工位2:8,水泥板铺装工位2: 10, ' +
+          '水泥板打钉工位2:12,自动尺寸检测工位:8,墙板补钉及吊装下料工位:8,水泥板自动切割工位:12'
+      }
+      res.data[0] = {
+        stationInfo: '钢结构组拼焊接工位:12,钢筋组装焊接工位:12,墙板翻转工位1:6,钢结构反面焊接工位:9,' +
+          '水泥板铺装工位1:8,水泥板打钉工位1:10,水泥板人工补钉工位:7,墙板翻转机工位2:8,水泥板铺装工位2: 9, ' +
+          '水泥板打钉工位2:12,自动尺寸检测工位:8,墙板补钉及吊装下料工位:6,水泥板自动切割工位:12'
+      }
+    }
+    else {
+      //重置
+      RadarChart.setOption({
+        legend: {
+          data: ["实际用时", "理论用时"],
+          bottom: 10,
+          textStyle: {
+            color: '#ffffff',
+            fontWeight: 'lighter',
+          },
+        },
+        radar: {
+          indicator: [], // 重置指标
+          center: ["50%", "50%"],
+          radius: "60%",
+        },
+        series: [
+          {
+            type: "radar",
+            data: [], // 清空数据
+          },
+        ],
+      });
+      return
+    }
+  }
+
+
   const theo = res.data[1].stationInfo.split(',')
+
   const actual = res.data[0].stationInfo.split(',')
 
   if (props.station === '地面钢网工作站') {
@@ -55,8 +130,13 @@ const getDataFromAPI = async () => {
     const index = indicators.value.indexOf(actual[i].split(':')[0])
     real.value[index] = actual[i].split(':')[1]
   }
-  // console.log(real);
+  // console.log(real)
 
+
+  // console.log(indicator.value);
+  // console.log(indicators.value);
+  // console.log(real.value);
+  // console.log(theoretical.value);
 
 
 
@@ -121,6 +201,8 @@ const getDataFromAPI = async () => {
       },
     ],
   });
+
+
 
 };
 
@@ -198,7 +280,7 @@ onMounted(() => {
   });
 });
 
-getDataFromAPI(props.station)
+getDataFromAPI()
 
 watch(showToolTip, (newValue) => {
   RadarChart.setOption({
@@ -226,7 +308,7 @@ watch(
   () => props,
   (newVal) => {
     // console.log(props.station);
-    getDataFromAPI(props.station)
+    getDataFromAPI()
 
 
   },

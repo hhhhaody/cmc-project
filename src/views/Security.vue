@@ -60,12 +60,13 @@ const setupVideoJs = (videoEl, index) => {
 
   // video.js 配置选项
   const videoJsOptions = {
-    controls: true, // 显示控制条
+    controls: false, // 显示控制条
     autoplay: true, // 自动播放
     preload: 'auto', // 预加载
     muted: false, // 初始静音状态
     language: 'zh-CN', // 设置语言
     // fill: true, // 自动填充
+    loop: true,
     // 你可以根据需要添加更多选项
   };
 
@@ -75,8 +76,12 @@ const setupVideoJs = (videoEl, index) => {
 
   // 设置视频源
   if (state.currentStreams[index]) {
+    // player.src({
+    //   type: 'application/x-mpegURL',
+    //   src: state.currentStreams[index]
+    // });
     player.src({
-      type: 'application/x-mpegURL',
+      type: 'video/mp4',
       src: state.currentStreams[index]
     });
   }
@@ -134,16 +139,16 @@ async function handlePointSelected({ indexCode, index }) {
       }
 
     } else {
-      ElMessage({
-        message: '获取视频流失败',
-        type: 'error'
-      });
+      // ElMessage({
+      //   message: '获取视频流失败',
+      //   type: 'error'
+      // });
     }
   } catch (error) {
-    ElMessage({
-      message: '获取视频流失败',
-      type: 'error'
-    });
+    // ElMessage({
+    //   message: '获取视频流失败',
+    //   type: 'error'
+    // });
   }
 }
 
@@ -162,7 +167,8 @@ const handleDefaultStreams = async (defaultIndexCodes) => {
 
 // 在 state 对象中加入一个标识符
 const state = reactive({
-  currentStreams: Array(4).fill(''),
+  // currentStreams: Array(4).fill(''),
+  currentStreams: ['src/assets/videos/方通组焊_防抖.mp4', 'src/assets/videos/型钢切割_柱尾柱身加工_V1_241021.mp4'],
   isDefaultStreamsLoaded: false,  // 添加这个标识符
 });
 
@@ -176,11 +182,12 @@ const state = reactive({
     <div class="calendar-container">
       <div class="video-grid">
         <div v-for="(stream, index) in state.currentStreams" :key="index" class="video-box">
-          <div class="video-placeholder">
+          <div class="video-placeholder" v-if="!stream">
             <img src="/src/assets/images/noPlay.png" alt="Camera" />
             <p>暂无数据</p>
-            <video :ref="el => { videoRefs[index] = el }" class="video-js vjs-default-skin"></video>
           </div>
+          <video :ref="el => { videoRefs[index] = el }" class="video-js vjs-default-skin"></video>
+
         </div>
         <div class="right-sidebar">
           <el-button @click="handleButtonClick" type="primary"
@@ -212,6 +219,7 @@ const state = reactive({
 }
 
 .video-box {
+  top: 5vh;
   background-color: rgb(242, 242, 242);
   border: 2px solid rgb(242, 242, 242);
   border-radius: 1vh;
@@ -219,21 +227,30 @@ const state = reactive({
   position: relative;
   width: 100%;
   height: 100%;
-  padding-bottom: 30%;
+  /* padding-bottom: 30%; */
+  padding-bottom: 56.25%;
 }
 
 .video-js {
   position: absolute;
-  top: -75px;
+  /* top: -75px;
   left: -1px;
   z-index: 10;
   width: 100%;
   height: 270%;
+  border-radius: 1vh;  */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   border-radius: 1vh;
 }
 
 .video-js video {
-  object-fit: fill;
+  /* object-fit: fill; */
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
 }
 
 

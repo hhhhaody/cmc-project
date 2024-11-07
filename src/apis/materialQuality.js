@@ -11,3 +11,11 @@ export const getMaterialQualityAPI = (page, pageSize, name, spec) => {
         }
     })
 }
+
+export const addMaterialQualityAPI = (data) => {
+    return httpInstance({
+        url: '/materialQuality',
+        method: 'post',
+        data
+    })
+}

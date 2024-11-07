@@ -59,16 +59,19 @@ import { echarts } from "@/utils/echarts"; // 按需引入echarts
 provide("echarts", echarts); // 提供全局使用
 
 const animation = ref();
+const cmc2 = ref(false);
 // const nav = ref("block")
 // animation.value = true;
 
 const hide = () => {
   animation.value = "none";
+
 };
 
 const show = () => {
   animation.value = "block";
 };
+
 
 
 //退出功能
@@ -91,6 +94,41 @@ const logout = () => {
 handleResize(); // 初始化时执行一次
 window.addEventListener('resize', handleResize);
 
+
+function changeBackground(imageClass) {
+  // hide()
+  const videoContainer = document.querySelector('.videoContainer');
+  // 移除所有背景相关的类
+  videoContainer.classList.remove('bg1', 'bg2', 'bg3', 'bg4', 'bg5');
+  // 添加所需的背景类
+  videoContainer.classList.add(imageClass);
+
+}
+
+
+//墙板生产线动画切换
+const wall = ref(false)
+const handleCarouselChange = (index) => {
+  if (index == 1) {
+    console.log('墙板');
+    wall.value = true
+  }
+  else {
+    wall.value = false
+  }
+};
+
+const backScreenVideo = (value) => {
+  console.log(value);
+  if (value) {
+    show()
+  }
+  else {
+    hide()
+  }
+}
+
+
 </script>
 
 <template>
@@ -99,6 +137,11 @@ window.addEventListener('resize', handleResize);
       <h1>
         <!-- <img alt="Our logo" src="@/assets/logo.png" /> -->
         <RouterLink to="/about" @click="hide" style="color: white;">CMC产线智能化管理系统</RouterLink>
+        <!-- <button @click="changeBackground('bg1')">1</button>
+        <button @click="changeBackground('bg2')">2</button>
+        <button @click="changeBackground('bg3')">3</button>
+        <button @click="changeBackground('bg4')">4</button>
+        <button @click="changeBackground('bg5')">5</button> -->
       </h1>
 
       <div class="user-avatar">
@@ -123,7 +166,7 @@ window.addEventListener('resize', handleResize);
 
     </header>
     <div>
-      <RouterView />
+      <RouterView :wall="wall" @backScreenVideo="backScreenVideo" />
     </div>
 
     <nav class="animate__animated animate__fadeInUp" style="z-index: 1;">
@@ -210,7 +253,7 @@ window.addEventListener('resize', handleResize);
       </el-dropdown>
 
       <el-dropdown class="navItem nav4">
-        <span class="el-dropdown-link"> 安全监控 </span>
+        <span class="el-dropdown-link"> 安全管理 </span>
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>
@@ -223,29 +266,39 @@ window.addEventListener('resize', handleResize);
         </template>
       </el-dropdown>
 
-      <RouterLink class="link" to="/home" @click="show"></RouterLink>
 
-      <RouterLink class="link" to="/" @click="show"></RouterLink>
+      <RouterLink v-if="cmc2 == false" class="link" to="/home" @click="show(); cmc2 = false"></RouterLink>
+
+      <RouterLink v-if="cmc2 == false" class="link" to="/" @click="show(); cmc2 = false"></RouterLink>
+
+      <RouterLink v-if="cmc2 == true" class="link" to="/v2home" @click="show()"></RouterLink>
+
+      <RouterLink v-if="cmc2 == true" class="link" to="/v2home2" @click="show()"></RouterLink>
+
+      <RouterLink v-if="cmc2 == false" class="switch" to="/v2home"
+        @click="show(); changeBackground('bg2'); cmc2 = true">
+        CMC2.0
+      </RouterLink>
+
+      <RouterLink v-if="cmc2 == true" class="switch" to="/" @click="show(); changeBackground('bg1'); cmc2 = false">
+        CMC1.0
+      </RouterLink>
+
     </nav>
     <!-- <header>
     <img
-      alt="Vue logo"
-      class="logo"
-      src="@/assets/logo.svg"
-      width="125"
-      height="125"
-    />
+      alt=" Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-      <el-button type="success">i am button</el-button>
+      <div class="wrapper">
+        <HelloWorld msg="You did it!" />
+        <el-button type="success">i am button</el-button>
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header> -->
+        <nav>
+          <RouterLink to="/">Home</RouterLink>
+          <RouterLink to="/about">About</RouterLink>
+        </nav>
+      </div>
+      </header> -->
 
     <!-- <RouterView /> -->
 
@@ -258,20 +311,52 @@ window.addEventListener('resize', handleResize);
 
 
   <div class="videoContainer" v-if="isPc">
-    <el-carousel style="z-index: 1;" class="fullscreen" :interval="1440000" :style="{ display: animation }">
-      <el-carousel-item style="height: 225%;">
+    <el-carousel v-if="cmc2 == false" style="z-index: 1;" class="fullscreen" :interval="1440000"
+      :style="{ display: animation }">
+      <el-carousel-item style="height: 225%;" class="video1">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/fangtong_V2.mp4" type="video/mp4" />
+          <source src="./assets/videos/fangtong_V3.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
-      <el-carousel-item style="height: 225%;">
+      <el-carousel-item style="height: 225%;" class="video1">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
           <source src="./assets/videos/zongzhuang_V2.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
-      <el-carousel-item style="height: 225%;">
+      <el-carousel-item style="height: 225%;" class="video1">
+        <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
+          <source src="./assets/videos/xinggang_V2.mp4" type="video/mp4" />
+
+        </video>
+      </el-carousel-item>
+      <el-carousel-item style="height: 225%;" class="video1">
+        <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
+          <source src="./assets/videos/dimian_V2.mp4" type="video/mp4" />
+
+        </video>
+      </el-carousel-item>
+
+
+    </el-carousel>
+
+
+    <el-carousel v-else style="z-index: 1;" class="fullscreen" :interval="1440000" :style="{ display: animation }"
+      @change="handleCarouselChange">
+      <el-carousel-item style="height: 225%;" class="video2">
+        <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
+          <source src="./assets/videos/zongzhuang2-v3.mp4" type="video/mp4" />
+
+        </video>
+      </el-carousel-item>
+      <el-carousel-item style="height: 225%;" class="video2">
+        <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
+          <source src="./assets/videos/qiangban__V4_241105.mp4" type="video/mp4" />
+
+        </video>
+      </el-carousel-item>
+      <!-- <el-carousel-item style="height: 225%;">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
           <source src="./assets/videos/xinggang_V2.mp4" type="video/mp4" />
 
@@ -282,7 +367,7 @@ window.addEventListener('resize', handleResize);
           <source src="./assets/videos/dimian_V2.mp4" type="video/mp4" />
 
         </video>
-      </el-carousel-item>
+      </el-carousel-item> -->
 
 
     </el-carousel>
@@ -325,7 +410,7 @@ window.addEventListener('resize', handleResize);
   color: var(--el-text-color-secondary);
 }
 
-.el-carousel__item {
+.video1 {
   /* color: #475669;
   opacity: 0.75;
   line-height: 150px;
@@ -344,6 +429,38 @@ window.addEventListener('resize', handleResize);
   background-size: cover;
   height: 150%;
 }
+
+.video2 {
+  /* color: #475669;
+  opacity: 0.75;
+  line-height: 150px;
+  margin: 0;
+  text-align: center; */
+  /* background-color: black !important; */
+
+
+  background:
+    /* radial-gradient(
+      100vh 100vh at 41%,
+      transparent 30%,
+      #182330a5 60%
+    ), */
+    url("./assets/images/map-10.png") no-repeat center fixed;
+  background-size: cover;
+  height: 150%;
+}
+
+/* .bg1 {
+  background: url("./assets/images/map-2.png") no-repeat center fixed;
+  background-size: cover;
+}
+
+.bg2 {
+  background: url("./assets/images/map-5.png") no-repeat center fixed;
+  background-size: cover;
+} */
+
+
 
 :deep.el-carousel__item:nth-child(2n) {
   background-color: transparent !important;
@@ -375,14 +492,14 @@ window.addEventListener('resize', handleResize);
   /* background: #435e7cc4; */
   /* background: #435e7c; */
 
-  background:
-    /* radial-gradient(
+  /* background: */
+  /* radial-gradient(
       100vh 100vh at 41%,
       transparent 30%,
       #182330a5 60%
     ), */
-    url("./assets/images/map-2.png") no-repeat center fixed;
-  background-size: cover;
+  /* url("./assets/images/map-2.png") no-repeat center fixed; */
+  /* background-size: cover; */
 }
 
 .videoContainer:before {
@@ -407,6 +524,31 @@ window.addEventListener('resize', handleResize);
   background-size: cover;
 }
 
+.videoContainer.bg1:before {
+  background: url("./assets/images/map-2.png") no-repeat center fixed;
+  background-size: cover;
+}
+
+.videoContainer.bg2:before {
+  background: url("./assets/images/map-10.png") no-repeat center fixed;
+  background-size: cover;
+}
+
+.videoContainer.bg3:before {
+  background: url("./assets/images/map-8.png") no-repeat center fixed;
+  background-size: cover;
+}
+
+.videoContainer.bg4:before {
+  background: url("./assets/images/map-9.png") no-repeat center fixed;
+  background-size: cover;
+}
+
+.videoContainer.bg5:before {
+  background: url("./assets/images/map-6-1.png") no-repeat center fixed;
+  background-size: cover;
+}
+
 
 .fullscreenVideo {
   position: relative;
@@ -414,7 +556,7 @@ window.addEventListener('resize', handleResize);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100%;
+  width: 50%;
   height: 100%;
 }
 
@@ -589,6 +731,7 @@ nav .nav5 {
   top: -50%
 }
 
+
 nav .link {
   /* background-color: #1f528b; */
   background-image: radial-gradient(circle, transparent 5%, #5198db);
@@ -602,7 +745,28 @@ nav .link {
   box-shadow: 0 0 1vh #fff, inset 0 0 4vh #fff;
 }
 
+nav .switch {
+  /* background-color: #1f528b; */
+  /* background-image: radial-gradient(circle, transparent 5%, #5198db); */
+  /* opacity: 0.8; */
+  position: absolute;
+  /* width: 150rem; */
+  /* height: 150rem; */
+  right: 1vh;
+  bottom: 1vh;
+  /* box-shadow: 0 0 1vh #fff, inset 0 0 4vh #fff; */
+
+  /* height: 2vh;
+  width: 2vh; */
+  color: #fff;
+  text-shadow: 1px -1px 5px #a3ccf9;
+}
+
 nav .link.router-link-exact-active {
+  display: none;
+}
+
+nav .switch.router-link-exact-active {
   display: none;
 }
 

@@ -64,8 +64,24 @@ const getDataFromAPI = async () => {
   data.value = []
 
 
-  const res = await getEnergyAPI(props.station, new Date().toISOString().slice(0, 10));
   // console.log(res.data);
+  let res
+
+  if (props.station === '墙板生产线') {
+    // console.log(new Date().toISOString().slice(0, 10));
+
+    res = await getEnergyAPI('方通组焊工作站', '2024-04-24');
+
+  }
+  else if (props.station === '总装工作站') {
+    res = await getEnergyAPI('方通组焊工作站', '2024-04-23');
+
+  }
+  else {
+    res = await getEnergyAPI(props.station, new Date().toISOString().slice(0, 10));
+
+  }
+
 
   for (const i in res.data) {
     const item = res.data[i]

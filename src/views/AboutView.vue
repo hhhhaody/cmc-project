@@ -421,7 +421,7 @@ const uploadImage = (uidToFileNameMap) => {
                   </i>
                 </div>
                 <video controls class="video" playsinline="" autoplay="" muted="" loop="">
-                  <source class="scale" src="../assets/videos/fangtong_V2.mp4" type="video/mp4" />
+                  <source class="scale" src="../assets/videos/fangtong_V3.mp4" type="video/mp4" />
 
                 </video>
 
@@ -477,7 +477,7 @@ const uploadImage = (uidToFileNameMap) => {
 
                 <div class="description">
                   <h2>
-                    总装工作站
+                    模块总装工作站
                   </h2>
                   <i class="text">
                     该工作站通过自动焊接机械臂、移动组装模台、墙板拼装定位固定夹具等硬件，应用全自动高精度定位组装、全自动高精度柔性焊接、模块化自动总装等多项技术,实现模块各种规格尺寸波纹板墙体的拼装焊接及地面钢网的组装焊接等功能，本工作站可以适配不同尺寸模块的焊接工作，生产效率是人工生产效率的3倍。
@@ -485,6 +485,50 @@ const uploadImage = (uidToFileNameMap) => {
                 </div>
                 <video controls class="video" playsinline="" autoplay="" muted="" loop="">
                   <source class="scale" src="../assets/videos/zongzhuang_V2.mp4" type="video/mp4" />
+
+                </video>
+
+              </div>
+
+            </el-card>
+          </el-carousel-item>
+
+          <el-carousel-item>
+            <el-card style="border-radius: 1vh;height: 100%;">
+              <div class="card">
+
+                <div class="description">
+                  <h2>
+                    总装工作站
+                  </h2>
+                  <i class="text">
+                    CMC2.0产品总体装配工作站主要由墙板定位工装、桁架焊接机器人工装、轨道运输平台和移动下料区工位组成，运用高精度定位组装、高精度柔性焊接、模块化总装等多项技术，实现将各种规格尺寸CMC2.0的墙板与楼承板组装成箱体的生产功能，并满足单班8小时平均至少完成4个箱体的组装焊接生产效率。
+                  </i>
+                </div>
+                <video controls class="video" playsinline="" autoplay="" muted="" loop="">
+                  <source class="scale" src="../assets/videos/zongzhuang2-V3.mp4" type="video/mp4" />
+
+                </video>
+
+              </div>
+
+            </el-card>
+          </el-carousel-item>
+
+          <el-carousel-item>
+            <el-card style="border-radius: 1vh;height: 100%;">
+              <div class="card">
+
+                <div class="description">
+                  <h2>
+                    墙板生产线
+                  </h2>
+                  <i class="text">
+                    CMC2.0墙板自动化生产线主要由钢结构组拼焊接工位、钢筋组装焊接工位、墙板翻转工位、钢结构反面焊接工位、正面水泥板铺装工位、正面打钉工位、正面补钉工位、反面水泥板铺装工位、反面打钉工位、反面补钉工位、质量检测系统及装备等组成，运用非标自动化技术、柔性自动化焊接技术、重、大型物品翻转技术，自动钻孔打钉技术等，实现不同尺寸、规格、种类的CMC2.0产品墙板的高效自动化生产功能，并满足单班8小时平均至少完成35片种类范围内不同墙板的生产效率。
+                  </i>
+                </div>
+                <video controls class="video" playsinline="" autoplay="" muted="" loop="">
+                  <source class="scale" src="../assets/videos/qiangban__V4_241105.mp4" type="video/mp4" />
 
                 </video>
 
@@ -575,7 +619,11 @@ const uploadImage = (uidToFileNameMap) => {
 
 :deep .el-carousel__indicator--horizontal {
   /* display: none; */
-  background: #e5eef7;
+  background: transparent;
+}
+
+:deep .el-carousel__button {
+  background-color: #a3ccf9
 }
 
 .card {
