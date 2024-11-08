@@ -77,6 +77,44 @@ const getDataFromAPI = async () => {
           '水泥板打钉工位2:12,自动尺寸检测工位:8,墙板补钉及吊装下料工位:6,水泥板自动切割工位:12'
       }
     }
+    else if (props.station === '型钢切割工作站') {
+      // console.log("qiangban");
+      res.data[1] = {
+        stationInfo: '桁架上下料工位:80,翻转工位:20,激光切割工位:60,机器人下料工位:20'
+      }
+      res.data[0] = {
+        stationInfo: '桁架上下料工位:78,翻转工位:19,激光切割工位:60,机器人下料工位:1'
+      }
+    }
+    else if (props.station === '地面钢网工作站') {
+      // console.log("qiangban");
+      res.data[1] = {
+        stationInfo: '桁架上下料工位:12,机器人焊接工位:10'
+      }
+      res.data[0] = {
+        stationInfo: '桁架上下料工位:10,机器人焊接工位:10'
+      }
+    }
+    else if (props.station === '方通组焊工作站') {
+      // console.log("qiangban");
+      res.data[1] = {
+        stationInfo: '桁架上下料工位:80,链轮车料架工位:20,柱头焊接工位:65,柱脚焊接工位:65,' +
+          '总装工位:100,搬运机器人工位:30'
+      }
+      res.data[0] = {
+        stationInfo: '桁架上下料工位:80,链轮车料架工位:19,柱头焊接工位:63,柱脚焊接工位:59,' +
+          '总装工位:96,搬运机器人工位:28'
+      }
+    }
+    else if (props.station === '模块总装工作站') {
+      // console.log("qiangban");
+      res.data[1] = {
+        stationInfo: '移动模台工位:30,装夹工位:60,桁架焊接工位:80'
+      }
+      res.data[0] = {
+        stationInfo: '移动模台工位:27,装夹工位:58,桁架焊接工位:69'
+      }
+    }
     else {
       //重置
       RadarChart.setOption({

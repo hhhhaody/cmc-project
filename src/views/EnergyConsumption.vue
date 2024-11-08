@@ -200,7 +200,11 @@ const initCharts = () => {
 
 // 更改当前选中的工作站部分并获取其数据
 const changeSection = (section) => {
+  console.log(section);
+
+  //展示数据
   selectedSection.value = section;
+
   getDataFromAPI();
 };
 
@@ -229,7 +233,18 @@ const changeSection = (section) => {
 
 
 const getDataFromAPI = async () => {
-  const res = await getEnergyDatesAPI(currentPage.value, pageSize.value, selectedSection.value.name, dateRange.value[0], dateRange.value[1]);
+  //展示数据替换
+  let res
+  if (selectedSection.value.name == '地面钢网工作站') {
+    res = await getEnergyDatesAPI(currentPage.value, pageSize.value, '方通组焊工作站', dateRange.value[0], dateRange.value[1]);
+  }
+  else if (selectedSection.value.name == '模块总装工作站') {
+    res = await getEnergyDatesAPI(currentPage.value, pageSize.value, '型钢切割工作站', dateRange.value[0], dateRange.value[1]);
+  }
+  else {
+    res = await getEnergyDatesAPI(currentPage.value, pageSize.value, selectedSection.value.name, dateRange.value[0], dateRange.value[1]);
+
+  }
   console.log(res.data);
   // tableData.value = res.data.data;
   selectedSection.value.tableData = res.data;
@@ -406,8 +421,8 @@ onMounted(() => {
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item v-for="section in sections" :key="section.name" @click="changeSection(section)">{{
-      section.name
-    }}</el-dropdown-item>
+                    section.name
+                  }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
