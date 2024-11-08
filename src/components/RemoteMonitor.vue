@@ -20,11 +20,13 @@ import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import { getVideoStreamAPI } from '../apis/video';
 
+import real1 from "../assets/videos/xinggang_real.mp4"
+import real2 from "../assets/videos/fangtong_real.mp4"
 
 const indexCodeInfo = reactive({
   // '监控点位1': '5363b5f5880b49c29dcbfa199ce3f11f',
-  '监控点位1': 'src/assets/videos/fangtong_real.mp4',
-  '监控点位2': 'src/assets/videos/xinggang_real.mp4',
+  '监控点位1': real1,
+  '监控点位2': real2,
   // '监控点位2': '8f4800455a984875b4a2f8e670879f8b',
   // '监控点位3': '7e37741ff6954cbebbbc60d6608d36e1',
   // '监控点位4': '301790102285474c873196aa8a32bfa2',

@@ -356,13 +356,13 @@ const backScreenVideo = (value) => {
 
         </video>
       </el-carousel-item>
-      <!-- <el-carousel-item style="height: 225%;">
+      <el-carousel-item style="height: 225%;" class="video2">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
-          <source src="./assets/videos/xinggang_V2.mp4" type="video/mp4" />
+          <source src="./assets/videos/qieban2_1108.mp4" type="video/mp4" />
 
         </video>
       </el-carousel-item>
-      <el-carousel-item style="height: 225%;">
+      <!-- <el-carousel-item style="height: 225%;">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
           <source src="./assets/videos/dimian_V2.mp4" type="video/mp4" />
 

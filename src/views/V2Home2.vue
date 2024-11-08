@@ -10,6 +10,19 @@ import { ref } from "vue";
 import { useRouter } from 'vue-router';
 import { defineProps, watch } from 'vue';
 
+import station1 from "../assets/videos/station1.mp4"
+import station2 from "../assets/videos/station2.mp4"
+import station3 from "../assets/videos/station3.mp4"
+import station4 from "../assets/videos/station4.mp4"
+import station5 from "../assets/videos/station5.mp4"
+import station6 from "../assets/videos/station6.mp4"
+import station7 from "../assets/videos/station7.mp4"
+import station8 from "../assets/videos/station8.mp4"
+import station9 from "../assets/videos/station9.mp4"
+import station10 from "../assets/videos/station10.mp4"
+import station11 from "../assets/videos/station11.mp4"
+import station12 from "../assets/videos/station12.mp4"
+
 
 const stations = ref(["墙板生产线", "总装工作站"]);
 const radar = ref(stations.value[0]); //耗时统计图形组件
@@ -103,7 +116,7 @@ const toggleMedia = (index, videoSrc) => {
     else {
         activeButtonIndex.value = index; // 更新当前被点击的按钮索引
         currentVideoSrc.value = videoSrc;
-        // console.log(`Switching to video: ${videoSrc}`);
+        console.log(`Switching to video: ${videoSrc}`);
         setTimeout(() => {
             showImage.value = false; // 切换显示图片或视频
             isFadingOut.value = false;
@@ -326,55 +339,55 @@ watch(showAllSpans, (newValue) => {
                 :class="isFadingOut ? 'animate__fadeOut' : 'animate__fadeIn'">
                 <div class="button">
                     <i class="b" style="flex: 1.2" :class="{ 'active': activeButtonIndex === 11 }"
-                        @click="toggleMedia(11, 'src/assets/videos/station12.mp4')">墙板补钉及吊装下料</i>
+                        @click="toggleMedia(11, station11)">墙板补钉及吊装下料</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 10 }"
-                        @click="toggleMedia(10, 'src/assets/videos/station11.mp4')">自动尺寸检测</i>
+                        @click="toggleMedia(10, station10)">自动尺寸检测</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 9 }"
-                        @click="toggleMedia(9, 'src/assets/videos/station10.mp4')">水泥板打钉</i>
+                        @click="toggleMedia(9, station9)">水泥板打钉</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 8 }"
-                        @click="toggleMedia(8, 'src/assets/videos/station9.mp4')">水泥板铺装</i>
+                        @click="toggleMedia(8, station8)">水泥板铺装</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 7 }"
-                        @click="toggleMedia(7, 'src/assets/videos/station8.mp4')">墙板翻转机</i>
+                        @click="toggleMedia(7, station7)">墙板翻转机</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 6 }"
-                        @click="toggleMedia(6, 'src/assets/videos/station7.mp4')">水泥板人工补钉</i>
+                        @click="toggleMedia(6, station6)">水泥板人工补钉</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 5 }"
-                        @click="toggleMedia(5, 'src/assets/videos/station6.mp4')">水泥板打钉</i>
+                        @click="toggleMedia(5, station5)">水泥板打钉</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 4 }"
-                        @click="toggleMedia(4, 'src/assets/videos/station5.mp4')">水泥板铺装</i>
+                        @click="toggleMedia(4, station4)">水泥板铺装</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 3 }"
-                        @click="toggleMedia(3, 'src/assets/videos/station4.mp4')">钢结构反面焊接</i>
+                        @click="toggleMedia(3, station3)">钢结构反面焊接</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 2 }"
-                        @click="toggleMedia(2, 'src/assets/videos/station3.mp4')">墙板翻转</i>
+                        @click="toggleMedia(2, station2)">墙板翻转</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 1 }"
-                        @click="toggleMedia(1, 'src/assets/videos/station2.mp4')">钢筋组装焊接</i>
+                        @click="toggleMedia(1, station1)">钢筋组装焊接</i>
                     <i class="b" style="flex: 4" :class="{ 'active': activeButtonIndex === 0 }"
-                        @click="toggleMedia(0, 'src/assets/videos/station1.mp4')">钢结构组装焊接</i>
+                        @click="toggleMedia(0, station1)">钢结构组装焊接</i>
 
                 </div>
                 <div v-if="showImage" class="dot animate__animated animate__fadeIn">
-                    <div class="d" style="left: 5%;" @click="toggleMedia(11, 'src/assets/videos/station12.mp4')">
+                    <div class="d" style="left: 5%;" @click="toggleMedia(11, station12)">
                     </div>
-                    <div class="d" style="left: 11%;" @click="toggleMedia(10, 'src/assets/videos/station11.mp4')">
+                    <div class="d" style="left: 11%;" @click="toggleMedia(10, station11)">
                     </div>
-                    <div class="d" style="left: 18%;" @click="toggleMedia(9, 'src/assets/videos/station10.mp4')">
+                    <div class="d" style="left: 18%;" @click="toggleMedia(9, station10)">
                     </div>
-                    <div class="d" style="left: 25%;" @click="toggleMedia(8, 'src/assets/videos/station9.mp4')">
+                    <div class="d" style="left: 25%;" @click="toggleMedia(8, station9)">
                     </div>
-                    <div class="d" style="left: 32%;" @click="toggleMedia(7, 'src/assets/videos/station8.mp4')">
+                    <div class="d" style="left: 32%;" @click="toggleMedia(7, station8)">
                     </div>
-                    <div class="d" style="left: 39%;" @click="toggleMedia(6, 'src/assets/videos/station7.mp4')">
+                    <div class="d" style="left: 39%;" @click="toggleMedia(6, station7)">
                     </div>
-                    <div class="d" style="left: 46%;" @click="toggleMedia(5, 'src/assets/videos/station6.mp4')">
+                    <div class="d" style="left: 46%;" @click="toggleMedia(5, station6)">
                     </div>
-                    <div class="d" style="right: 47%;" @click="toggleMedia(4, 'src/assets/videos/station5.mp4')">
+                    <div class="d" style="right: 47%;" @click="toggleMedia(4, station5)">
                     </div>
-                    <div class="d" style="right: 40%;" @click="toggleMedia(3, 'src/assets/videos/station4.mp4')">
+                    <div class="d" style="right: 40%;" @click="toggleMedia(3, station4)">
                     </div>
-                    <div class="d" style="right: 32%;" @click="toggleMedia(2, 'src/assets/videos/station3.mp4')">
+                    <div class="d" style="right: 32%;" @click="toggleMedia(2, station3)">
                     </div>
-                    <div class="d" style="right: 26%;" @click="toggleMedia(1, 'src/assets/videos/station2.mp4')">
+                    <div class="d" style="right: 26%;" @click="toggleMedia(1, station2)">
                     </div>
-                    <div class="d" style="right: 13%;" @click="toggleMedia(0, 'src/assets/videos/station1.mp4')">
+                    <div class="d" style="right: 13%;" @click="toggleMedia(0, station1)">
                     </div>
                 </div>
                 <!-- <img v-if="showImage" src="../assets/images/全览1.png" style="width: 100%; height: 100%; " class="img"

@@ -7,6 +7,9 @@ import 'video.js/dist/video-js.css';
 import MyCollapse from "@/components/MyCollapse.vue"; // 引入自定义组件MyCollapse
 import { updateVideoInfoAPI, getVideoStreamAPI } from "../apis/video";
 
+import real1 from "../assets/videos/xinggang_real.mp4"
+import real2 from "../assets/videos/fangtong_real.mp4"
+
 const players = [];
 
 onMounted(async () => {
@@ -168,7 +171,7 @@ const handleDefaultStreams = async (defaultIndexCodes) => {
 // 在 state 对象中加入一个标识符
 const state = reactive({
   // currentStreams: Array(4).fill(''),
-  currentStreams: ['src/assets/videos/fangtong_real.mp4', 'src/assets/videos/xinggang_real.mp4'],
+  currentStreams: [real1, real2],
   isDefaultStreamsLoaded: false,  // 添加这个标识符
 });
 
