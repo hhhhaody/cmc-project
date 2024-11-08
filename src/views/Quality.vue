@@ -29,9 +29,26 @@ const getDataFromAPI = () => {
     tableData.value = [
         { name: '墙板', spec: 'CMC03A#01QB01041(102600)+040(F1.1#.8F)', inspectionNo: 'ZJ001(20240926)', receipt: '{"0":"dxf-926","1":"preview-926","2":"excel-926","3":"excel-926"}' },
         // { name: '墙板', spec: 'CMC03A#01QB01041(102600)+040(F1.1#.8F)', inspectionNo: 2, receipt: '{"0":"preview-929","1":"","2":"excel-929","3":"excel-929"}' },
-        { name: '墙板', spec: 'CMC03A#01QB01041(102600)+040(F1.1#.8F)', inspectionNo: 'ZJ001(20241018)', receipt: '{"0":"dxf-1018","1":"preview-1018","2":"excel-1018","3":"excel-1018"}' },]
+        { name: '墙板', spec: 'CMC03A#01QB01FCB02(102600)+040(F1.1#.8F)', inspectionNo: 'ZJ001(20241018)', receipt: '{"0":"dxf-1018","1":"preview-1018","2":"excel-1018","3":"excel-1018"}' },
+        { name: '墙板', spec: 'CMC04E#01QB01HJ01096(180*70*4)+097(2440)+040(F1.1#.8F)', inspectionNo: 'ZJ002(20240926)', receipt: '{"0":"dxf-926","1":"preview-926","2":"excel-926","3":"excel-926"}' },
 
-    total.value = 1
+        { name: '墙板', spec: 'CMC04B#01QB01041(180*30*10*2)+040(F1.1#.8F)', inspectionNo: 'ZJ002(20241018)', receipt: '{"0":"dxf-1018","1":"preview-1018","2":"excel-1018","3":"excel-1018"}' },
+        { name: '墙板', spec: 'CMC03C#01QB01HJ01(2440*460*15)+040(F1.1#.8F)', inspectionNo: 'ZJ001(20241008)', receipt: '{"0":"dxf-1018","1":"preview-1018","2":"excel-1018","3":"excel-1018"}' },
+        { name: '墙板', spec: 'CMC04E#02QB01FCB04097(2760*630*15)+040(F1.1#.8F)', inspectionNo: 'ZJ001(20241010)', receipt: '{"0":"dxf-1018","1":"preview-1018","2":"excel-1018","3":"excel-1018"}' },
+        { name: '墙板', spec: 'CMC03E#01QB01041(102600)+040(F1.1#.8F)', inspectionNo: 'ZJ001(20241012)', receipt: '{"0":"dxf-1018","1":"preview-1018","2":"excel-1018","3":"excel-1018"}' },
+        { name: '墙板', spec: 'CMC04E#01QB01HJ01096(180*70*4)+097(2440)', inspectionNo: 'ZJ001(20241016)', receipt: '{"0":"dxf-926","1":"preview-926","2":"excel-926","3":"excel-926"}' },
+
+        { name: '墙板', spec: 'CMC04E#01QB01HJ01096(180*120*3)+097(366)', inspectionNo: 'ZJ001(20241016)', receipt: '{"0":"dxf-1018","1":"preview-1018","2":"excel-1018","3":"excel-1018"}' },
+        { name: '墙板', spec: 'CMC04A#02QB01FCB07097(2300*180*20)+040(F1.1#.8F)', inspectionNo: 'ZJ001(20241020)', receipt: '{"0":"dxf-1018","1":"preview-1018","2":"excel-1018","3":"excel-1018"}' },
+        { name: '墙板', spec: 'CMC04E#02QB01FCB07097(2760*370*15)+040(F1.1#.8F)', inspectionNo: 'ZJ001(20241021)', receipt: '{"0":"dxf-1018","1":"preview-1018","2":"excel-1018","3":"excel-1018"}' },
+        { name: '墙板', spec: 'CMC03D#01QB01041(102600)+040(F1.1#.8F)', inspectionNo: 'ZJ001(20241021)', receipt: '{"0":"dxf-926","1":"preview-926","2":"excel-926","3":"excel-926"}' },
+
+        { name: '墙板', spec: 'CMC03A#01QB01041(2920*330*15)+040(F1.1#.8F)', inspectionNo: 'ZJ001(20241022)', receipt: '{"0":"dxf-1018","1":"preview-1018","2":"excel-1018","3":"excel-1018"}' },
+        { name: '墙板', spec: 'CMC04D#01QB0FCB07(102600)+040(F1.1#.8F)', inspectionNo: 'ZJ001(20241105)', receipt: '{"0":"dxf-1018","1":"preview-1018","2":"excel-1018","3":"excel-1018"}' },
+        { name: '墙板', spec: 'CMC03B#01QB01FHB01(102600)+040(F1.1#.8F)', inspectionNo: 'ZJ001(20241108)', receipt: '{"0":"dxf-1018","1":"preview-1018","2":"excel-1018","3":"excel-1018"}' },
+    ]
+
+    total.value = 15
     updateSearchSuggestion()
 
 };
