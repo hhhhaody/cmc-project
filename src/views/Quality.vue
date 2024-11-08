@@ -608,20 +608,20 @@ watch(
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="操作人员" prop="operator" :rules="[
-            { required: true, message: '请输入操作人员', trigger: 'blur' },
-            {
-                min: 1, max: 30,
-                message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+                                { required: true, message: '请输入操作人员', trigger: 'blur' },
+                                {
+                                    min: 1, max: 30,
+                                    message: '长度必须在1-30之间', trigger: 'blur'
+                                }]">
                                 <el-input v-model="updateform.operator" autocomplete="off" />
 
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="操作数量" prop="amount" :rules="[
-            { required: true, message: '请输入数量', trigger: 'blur' },
-            { type: 'number', message: '必须是数字', trigger: 'blur' }
-        ]">
+                                { required: true, message: '请输入数量', trigger: 'blur' },
+                                { type: 'number', message: '必须是数字', trigger: 'blur' }
+                            ]">
                                 <el-input v-model.number="updateform.amount" autocomplete="off" />
                             </el-form-item>
                         </el-col>
@@ -634,7 +634,7 @@ watch(
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="生产日期" prop="produceTime" :rules="[
-            { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+                                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
                                 <el-date-picker v-if="updateform.operation === '入库'" v-model="updateform.produceTime"
                                     type="datetime" placeholder="选择生产日期" value-format="YYYY-MM-DDTHH:mm:ss"
                                     :disabled-date="disabledDate" />
@@ -644,11 +644,11 @@ watch(
                         </el-col>
                     </el-row>
                     <el-form-item label="情况说明" prop="detail" :rules="[
-            { required: true, message: '请填写情况说明', trigger: 'blur' }]">
+                        { required: true, message: '请填写情况说明', trigger: 'blur' }]">
                         <el-input v-model="updateform.detail" autocomplete="off" placeholder="请填写情况说明" />
                     </el-form-item>
                     <el-form-item label="操作凭证" prop="receipt" :rules="[
-            { required: true, message: '请上传操作凭证', trigger: 'blur' }]">
+                        { required: true, message: '请上传操作凭证', trigger: 'blur' }]">
                         <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage
                             :uploaded="uploaded" :limit="3" />
                     </el-form-item>

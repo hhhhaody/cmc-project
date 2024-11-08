@@ -191,27 +191,27 @@ watch(showAllSpans, (newValue) => {
                 :class="isFadingOut ? 'animate__fadeOut' : 'animate__fadeIn'">
                 <div class="button">
                     <i class="b" style="flex: 1.2" :class="{ 'active': activeButtonIndex === 11 }"
-                        @click="toggleMedia(11, station11)">墙板补钉及吊装下料</i>
+                        @click="toggleMedia(11, station12)">墙板补钉及吊装下料</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 10 }"
-                        @click="toggleMedia(10, station10)">自动尺寸检测</i>
+                        @click="toggleMedia(10, station11)">自动尺寸检测</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 9 }"
-                        @click="toggleMedia(9, station9)">水泥板打钉</i>
+                        @click="toggleMedia(9, station10)">水泥板打钉</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 8 }"
-                        @click="toggleMedia(8, station8)">水泥板铺装</i>
+                        @click="toggleMedia(8, station9)">水泥板铺装</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 7 }"
-                        @click="toggleMedia(7, station7)">墙板翻转机</i>
+                        @click="toggleMedia(7, station8)">墙板翻转机</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 6 }"
-                        @click="toggleMedia(6, station6)">水泥板人工补钉</i>
+                        @click="toggleMedia(6, station7)">水泥板人工补钉</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 5 }"
-                        @click="toggleMedia(5, station5)">水泥板打钉</i>
+                        @click="toggleMedia(5, station6)">水泥板打钉</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 4 }"
-                        @click="toggleMedia(4, station4)">水泥板铺装</i>
+                        @click="toggleMedia(4, station5)">水泥板铺装</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 3 }"
-                        @click="toggleMedia(3, station3)">钢结构反面焊接</i>
+                        @click="toggleMedia(3, station4)">钢结构反面焊接</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 2 }"
-                        @click="toggleMedia(2, station2)">墙板翻转</i>
+                        @click="toggleMedia(2, station3)">墙板翻转</i>
                     <i class="b" style="flex: 1" :class="{ 'active': activeButtonIndex === 1 }"
-                        @click="toggleMedia(1, station1)">钢筋组装焊接</i>
+                        @click="toggleMedia(1, station2)">钢筋组装焊接</i>
                     <i class="b" style="flex: 4" :class="{ 'active': activeButtonIndex === 0 }"
                         @click="toggleMedia(0, station1)">钢结构组装焊接</i>
 

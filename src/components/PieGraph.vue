@@ -132,7 +132,7 @@ onMounted(() => {
         });
         // console.log(datas); //打印结果见下图
         if (name === "none") {
-          return "{0|设备总数}   " + " {1|" + totalNum + "}";
+          return "{0|工位总数}   " + " {1|" + totalNum + "}";
         } else {
           return (
             "{0|" + name + "}  " + "{1|" + data.value[index].value + "}"

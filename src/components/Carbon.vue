@@ -3,18 +3,18 @@
         <div class="top" style="
     height: 12vh;">
             <div style="margin-bottom: 1vh;">碳排放总量</div>
-            <div> <i class="number">3500</i> tCO2</div>
+            <div> <i class="number">18167.9</i> tCO2</div>
         </div>
         <el-divider />
         <div class="bottom">
             <div class="top">
                 <div style="margin-bottom: 1vh;">用电碳排放量</div>
-                <div> <i class="number">0.66</i> tCO2/MWH</div>
+                <div> <i class="number">18136</i> tCO2/MWH</div>
             </div>
             <div>
 
                 <div style="margin-bottom: 1vh;">用气碳排放量</div>
-                <div> <i class="number">0.32</i> 单位</div>
+                <div> <i class="number">31.9</i> 单位</div>
             </div>
         </div>
     </div>
