@@ -77,3 +77,16 @@ export const getMsgAPI = (date) => {
         }
     })
 }
+
+export const getMaterialInspectionAPI = (page, pageSize, name, dateStart, dateEnd) => {
+    return httpInstance({
+        url: '/data/materialInspection',
+        params: {
+            page,
+            pageSize,
+            name,
+            dateStart,
+            dateEnd
+        }
+    })
+}

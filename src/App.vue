@@ -221,9 +221,9 @@ const backScreenVideo = (value) => {
             <el-dropdown-item>
               <RouterLink to="/quality" @click="hide">质量管理</RouterLink>
             </el-dropdown-item>
-            <!-- <el-dropdown-item>
+            <el-dropdown-item>
               <RouterLink to="/materialQuality" @click="hide">来料检测</RouterLink>
-            </el-dropdown-item> -->
+            </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>

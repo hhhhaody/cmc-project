@@ -9,7 +9,7 @@ import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
 import UploadImage from "../components/UploadImage.vue";
 import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, getByIdAPI, addMaterialOperationAPI, getByBatchAPI } from "../apis/material";
-import { getMaterialQualityAPI } from "../apis/materialQuality";
+import { getMaterialInspectionAPI } from "../apis/data";
 import ExportButton from "@/components/ExportButton.vue";
 import { useUserStore } from '../stores/store.js';
 const userStore = useUserStore();
@@ -19,7 +19,7 @@ const userStore = useUserStore();
 const tableData = reactive([]);
 const total = ref(0)
 const getDataFromAPI = async () => {
-    const res = await getMaterialQualityAPI(currentPage.value, pageSize.value, name.value, spec.value);
+    const res = await getMaterialInspectionAPI(currentPage.value, pageSize.value, name.value, time.value[0], time.value[1]);
     // console.log(res.data);
     tableData.value = res.data.data;
     total.value = res.data.total
@@ -57,6 +57,7 @@ const search1 = ref();
 const search2 = ref();
 const name = ref("")
 const spec = ref("")
+const time = ref("")
 const searchForm = reactive({
     name, spec
 })
@@ -392,6 +393,35 @@ const uploadImage = (uidToFileNameMap) => {
     confirmImage.value = false
 }
 //#endregion
+
+//图片详情相关
+//#region
+
+const dialogVisible = ref(false);
+const currentIndex = ref(0);
+const imageUrls = ref([]);
+
+const detail = (receipt) => {
+    const receiptMap = JSON.parse(receipt.replace(/'/g, '"'));
+    console.log(receiptMap);
+
+    imageUrls.value = Object.values(receiptMap).map(url => ("https://cmc.eos-chengdu-1.cmecloud.cn/receipt/" + url));
+    currentIndex.value = 0;
+    dialogVisible.value = true;
+}
+
+const prevImage = () => {
+    if (currentIndex.value > 0) {
+        currentIndex.value--;
+    }
+}
+
+const nextImage = () => {
+    if (currentIndex.value < imageUrls.value.length - 1) {
+        currentIndex.value++;
+    }
+}
+//#endregion
 </script>
 
 <template>
@@ -408,8 +438,13 @@ const uploadImage = (uidToFileNameMap) => {
                 <div>
                     <SearchComponent :key="renderKey" search-title="物料名称" :searchContent=name ref="search1" field="name"
                         @search="search" @edit="edit" :data="searchForm" />
-                    <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=spec ref="search2" field="spec"
-                        @search="search" @edit="edit" :data="searchForm" />
+
+                    <div style="display: inline-block; position: relative; padding-right: 1vh;">时间：
+                        <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期"
+                            end-placeholder="结束日期" :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
+                    </div>
+                    <!-- <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=spec ref="search2" field="spec"
+                        @search="search" @edit="edit" :data="searchForm" /> -->
                     <el-button type="primary" style="margin-left: 10px; width: 7%" @click="update">
                         <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
                     </el-button>
@@ -457,11 +492,11 @@ const uploadImage = (uidToFileNameMap) => {
                 <DialogComponent ref="addDialog" :form="addform" dialog-title="检测结果记录" :refreshFunc="getDataFromAPI"
                     :confirm-func="addMaterialAPIxx" @dialogClose="dialogClose">
                     <el-form-item label="物料名称" prop="name" :rules="[
-            { required: true, message: '请输入物料名称', trigger: 'blur' },
-            {
-                min: 1, max: 30,
-                message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+                        { required: true, message: '请输入物料名称', trigger: 'blur' },
+                        {
+                            min: 1, max: 30,
+                            message: '长度必须在1-30之间', trigger: 'blur'
+                        }]">
                         <el-radio-group v-model="addform.name" size="medium">
                             <el-radio-button label="柱芯连接板" value="New York" />
                             <el-radio-button label="柱尾加强板" value="Washington" />
@@ -472,11 +507,11 @@ const uploadImage = (uidToFileNameMap) => {
                         <!-- <el-input v-model="addform.name" autocomplete="off" placeholder="请输入物料名称" /> -->
                     </el-form-item>
                     <el-form-item label="规格型号" prop="spec" :rules="[
-            { required: true, message: '请输入规格型号', trigger: 'blur' },
-            {
-                min: 1, max: 30,
-                message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+                        { required: true, message: '请输入规格型号', trigger: 'blur' },
+                        {
+                            min: 1, max: 30,
+                            message: '长度必须在1-30之间', trigger: 'blur'
+                        }]">
                         <el-radio-group v-model="addform.spec" size="medium">
                             <el-radio-button label="360*180*8mm" value="New York" />
                             <el-radio-button label="450*200*8mm" value="Washington" />
@@ -488,9 +523,9 @@ const uploadImage = (uidToFileNameMap) => {
 
 
                             <el-form-item prop="threshold" :rules="[
-            { required: true, message: '请输入阈值', trigger: 'blur' },
-            { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-        ]">
+                                { required: true, message: '请输入阈值', trigger: 'blur' },
+                                { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
+                            ]">
                                 <template v-slot:label>
                                     <span>
                                         外表面
@@ -513,9 +548,9 @@ const uploadImage = (uidToFileNameMap) => {
                         <el-col :span="8">
 
                             <el-form-item prop="threshold" :rules="[
-            { required: true, message: '请输入阈值', trigger: 'blur' },
-            { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-        ]">
+                                { required: true, message: '请输入阈值', trigger: 'blur' },
+                                { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
+                            ]">
                                 <template v-slot:label>
                                     <span>
                                         切面
@@ -537,9 +572,9 @@ const uploadImage = (uidToFileNameMap) => {
                         <el-col :span="8">
 
                             <el-form-item label="平整度(mm)" prop="threshold" :rules="[
-            { required: true, message: '请输入阈值', trigger: 'blur' },
-            { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-        ]">
+                                { required: true, message: '请输入阈值', trigger: 'blur' },
+                                { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
+                            ]">
                                 <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入平整度值" />
                             </el-form-item>
                         </el-col>
@@ -548,36 +583,36 @@ const uploadImage = (uidToFileNameMap) => {
                         <el-col :span="8">
 
                             <el-form-item label="长(mm)" prop="threshold" :rules="[
-            { required: true, message: '请输入阈值', trigger: 'blur' },
-            { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-        ]">
+                                { required: true, message: '请输入阈值', trigger: 'blur' },
+                                { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
+                            ]">
                                 <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入长度值" />
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">
 
                             <el-form-item label="宽(mm)" prop="threshold" :rules="[
-            { required: true, message: '请输入阈值', trigger: 'blur' },
-            { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-        ]">
+                                { required: true, message: '请输入阈值', trigger: 'blur' },
+                                { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
+                            ]">
                                 <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入宽度值" />
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">
 
                             <el-form-item label="厚(mm)" prop="threshold" :rules="[
-            { required: true, message: '请输入阈值', trigger: 'blur' },
-            { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-        ]">
+                                { required: true, message: '请输入阈值', trigger: 'blur' },
+                                { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
+                            ]">
                                 <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入厚度值" />
                             </el-form-item>
                         </el-col>
 
                     </el-row>
                     <el-form-item prop="threshold" :rules="[
-            { required: true, message: '请输入阈值', trigger: 'blur' },
-            { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-        ]">
+                        { required: true, message: '请输入阈值', trigger: 'blur' },
+                        { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
+                    ]">
                         <template v-slot:label>
                             <span>
                                 除锈等级
@@ -604,25 +639,25 @@ const uploadImage = (uidToFileNameMap) => {
                         <el-input disabled v-model.number="updateform.id" autocomplete="off" />
                     </el-form-item>
                     <el-form-item label="物料名称" prop="name" :rules="[
-            { required: true, message: '请输入物料名称', trigger: 'blur' },
-            {
-                min: 1, max: 30,
-                message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+                        { required: true, message: '请输入物料名称', trigger: 'blur' },
+                        {
+                            min: 1, max: 30,
+                            message: '长度必须在1-30之间', trigger: 'blur'
+                        }]">
                         <el-input v-model="updateform.name" autocomplete="off" />
                     </el-form-item>
                     <el-form-item label="规格型号" prop="spec" :rules="[
-            { required: true, message: '请输入规格型号', trigger: 'blur' },
-            {
-                min: 1, max: 30,
-                message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+                        { required: true, message: '请输入规格型号', trigger: 'blur' },
+                        {
+                            min: 1, max: 30,
+                            message: '长度必须在1-30之间', trigger: 'blur'
+                        }]">
                         <el-input v-model="updateform.spec" autocomplete="off" />
                     </el-form-item>
                     <el-form-item label="低库存阈值" prop="threshold" :rules="[
-            { required: true, message: '请输入阈值', trigger: 'blur' },
-            { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-        ]">
+                        { required: true, message: '请输入阈值', trigger: 'blur' },
+                        { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
+                    ]">
                         <el-input v-model.number="updateform.threshold" autocomplete="off" />
                     </el-form-item>
                 </DialogComponent>
@@ -633,7 +668,7 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="物料名称" prop="name" :rules="[
-            { required: true, message: '请选择物料名称', trigger: 'blur' }]">
+                                { required: true, message: '请选择物料名称', trigger: 'blur' }]">
                                 <DialogSearch :key="renderKey" :wNo="100" search-title="物料名称"
                                     :searchContent=stockform.name field="name" @search="dialogSearchSuggestion"
                                     :data="stockform" />
@@ -641,7 +676,7 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="规格型号" prop="spec" :rules="[
-            { required: true, message: '请选择规格型号', trigger: 'blur' }]">
+                                { required: true, message: '请选择规格型号', trigger: 'blur' }]">
                                 <DialogSearch :key="renderKey" :wNo="100" search-title="规格型号"
                                     :searchContent=stockform.spec field="spec" @search="dialogSearchSuggestion"
                                     :data="stockform" />
@@ -649,11 +684,11 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                     </el-row>
                     <el-form-item label="供料单位" prop="supplier" :rules="[
-            { required: true, message: '请输入供料单位', trigger: 'blur' },
-            {
-                min: 1, max: 30,
-                message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+                        { required: true, message: '请输入供料单位', trigger: 'blur' },
+                        {
+                            min: 1, max: 30,
+                            message: '长度必须在1-30之间', trigger: 'blur'
+                        }]">
                         <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="供料单位"
                             :searchContent=stockform.supplier field="supplier" @search="search"
                             database="materials/operation" />
@@ -661,11 +696,11 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="入库人员" prop="operator" :rules="[
-            { required: true, message: '请输入操作人员', trigger: 'blur' },
-            {
-                min: 1, max: 30,
-                message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+                                { required: true, message: '请输入操作人员', trigger: 'blur' },
+                                {
+                                    min: 1, max: 30,
+                                    message: '长度必须在1-30之间', trigger: 'blur'
+                                }]">
                                 <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="入库人员"
                                     :searchContent=stockform.operator field="operator" @search="search"
                                     database="materials/operation" />
@@ -673,9 +708,9 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="入库数量" prop="amount" :rules="[
-            { required: true, message: '请输入数量', trigger: 'blur' },
-            { type: 'number', message: '必须是数字', trigger: 'blur' }
-        ]">
+                                { required: true, message: '请输入数量', trigger: 'blur' },
+                                { type: 'number', message: '必须是数字', trigger: 'blur' }
+                            ]">
                                 <el-input v-model.number="stockform.amount" autocomplete="off" />
                             </el-form-item>
                         </el-col>
@@ -683,21 +718,21 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="入库日期" prop="operateTime" :rules="[
-            { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+                                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
                                 <el-date-picker v-model="stockform.operateTime" type="datetime" placeholder="选择入库日期"
                                     value-format="YYYY-MM-DDTHH:mm:ss" />
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="供料日期" prop="supplyTime" :rules="[
-            { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+                                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
                                 <el-date-picker v-model="stockform.supplyTime" type="datetime" placeholder="选择供料日期"
                                     value-format="YYYY-MM-DDTHH:mm:ss" :disabled-date="disabledDate" />
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-form-item label="入库凭证" prop="receipt" :rules="[
-            { required: true, message: '请上传入库凭证', trigger: 'blur' }]">
+                        { required: true, message: '请上传入库凭证', trigger: 'blur' }]">
                         <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage :limit="3" />
                     </el-form-item>
                 </DialogComponent>
@@ -723,7 +758,7 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                     </el-row>
                     <el-form-item label="物料批次" prop="batch" :rules="[
-            { required: true, message: '请选择物料批次', trigger: 'blur' }]">
+                        { required: true, message: '请选择物料批次', trigger: 'blur' }]">
                         <DialogSearch :key="renderKey" :wNo="100" search-title="物料批次" :searchContent=stockform.batch
                             field="batch" @search="dialogSearchSuggestion" :data="stockform"
                             database="materials/operation" />
@@ -734,11 +769,11 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="出库人员" prop="operator" :rules="[
-            { required: true, message: '请输入操作人员', trigger: 'blur' },
-            {
-                min: 1, max: 30,
-                message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+                                { required: true, message: '请输入操作人员', trigger: 'blur' },
+                                {
+                                    min: 1, max: 30,
+                                    message: '长度必须在1-30之间', trigger: 'blur'
+                                }]">
                                 <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="出库人员"
                                     :searchContent=stockform.operator field="operator" @search="search"
                                     database="materials/operation" />
@@ -746,10 +781,10 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="出库数量" prop="amount" :rules="[
-            { required: true, message: '请输入数量', trigger: 'blur' },
-            { type: 'number', message: '必须是数字', trigger: 'blur' },
-            { validator: checkNumber, trigger: 'blur' }
-        ]">
+                                { required: true, message: '请输入数量', trigger: 'blur' },
+                                { type: 'number', message: '必须是数字', trigger: 'blur' },
+                                { validator: checkNumber, trigger: 'blur' }
+                            ]">
                                 <el-input v-model.number="stockform.amount" autocomplete="off" :placeholder="remains" />
                             </el-form-item>
                         </el-col>
@@ -757,7 +792,7 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="出库日期" prop="operateTime" :rules="[
-            { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+                                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
                                 <el-date-picker v-model="stockform.operateTime" type="datetime" placeholder="选择出库日期"
                                     value-format="YYYY-MM-DDTHH:mm:ss" />
                             </el-form-item>
@@ -769,7 +804,7 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                     </el-row>
                     <el-form-item label="出库凭证" prop="receipt" :rules="[
-            { required: true, message: '请上传出库凭证', trigger: 'blur' }]">
+                        { required: true, message: '请上传出库凭证', trigger: 'blur' }]">
                         <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage :limit="3" />
                     </el-form-item>
                 </DialogComponent>
@@ -795,7 +830,7 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                     </el-row>
                     <el-form-item label="物料批次" prop="batch" :rules="[
-            { required: true, message: '请选择物料批次', trigger: 'blur' }]">
+                        { required: true, message: '请选择物料批次', trigger: 'blur' }]">
                         <DialogSearch :key="renderKey" :wNo="100" search-title="物料批次" :searchContent=stockform.batch
                             field="batch" @search="dialogSearchSuggestion" :data="stockform"
                             database="materials/operation" />
@@ -806,11 +841,11 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="转库人员" prop="operator" :rules="[
-            { required: true, message: '请输入操作人员', trigger: 'blur' },
-            {
-                min: 1, max: 30,
-                message: '长度必须在1-30之间', trigger: 'blur'
-            }]">
+                                { required: true, message: '请输入操作人员', trigger: 'blur' },
+                                {
+                                    min: 1, max: 30,
+                                    message: '长度必须在1-30之间', trigger: 'blur'
+                                }]">
                                 <SearchComponent :hide-title=true :wNo="100" :key="renderKey" search-title="转库人员"
                                     :searchContent=stockform.operator field="operator" @search="search"
                                     database="materials/operation" />
@@ -818,10 +853,10 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="转库数量" prop="amount" :rules="[
-            { required: true, message: '请输入数量', trigger: 'blur' },
-            { type: 'number', message: '必须是数字', trigger: 'blur' },
-            { validator: checkNumber, trigger: 'blur' }
-        ]">
+                                { required: true, message: '请输入数量', trigger: 'blur' },
+                                { type: 'number', message: '必须是数字', trigger: 'blur' },
+                                { validator: checkNumber, trigger: 'blur' }
+                            ]">
                                 <el-input v-model.number="stockform.amount" autocomplete="off" :placeholder="remains" />
                             </el-form-item>
                         </el-col>
@@ -829,7 +864,7 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="转库日期" prop="operateTime" :rules="[
-            { required: true, message: '请输入供料日期', trigger: 'blur' }]">
+                                { required: true, message: '请输入供料日期', trigger: 'blur' }]">
                                 <el-date-picker v-model="stockform.operateTime" type="datetime" placeholder="选择转库日期"
                                     value-format="YYYY-MM-DDTHH:mm:ss" />
                             </el-form-item>
@@ -841,7 +876,7 @@ const uploadImage = (uidToFileNameMap) => {
                         </el-col>
                     </el-row>
                     <el-form-item label="转库凭证" prop="receipt" :rules="[
-            { required: true, message: '请上传转库凭证', trigger: 'blur' }]">
+                        { required: true, message: '请上传转库凭证', trigger: 'blur' }]">
                         <UploadImage @uploadImage="uploadImage" :dialog=dialog :confirmImage=confirmImage :limit="3" />
                     </el-form-item>
                 </DialogComponent>
@@ -854,7 +889,7 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-table-column type="selection" align="center" />
                     <el-table-column label="序号" type="index" align="center" min-width="70vh" />
                     <el-table-column prop="name" label="物料名称" align="center" />
-                    <el-table-column prop="spec" label="规格型号" align="center" />
+                    <!-- <el-table-column prop="spec" label="规格型号" align="center" />
                     <el-table-column prop="batch" label="批次号" align="center" />
                     <el-table-column prop="surface" label="外表面" align="center" />
                     <el-table-column prop="cutFace" label="切面" align="center" />
@@ -865,8 +900,20 @@ const uploadImage = (uidToFileNameMap) => {
                     <el-table-column prop="derust" label="除锈等级" align="center" />
                     <el-table-column prop="rAngle" label="R角" align="center" />
                     <el-table-column prop="crossSection" label="截面尺寸" align="center" />
-                    <el-table-column prop="inspector" label="检测人" align="center" />
-                    <!-- <el-table-column prop="inspectionTime" label="检测时间" align="center" /> -->
+                    <el-table-column prop="inspector" label="检测人" align="center" /> -->
+                    <el-table-column prop="updateTime" label="检测时间" align="center" min-width="120vh">
+                        <template #default="scope">
+                            {{ scope.row.updateTime.substring(0, 10) }} {{ scope.row.updateTime.substring(11,) }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="result" label="凭证" align="center" min-width="40vh">
+
+                        <template #default="scope">
+                            <el-button class="inline_button" @click="detail(scope.row.result)">
+                                详情
+                            </el-button>
+                        </template>
+                    </el-table-column>
                     <!-- <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="操作" align="center">
                         <template #default="scope">
                             <el-button class="inline_button"
@@ -887,6 +934,16 @@ const uploadImage = (uidToFileNameMap) => {
             </el-footer>
         </el-container>
     </dv-border-box1>
+    <!-- 图片详情弹框 -->
+    <el-dialog v-model="dialogVisible" style="width: fit-content;border-radius: 1vh;">
+        <ArrowLeft @click="prevImage" v-if="currentIndex > 0" style="width: 5vh; height: 5vh" class="prev-button" />
+        <canvas v-if="pdf" v-for="pageIndex in pdfPages" :id="`pdf-canvas-` + pageIndex" :key="pageIndex"
+            style="display: block;"></canvas>
+        <img v-else w-full :src="imageUrls[currentIndex]" alt="无图片" class="image" />
+        <ArrowRight @click="nextImage" v-if="currentIndex < imageUrls.length - 1" style="width: 5vh; height: 5vh"
+            class="next-button" />
+
+    </el-dialog>
 </template>
 
 <style scoped>
@@ -928,5 +985,37 @@ const uploadImage = (uidToFileNameMap) => {
 
 :deep .el-overlay {
     background-color: rgba(37, 54, 83, 0.498);
+}
+
+
+.image-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prev-button {
+    position: absolute;
+    left: 20px;
+    /* Adjust the left position as needed */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    color: white
+}
+
+.next-button {
+    position: absolute;
+    right: 20px;
+    /* Adjust the right position as needed */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    color: white
+}
+
+.image {
+    max-width: 100%;
+    max-height: 60vh;
 }
 </style>
