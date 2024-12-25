@@ -84,7 +84,7 @@ export default {
   mounted() {
     this.getData(this.station);
     // 每隔一段时间获取数据
-    this.startTimer();
+    // this.startTimer();
   },
   // 组件销毁时停止定时器
   beforeUnmount() {

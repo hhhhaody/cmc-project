@@ -6,10 +6,10 @@ import RadarGraph from "../components/RadarGraph.vue";
 import UsageRecord from "../components/UsageRecord.vue";
 import Carbon from "../components/Carbon.vue";
 // import GaugeGraph from "../components/GaugeGraph.vue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRouter } from 'vue-router';
 
-const stations = ref(["型钢切割工作站", "地面钢网工作站", "方通组焊工作站", "模块总装工作站"]);
+const stations = ref(["方通组焊工作站", "模块总装工作站", "型钢切割工作站", "地面钢网工作站",]);
 const radar = ref(stations.value[2]); //耗时统计图形组件
 const bar = ref(stations.value[2]); //产品生产情况图形组件
 const usage = ref(stations.value[2]); //原材料使用情况图形组件
@@ -28,6 +28,10 @@ const navigate = (routeName) => {
 
 // console.log(stations.value[0]);
 // radar.value = "station1";
+
+const props = defineProps({
+  sectionIndex: Number
+});
 
 const changeAllStation = (val) => {
   changeStation(1, val)
@@ -65,6 +69,16 @@ const changeStation = (type, val) => {
   }
 };
 
+watch(() => props.sectionIndex, (newValue) => {
+  console.log(newValue);
+  changeAllStation(stations.value[newValue]);
+});
+
+
+changeAllStation(stations.value[props.sectionIndex]);
+
+console.log(props.sectionIndex);
+
 </script>
 
 <template>
@@ -90,10 +104,10 @@ const changeStation = (type, val) => {
           <span class="el-dropdown-link" style="font-size: 15px; font-weight: 500;"> {{ line }} </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="changeStation(4, stations[0])">型钢切割工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(4, stations[1])">地面钢网工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(4, stations[2])">方通组焊工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(4, stations[3])">模块总装工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(4, stations[0])">方通组焊工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(4, stations[1])">模块总装工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(4, stations[2])">型钢切割工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(4, stations[3])">地面钢网工作站</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -113,10 +127,10 @@ const changeStation = (type, val) => {
 
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="changeStation(2, stations[0])">型钢切割工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(2, stations[1])">地面钢网工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(2, stations[2])">方通组焊工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(2, stations[3])">模块总装工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(2, stations[0])">方通组焊工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(2, stations[1])">模块总装工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(2, stations[2])">型钢切割工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(2, stations[3])">地面钢网工作站</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -134,10 +148,10 @@ const changeStation = (type, val) => {
 
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="changeStation(2, stations[0])">型钢切割工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(2, stations[1])">地面钢网工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(2, stations[2])">方通组焊工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(2, stations[3])">模块总装工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(2, stations[0])">方通组焊工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(2, stations[1])">模块总装工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(2, stations[2])">型钢切割工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(2, stations[3])">地面钢网工作站</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -149,7 +163,7 @@ const changeStation = (type, val) => {
     <span class="g2 animate__animated animate__fadeInRight grey">
       <p style="position: absolute;top: -65px;right:10vh">
 
-        <el-dropdown>
+        <!-- <el-dropdown>
           <span style="font-size: 15px; font-weight: 500;">
             <Switch style="width: 2vh; height: 2vh; color:white" />
           </span>
@@ -162,7 +176,7 @@ const changeStation = (type, val) => {
               <el-dropdown-item @click="changeAllStation(stations[3])">模块总装工作站</el-dropdown-item>
             </el-dropdown-menu>
           </template>
-        </el-dropdown>
+        </el-dropdown> -->
       </p>
 
       <i>
@@ -172,10 +186,10 @@ const changeStation = (type, val) => {
 
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="changeStation(1, stations[0])">型钢切割工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(1, stations[1])">地面钢网工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(1, stations[2])">方通组焊工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(1, stations[3])">模块总装工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(1, stations[0])">方通组焊工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(1, stations[1])">模块总装工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(1, stations[2])">型钢切割工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(1, stations[3])">地面钢网工作站</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -193,10 +207,10 @@ const changeStation = (type, val) => {
 
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="changeStation(3, stations[0])">型钢切割工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(3, stations[1])">地面钢网工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(3, stations[2])">方通组焊工作站</el-dropdown-item>
-              <el-dropdown-item @click="changeStation(3, stations[3])">模块总装工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(3, stations[0])">方通组焊工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(3, stations[1])">模块总装工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(3, stations[2])">型钢切割工作站</el-dropdown-item>
+              <el-dropdown-item @click="changeStation(3, stations[3])">地面钢网工作站</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>

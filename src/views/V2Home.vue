@@ -142,6 +142,7 @@ watch(showAllSpans, (newValue) => {
     emit('backScreenVideo', newValue);
 });
 
+
 </script>
 
 <template>
@@ -393,7 +394,7 @@ i {
     width: 99%;
     overflow: hidden;
     z-index: 1;
-    top: 15%;
+    top: 10%;
 }
 
 .dot {

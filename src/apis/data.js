@@ -34,6 +34,16 @@ export const getProductAmountAPI = (section) => {
     })
 }
 
+export const getProductInventoryAmountAPI = (section) => {
+    return httpInstance({
+        url: 'data/productInInventory',
+        method: 'get',
+        params: {
+            section
+        }
+    })
+}
+
 export const getEnergyAPI = (section, date) => {
     return httpInstance({
         url: 'data/energy',

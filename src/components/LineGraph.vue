@@ -67,13 +67,7 @@ const getDataFromAPI = async () => {
   // console.log(res.data);
   let res
 
-  if (props.station === '墙板生产线') {
-    // console.log(new Date().toISOString().slice(0, 10));
-
-    res = await getEnergyAPI('方通组焊工作站', new Date().toISOString().slice(0, 10));
-
-  }
-  else if (props.station === '总装工作站') {
+  if (props.station === '总装工作站') {
     res = await getEnergyAPI('方通组焊工作站', new Date().toISOString().slice(0, 10));
 
   }

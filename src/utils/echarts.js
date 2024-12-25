@@ -10,7 +10,8 @@ import {
     DatasetComponent,
     TransformComponent,
     LegendComponent,
-    VisualMapComponent
+    VisualMapComponent,
+    GraphicComponent
 } from 'echarts/components';
 // 标签自动布局，全局过渡动画等特性
 import { LabelLayout, UniversalTransition } from 'echarts/features';
@@ -30,6 +31,7 @@ echarts.use([
     VisualMapComponent,
     LabelLayout,
     UniversalTransition,
+    GraphicComponent,
     CanvasRenderer,
     BarChart,
     PieChart,

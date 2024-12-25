@@ -24,7 +24,7 @@ import station11 from "../assets/videos/station11.mp4"
 import station12 from "../assets/videos/station12.mp4"
 
 
-const stations = ref(["墙板生产线", "总装工作站"]);
+const stations = ref(["总装工作站", "墙板生产线"]);
 const radar = ref(stations.value[0]); //耗时统计图形组件
 const bar = ref(stations.value[0]); //产品生产情况图形组件
 const usage = ref(stations.value[0]); //原材料使用情况图形组件
@@ -81,7 +81,8 @@ const changeStation = (type, val) => {
 };
 
 const props = defineProps({
-    wall: Boolean // 声明 wall 为一个布尔类型的 props
+    wall: Boolean, // 声明 wall 为一个布尔类型的 props
+    sectionIndex: Number
 });
 
 
@@ -196,6 +197,39 @@ const toggleZoom = () => {
 watch(showAllSpans, (newValue) => {
     emit('backScreenVideo', newValue);
 });
+
+
+watch(() => props.sectionIndex, (newValue) => {
+    console.log(newValue);
+
+    if (newValue == 0) {
+        changeAllStation(stations.value[0]);
+        // console.log(newValue);
+
+    }
+    if (newValue == 1) {
+        changeAllStation(stations.value[1]);
+        // console.log(newValue);
+
+    }
+    if (newValue == 2) {
+        changeAllStation(stations.value[1]);
+        // console.log(newValue);
+
+    }
+});
+
+if (props.sectionIndex != 2) {
+
+    changeAllStation(stations.value[props.sectionIndex])
+}
+else {
+    changeAllStation(stations.value[1])
+
+}
+
+console.log(props.sectionIndex);
+
 </script>
 
 <template>
@@ -223,8 +257,8 @@ watch(showAllSpans, (newValue) => {
                     <span class="el-dropdown-link" style="font-size: 15px; font-weight: 500;"> {{ line }} </span>
                     <template #dropdown>
                         <el-dropdown-menu>
-                            <el-dropdown-item @click="changeStation(4, stations[0])">墙板生产线</el-dropdown-item>
-                            <el-dropdown-item @click="changeStation(4, stations[1])">总装工作站</el-dropdown-item>
+                            <el-dropdown-item @click="changeStation(4, stations[0])">总装工作站</el-dropdown-item>
+                            <el-dropdown-item @click="changeStation(4, stations[1])">墙板生产线</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
@@ -245,8 +279,8 @@ watch(showAllSpans, (newValue) => {
 
                     <template #dropdown>
                         <el-dropdown-menu>
-                            <el-dropdown-item @click="changeStation(2, stations[0])">墙板生产线</el-dropdown-item>
-                            <el-dropdown-item @click="changeStation(2, stations[1])">总装工作站</el-dropdown-item>
+                            <el-dropdown-item @click="changeStation(2, stations[0])">总装工作站</el-dropdown-item>
+                            <el-dropdown-item @click="changeStation(2, stations[1])">墙板生产线</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
@@ -265,8 +299,8 @@ watch(showAllSpans, (newValue) => {
 
                     <template #dropdown>
                         <el-dropdown-menu>
-                            <el-dropdown-item @click="changeStation(2, stations[0])">墙板生产线</el-dropdown-item>
-                            <el-dropdown-item @click="changeStation(2, stations[1])">总装工作站</el-dropdown-item>
+                            <el-dropdown-item @click="changeStation(2, stations[0])">总装工作站</el-dropdown-item>
+                            <el-dropdown-item @click="changeStation(2, stations[1])">墙板生产线</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
@@ -279,7 +313,7 @@ watch(showAllSpans, (newValue) => {
             :class="['g2', 'grey', isFadingOut ? 'animate__fadeOutRight' : 'animate__fadeInRight']">
             <p style="position: absolute;top: -65px;right:10vh">
 
-                <el-dropdown>
+                <!-- <el-dropdown>
                     <span style="font-size: 15px; font-weight: 500;">
                         <Switch style="width: 2vh; height: 2vh; color:white" />
                     </span>
@@ -290,7 +324,7 @@ watch(showAllSpans, (newValue) => {
                             <el-dropdown-item @click="changeAllStation(stations[1])">总装工作站</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
-                </el-dropdown>
+                </el-dropdown> -->
             </p>
 
             <i>
@@ -300,8 +334,8 @@ watch(showAllSpans, (newValue) => {
 
                     <template #dropdown>
                         <el-dropdown-menu>
-                            <el-dropdown-item @click="changeStation(1, stations[0])">墙板生产线</el-dropdown-item>
-                            <el-dropdown-item @click="changeStation(1, stations[1])">总装工作站</el-dropdown-item>
+                            <el-dropdown-item @click="changeStation(1, stations[0])">总装工作站</el-dropdown-item>
+                            <el-dropdown-item @click="changeStation(1, stations[1])">墙板生产线</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
@@ -320,8 +354,8 @@ watch(showAllSpans, (newValue) => {
 
                     <template #dropdown>
                         <el-dropdown-menu>
-                            <el-dropdown-item @click="changeStation(3, stations[0])">墙板生产线</el-dropdown-item>
-                            <el-dropdown-item @click="changeStation(3, stations[1])">总装工作站</el-dropdown-item>
+                            <el-dropdown-item @click="changeStation(3, stations[0])">总装工作站</el-dropdown-item>
+                            <el-dropdown-item @click="changeStation(3, stations[1])">墙板生产线</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
@@ -617,7 +651,7 @@ i {
     width: 99%;
     overflow: hidden;
     z-index: 1;
-    top: 15%;
+    top: 10%;
 }
 
 .dot {

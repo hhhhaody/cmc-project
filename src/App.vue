@@ -8,30 +8,6 @@ import { useUserStore } from './stores/store.js';
 // 使用 Pinia store
 const userStore = useUserStore();
 
-// init Swiper:
-// const swiper = new Swiper('.swiper', {
-//   // Optional parameters
-//   direction: 'horizontal',
-//   autoplay: {
-//     delay: 5000,
-//   },
-
-//   // If we need pagination
-//   // pagination: {
-//   //   el: '.swiper-pagination',
-//   // },
-
-//   // Navigation arrows
-//   navigation: {
-//     nextEl: '.swiper-button-next',
-//     prevEl: '.swiper-button-prev',
-//   },
-
-//   // And if we need scrollbar
-//   // scrollbar: {
-//   //   el: '.swiper-scrollbar',
-//   // },
-// });
 
 // 判断是pc还是移动端
 const isPc = ref(true);
@@ -43,7 +19,7 @@ const handleResize = () => {
 
 // test API function
 // import { testAPI } from "./apis/home";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 
 // const depts = ref([]);
 // const test = async () => {
@@ -59,6 +35,9 @@ import { echarts } from "@/utils/echarts"; // 按需引入echarts
 provide("echarts", echarts); // 提供全局使用
 
 const animation = ref();
+const currentIndex = ref(0);
+const videos2 = ref()
+const videos1 = ref()
 const cmc2 = ref(false);
 // const nav = ref("block")
 // animation.value = true;
@@ -128,6 +107,27 @@ const backScreenVideo = (value) => {
   }
 }
 
+//动画走马灯变化控制
+const sectionIndex = ref(0)
+const handleFirstCarouselChange = (index) => {
+
+  currentIndex.value = index
+  // data.value.changeAllStation(index)
+  sectionIndex.value = index
+  // console.log(currentIndex.value);
+  if (cmc2.value == true) {
+    videos2.value.setActiveItem(currentIndex.value)
+  }
+  if (cmc2.value == false) {
+    videos1.value.setActiveItem(currentIndex.value)
+
+  }
+}
+
+watch(currentIndex, (newValue) => {
+  console.log(newValue);
+
+});
 
 </script>
 
@@ -165,8 +165,38 @@ const backScreenVideo = (value) => {
       </div>
 
     </header>
-    <div>
-      <RouterView :wall="wall" @backScreenVideo="backScreenVideo" />
+    <div style="position: relative;display: flex;justify-content: center;">
+      <el-carousel v-if="cmc2 == false" :initial-index="0" :interval="1440000" type="card" arrow="never"
+        indicator-position="none" height="4vh" style="position: absolute;z-index: 99;height: 4vh;width: 20%; bottom:5%"
+        @change="handleFirstCarouselChange" :style="{ display: animation }" class="animate__animated animate__fadeInUp">
+        <el-carousel-item>
+          <h3>方通组焊工作站</h3>
+        </el-carousel-item>
+        <el-carousel-item>
+          <h3>模块总装工作站</h3>
+        </el-carousel-item>
+        <el-carousel-item>
+          <h3>型钢切割工作站</h3>
+        </el-carousel-item>
+        <el-carousel-item>
+          <h3>地面钢网工作站</h3>
+        </el-carousel-item>
+      </el-carousel>
+
+      <el-carousel v-else :initial-index="0" :interval="1440000" type="card" arrow="never" indicator-position="none"
+        height="4vh" style="position: absolute;z-index: 99;height: 4vh;width: 20%; bottom:5%"
+        @change="handleFirstCarouselChange" :style="{ display: animation }" class="animate__animated animate__fadeInUp">
+        <el-carousel-item>
+          <h3>总装工作站</h3>
+        </el-carousel-item>
+        <el-carousel-item>
+          <h3>墙板生产线</h3>
+        </el-carousel-item>
+        <el-carousel-item>
+          <h3>切板工作站</h3>
+        </el-carousel-item>
+      </el-carousel>
+      <RouterView :wall="wall" @backScreenVideo="backScreenVideo" :sectionIndex="sectionIndex" />
     </div>
 
     <nav class="animate__animated animate__fadeInUp" style="z-index: 1;">
@@ -276,11 +306,12 @@ const backScreenVideo = (value) => {
       <RouterLink v-if="cmc2 == true" class="link" to="/v2home2" @click="show()"></RouterLink>
 
       <RouterLink v-if="cmc2 == false" class="switch" to="/v2home"
-        @click="show(); changeBackground('bg2'); cmc2 = true">
+        @click="show(); changeBackground('bg2'); cmc2 = true; handleFirstCarouselChange(0)">
         CMC2.0
       </RouterLink>
 
-      <RouterLink v-if="cmc2 == true" class="switch" to="/" @click="show(); changeBackground('bg1'); cmc2 = false">
+      <RouterLink v-if="cmc2 == true" class="switch" to="/"
+        @click="show(); changeBackground('bg1'); cmc2 = false; handleFirstCarouselChange(0)">
         CMC1.0
       </RouterLink>
 
@@ -312,8 +343,8 @@ const backScreenVideo = (value) => {
 
   <div class="videoContainer" v-if="isPc">
     <el-carousel v-if="cmc2 == false" style="z-index: 1;" class="fullscreen" :interval="1440000"
-      :style="{ display: animation }">
-      <el-carousel-item style="height: 225%;" class="video1">
+      :style="{ display: animation }" arrow="never" indicator-position="none" ref="videos1">
+      <el-carousel-item style="height: 210%;" class="video1">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
           <source src="./assets/videos/fangtong_1107.mp4" type="video/mp4" />
 
@@ -343,7 +374,7 @@ const backScreenVideo = (value) => {
 
 
     <el-carousel v-else style="z-index: 1;" class="fullscreen" :interval="1440000" :style="{ display: animation }"
-      @change="handleCarouselChange">
+      @change="handleCarouselChange" arrow="never" indicator-position="none" ref="videos2">
       <el-carousel-item style="height: 225%;" class="video2">
         <video class="fullscreenVideo" id="bgVid" playsinline="" autoplay="" muted="" loop="">
           <source src="./assets/videos/zongzhuang2_1107.mp4" type="video/mp4" />
@@ -884,20 +915,37 @@ nav a:first-of-type {
 }
 
 .el-carousel__item h3 {
-  color: #475669;
+  /* color: #475669; */
   opacity: 0.75;
-  line-height: 150px;
+  line-height: 4vh;
   margin: 0;
   text-align: center;
+  color: #fff;
+}
+
+.el-carousel__item.is-active h3 {
+  background-color: #5887b7;
+  opacity: 0.9;
+  line-height: 4vh;
+  margin: 0;
+  text-align: center;
+  color: #fff;
+  border-radius: 2vh;
 }
 
 .el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
+  background-color: transparent;
+  /* opacity: 0.75; */
+  border-radius: 2vh;
 }
 
 .el-carousel__item:nth-child(2n + 1) {
-  background-color: #d3dce6;
+  background-color: transparent;
+  /* opacity: 0.75; */
+  border-radius: 2vh;
 }
+
+
 
 .app {
   width: 100%;

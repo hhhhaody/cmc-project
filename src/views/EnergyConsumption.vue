@@ -19,7 +19,8 @@ const sections = reactive([
   { name: "型钢切割工作站", tableData: [] },
   { name: "地面钢网工作站", tableData: [] },
   { name: "方通组焊工作站", tableData: [] },
-  { name: "模块总装工作站", tableData: [] }
+  { name: "模块总装工作站", tableData: [] },
+  { name: "墙板生产线", tableData: [] }
 ]);
 const selectedSection = ref(sections[0]);
 const total = ref(0);

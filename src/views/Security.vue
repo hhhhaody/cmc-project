@@ -8,7 +8,7 @@ import MyCollapse from "@/components/MyCollapse.vue"; // 引入自定义组件My
 import { updateVideoInfoAPI, getVideoStreamAPI } from "../apis/video";
 
 import real1 from "../assets/videos/xinggang_real.mp4"
-import real2 from "../assets/videos/fangtong_real.mp4"
+import real2 from "../assets/videos/fangtong_real2.mp4"
 
 const players = [];
 
