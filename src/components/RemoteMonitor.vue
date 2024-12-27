@@ -11,7 +11,7 @@ import videojs from "video.js";
 import "video.js/dist/video-js.css";
 
 const real1 = "/videos/xinggang_real.mp4";
-const real2 = "/videos/fangtong_real.mp4";
+const real2 = "/videos/fangtong_real2.mp4";
 
 const videos = [real1, real2];
 const videoPlayerRef = ref(null); // 使用正确的 ref 名称
