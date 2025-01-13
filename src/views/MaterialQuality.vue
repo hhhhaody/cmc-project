@@ -9,7 +9,7 @@ import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
 import UploadImage from "../components/UploadImage.vue";
 import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, getByIdAPI, addMaterialOperationAPI, getByBatchAPI } from "../apis/material";
-import { getMaterialInspectionAPI } from "../apis/data";
+import { getMaterialInspectionAPI, getMaterialInspectionDetailsAPI } from "../apis/data";
 import ExportButton from "@/components/ExportButton.vue";
 import { useUserStore } from '../stores/store.js';
 const userStore = useUserStore();
@@ -19,13 +19,16 @@ const userStore = useUserStore();
 const tableData = reactive([]);
 const total = ref(0)
 const getDataFromAPI = async () => {
-    const res = await getMaterialInspectionAPI(currentPage.value, pageSize.value, name.value, time.value[0], time.value[1]);
-    // console.log(res.data);
+    console.log(type.value);
+
+    const res = await getMaterialInspectionAPI(currentPage.value, pageSize.value, type.value, time.value[0], time.value[1]);
+    console.log(res.data);
     tableData.value = res.data.data;
     total.value = res.data.total
     updateSearchSuggestion()
 
 };
+
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -55,11 +58,11 @@ const filterExportData = (data) => {
 //#region
 const search1 = ref();
 const search2 = ref();
-const name = ref("")
+const type = ref("")
 const spec = ref("")
 const time = ref("")
 const searchForm = reactive({
-    name, spec
+    type, spec
 })
 //用于重新加载搜索框和搜索建议
 const renderKey = ref(0)
@@ -98,9 +101,9 @@ const loadMore = (status) => {
 
 // 记录用于通过搜索组件输入的搜索种类及对应关键词 searchComponent
 const search = (title, keyword) => {
-    // console.log(title, keyword);
-    if (title === "name") {
-        name.value = keyword
+    console.log(title, keyword);
+    if (title === "type") {
+        type.value = keyword
         updateSearchSuggestion()
 
     }
@@ -125,10 +128,11 @@ const update = () => {
 // 清空搜索组件的关键字搜索，并初始化表格展示数据
 const reset = () => {
     refresh.value = true
-    name.value = "";
-    spec.value = "";
+    type.value = "";
+    // spec.value = "";
     search1.value.searchContent = "";
-    search2.value.searchContent = "";
+    // search2.value.searchContent = "";
+    time.value = ""
     getDataFromAPI()
 };
 
@@ -400,10 +404,10 @@ const uploadImage = (uidToFileNameMap) => {
 const dialogVisible = ref(false);
 const currentIndex = ref(0);
 const imageUrls = ref([]);
-
 const detail = (receipt) => {
-    const receiptMap = JSON.parse(receipt.replace(/'/g, '"'));
-    console.log(receiptMap);
+    // console.log(receipt);
+    const receiptMap = receipt.split(',').map(name => name.trim());
+    // console.log(receiptMap);
 
     imageUrls.value = Object.values(receiptMap).map(url => ("https://cmc.eos-chengdu-1.cmecloud.cn/receipt/" + url));
     currentIndex.value = 0;
@@ -422,6 +426,38 @@ const nextImage = () => {
     }
 }
 //#endregion
+
+//检测详情相关
+//#region
+
+const detailDialog = ref(false);
+const inspectionDetails = ref(null)
+const item = reactive({
+    code: '',
+    type: '',
+    qualification: ''
+})
+
+const getMaterialInspectionDetailsByCode = async (code) => {
+    const res = await getMaterialInspectionDetailsAPI(code);
+    if (res.code === 1) {
+        // console.log(res.data);
+        inspectionDetails.value = res.data.map(item => {
+            return {
+                ...item,
+                results: JSON.parse(item.results) // 将字符串转换为 JSON 对象
+            };
+        });
+        console.log(item);
+
+        detailDialog.value = true
+
+        // updateform.name = res.data.name
+        // updateform.spec = res.data.spec
+        // updateform.threshold = res.data.threshold
+    }
+};
+//#endregion
 </script>
 
 <template>
@@ -436,9 +472,8 @@ const nextImage = () => {
             <el-main style="overflow: hidden">
                 <!-- search -->
                 <div>
-                    <SearchComponent :key="renderKey" search-title="物料名称" :searchContent=name ref="search1" field="name"
-                        @search="search" @edit="edit" :data="searchForm" />
-
+                    <SearchComponent :key="renderKey" search-title="物料" :searchContent=type ref="search1" field="type"
+                        @search="search" @edit="edit" database="data" />
                     <div style="display: inline-block; position: relative; padding-right: 1vh;">时间：
                         <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期"
                             end-placeholder="结束日期" :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
@@ -888,10 +923,19 @@ const nextImage = () => {
                     show-overflow-tooltip>
                     <el-table-column type="selection" align="center" />
                     <el-table-column label="序号" type="index" align="center" min-width="70vh" />
-                    <el-table-column prop="name" label="物料名称" align="center" />
-                    <!-- <el-table-column prop="spec" label="规格型号" align="center" />
-                    <el-table-column prop="batch" label="批次号" align="center" />
-                    <el-table-column prop="surface" label="外表面" align="center" />
+                    <el-table-column prop="name" label="物料名称" align="center">
+                        <template #default="scope">
+                            {{ scope.row.type.split('-')[0] }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="spec" label="规格型号" align="center" min-width="140vh">
+                        <template #default="scope">
+                            {{ scope.row.type.substring(scope.row.type.indexOf("-") + 1) }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="code" label="质检编号" align="center" />
+                    <el-table-column prop="qualification" label="质检结果" align="center" />
+                    <!-- <el-table-column prop="surface" label="外表面" align="center" />
                     <el-table-column prop="cutFace" label="切面" align="center" />
                     <el-table-column prop="length" label="长度" align="center" />
                     <el-table-column prop="width" label="宽度" align="center" />
@@ -906,25 +950,26 @@ const nextImage = () => {
                             {{ scope.row.updateTime.substring(0, 10) }} {{ scope.row.updateTime.substring(11,) }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="result" label="凭证" align="center" min-width="40vh">
+                    <el-table-column prop="pics" label="图片" align="center" min-width="40vh">
 
                         <template #default="scope">
-                            <el-button class="inline_button" @click="detail(scope.row.result)">
-                                详情
+                            <span v-if="!scope.row.pics || scope.row.pics.trim() === ''">无</span>
+                            <el-button v-else class="inline_button" @click="detail(scope.row.pics), dialog = true">
+                                查看
                             </el-button>
                         </template>
                     </el-table-column>
-                    <!-- <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="操作" align="center">
+                    <el-table-column v-if="!userStore.isReadOnly" label="详情" align="center">
                         <template #default="scope">
-                            <el-button class="inline_button"
-                                @click="getMaterialByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, updateform.id = scope.row.id">
-                                编辑
+                            <el-button class="inline_button" @click="item.code = scope.row.code, item.type = scope.row.type, item.qualification = scope.row.qualification,
+                                getMaterialInspectionDetailsByCode(scope.row.code), dialog = true">
+                                查看
                             </el-button>
-                            <el-button class="inline_button" @click="deleteConfirm(scope.row.id)">
+                            <!-- <el-button class="inline_button" @click="deleteConfirm(scope.row.id)">
                                 删除
-                            </el-button>
+                            </el-button> -->
                         </template>
-                    </el-table-column> -->
+                    </el-table-column>
 
                 </el-table>
             </el-main>
@@ -943,6 +988,38 @@ const nextImage = () => {
         <ArrowRight @click="nextImage" v-if="currentIndex < imageUrls.length - 1" style="width: 5vh; height: 5vh"
             class="next-button" />
 
+    </el-dialog>
+
+    <!-- 检测项细节弹框 -->
+    <el-dialog v-model="detailDialog" title="检测项详情" center destroy-on-close style="width: 80%;border-radius: 1vh;">
+        <div style="display: flex; justify-content: space-around; align-items: center">
+            <el-card shadow="always" style="width: 20%; text-align: center;">
+                {{ item.code }}
+            </el-card>
+            <el-card shadow="always" style="width: 65%; text-align: center;">
+                {{ item.type }}
+            </el-card>
+            <el-card shadow="always" style="width: 10%; text-align: center;">
+                {{ item.qualification }}
+            </el-card>
+        </div>
+        <el-divider />
+        <el-table :data="inspectionDetails" style="width: 100%;" height="50vh">
+            <el-table-column label="检测项" prop="name" align="center"></el-table-column>
+            <el-table-column label="检测结果" align="center">
+                <template #default="scope">
+                    <div v-for="(value, key) in scope.row.results" :key="key">
+                        {{ key }}: {{ value }}
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column label="合格标准及允许偏差" prop="tolerance" align="center"></el-table-column>
+            <el-table-column label="合格情况" prop="qualification" align="center"></el-table-column>
+        </el-table>
+
+        <!-- <span slot="footer" class="dialog-footer">
+            <el-button @click="detailDialog = false">关闭</el-button>
+        </span> -->
     </el-dialog>
 </template>
 
