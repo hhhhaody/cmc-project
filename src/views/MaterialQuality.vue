@@ -448,7 +448,8 @@ const getMaterialInspectionDetailsByCode = async (code) => {
                 results: JSON.parse(item.results) // 将字符串转换为 JSON 对象
             };
         });
-        console.log(item);
+        // console.log(inspectionDetails.value);
+
 
         detailDialog.value = true
 
@@ -1008,7 +1009,10 @@ const getMaterialInspectionDetailsByCode = async (code) => {
             <el-table-column label="检测项" prop="name" align="center"></el-table-column>
             <el-table-column label="检测结果" align="center">
                 <template #default="scope">
-                    <div v-for="(value, key) in scope.row.results" :key="key">
+                    <div v-if="Object.keys(scope.row.results).length === 1">
+                        {{ Object.values(scope.row.results)[0] }}
+                    </div>
+                    <div v-else v-for="(value, key) in scope.row.results" :key="key">
                         {{ key }}: {{ value }}
                     </div>
                 </template>
