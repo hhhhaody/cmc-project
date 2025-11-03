@@ -239,6 +239,9 @@ watch(currentIndex, (newValue) => {
             <el-dropdown-item>
               <RouterLink to="/composition" @click="hide">产线组成</RouterLink>
             </el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/cost" @click="hide">成本测算</RouterLink>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -278,6 +281,7 @@ watch(currentIndex, (newValue) => {
             <el-dropdown-item>
               <RouterLink to="/lowCarbon" @click="hide">碳管理</RouterLink>
             </el-dropdown-item>
+
           </el-dropdown-menu>
         </template>
       </el-dropdown>

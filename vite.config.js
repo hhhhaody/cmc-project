@@ -55,8 +55,8 @@ export default defineConfig({
     proxy: {
       "/api": {
         // target: "http://10.10.205.58:8081/",
-        // target: "http://192.168.10.168:8081/",
-        target: "http://localhost:8081/",
+        target: "http://192.168.10.168:8081/",
+        // target: "http://localhost:8081/",
         // target: "http://127.0.0.1:8081/",
         secure: false,
         changeOrigin: true, //this one is declare for cross

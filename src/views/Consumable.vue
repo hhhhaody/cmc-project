@@ -9,7 +9,6 @@ import PaginationComponent from "../components/PaginationComponent.vue";
 import DialogComponent from "../components/DialogComponent.vue";
 import UploadImage from "../components/UploadImage.vue";
 import { getMaterialAPI, addMaterialAPI, updateMaterialAPI, deleteMaterialAPI, getByIdAPI, addMaterialOperationAPI, getByBatchAPI } from "../apis/material";
-import { getMaterialInspectionAPI, getMaterialInspectionDetailsAPI } from "../apis/data";
 import ExportButton from "@/components/ExportButton.vue";
 import { useUserStore } from '../stores/store.js';
 const userStore = useUserStore();
@@ -19,16 +18,15 @@ const userStore = useUserStore();
 const tableData = reactive([]);
 const total = ref(0)
 const getDataFromAPI = async () => {
-    console.log(type.value);
-
-    const res = await getMaterialInspectionAPI(currentPage.value, pageSize.value, type.value, time.value[0], time.value[1]);
-    console.log(res.data);
+    const res = await getMaterialAPI(currentPage.value, pageSize.value, name.value, spec.value);
+    // console.log(res.data);
     tableData.value = res.data.data;
     total.value = res.data.total
     updateSearchSuggestion()
 
 };
 
+const productData = ref(["方通柱", "加筋桁架"]);  // 用于保存产品种类数据
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -58,11 +56,10 @@ const filterExportData = (data) => {
 //#region
 const search1 = ref();
 const search2 = ref();
-const type = ref("")
+const name = ref("")
 const spec = ref("")
-const time = ref("")
 const searchForm = reactive({
-    type, spec
+    name, spec
 })
 //用于重新加载搜索框和搜索建议
 const renderKey = ref(0)
@@ -101,9 +98,9 @@ const loadMore = (status) => {
 
 // 记录用于通过搜索组件输入的搜索种类及对应关键词 searchComponent
 const search = (title, keyword) => {
-    console.log(title, keyword);
-    if (title === "type") {
-        type.value = keyword
+    // console.log(title, keyword);
+    if (title === "name") {
+        name.value = keyword
         updateSearchSuggestion()
 
     }
@@ -128,11 +125,10 @@ const update = () => {
 // 清空搜索组件的关键字搜索，并初始化表格展示数据
 const reset = () => {
     refresh.value = true
-    type.value = "";
-    // spec.value = "";
+    name.value = "";
+    spec.value = "";
     search1.value.searchContent = "";
-    // search2.value.searchContent = "";
-    time.value = ""
+    search2.value.searchContent = "";
     getDataFromAPI()
 };
 
@@ -397,68 +393,6 @@ const uploadImage = (uidToFileNameMap) => {
     confirmImage.value = false
 }
 //#endregion
-
-//图片详情相关
-//#region
-
-const dialogVisible = ref(false);
-const currentIndex = ref(0);
-const imageUrls = ref([]);
-const detail = (receipt) => {
-    // console.log(receipt);
-    const receiptMap = receipt.split(',').map(name => name.trim());
-    // console.log(receiptMap);
-
-    imageUrls.value = Object.values(receiptMap).map(url => ("https://cmc.eos-chengdu-1.cmecloud.cn/receipt/" + url));
-    currentIndex.value = 0;
-    dialogVisible.value = true;
-}
-
-const prevImage = () => {
-    if (currentIndex.value > 0) {
-        currentIndex.value--;
-    }
-}
-
-const nextImage = () => {
-    if (currentIndex.value < imageUrls.value.length - 1) {
-        currentIndex.value++;
-    }
-}
-//#endregion
-
-//检测详情相关
-//#region
-
-const detailDialog = ref(false);
-const inspectionDetails = ref(null)
-const item = reactive({
-    code: '',
-    type: '',
-    qualification: ''
-})
-
-const getMaterialInspectionDetailsByCode = async (code) => {
-    const res = await getMaterialInspectionDetailsAPI(code);
-    if (res.code === 1) {
-        // console.log(res.data);
-        inspectionDetails.value = res.data.map(item => {
-            return {
-                ...item,
-                results: JSON.parse(item.results) // 将字符串转换为 JSON 对象
-            };
-        });
-        console.log(inspectionDetails.value);
-
-
-        detailDialog.value = true
-
-        // updateform.name = res.data.name
-        // updateform.spec = res.data.spec
-        // updateform.threshold = res.data.threshold
-    }
-};
-//#endregion
 </script>
 
 <template>
@@ -468,41 +402,46 @@ const getMaterialInspectionDetailsByCode = async (code) => {
         <!-- body -->
         <el-container class="subNavPage">
             <br />
-            <h1>来料检测</h1>
+            <div style="display: flex;justify-content: center;">
+                <el-breadcrumb separator="/">
+                    <el-breadcrumb-item :to="{ path: '/cost' }">
+                        <h1>成本测算</h1>
+                    </el-breadcrumb-item>
+                    <el-breadcrumb-item>
+                        <h1>耗材管理</h1>
+                    </el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
             <!-- main -->
             <el-main style="overflow: hidden">
                 <!-- search -->
-                <div>
-                    <SearchComponent :key="renderKey" search-title="物料" :searchContent=type ref="search1" field="type"
-                        @search="search" @edit="edit" database="data" />
-                    <div style="display: inline-block; position: relative; padding-right: 1vh;">时间：
-                        <el-date-picker v-model="time" type="datetimerange" start-placeholder="开始日期"
-                            end-placeholder="结束日期" :default-time="defaultTime1" value-format="YYYY-MM-DDTHH:mm:ss" />
-                    </div>
-                    <!-- <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=spec ref="search2" field="spec"
-                        @search="search" @edit="edit" :data="searchForm" /> -->
+                <!-- <div>
+                    <SearchComponent :key="renderKey" search-title="物料名称" :searchContent=name ref="search1" field="name"
+                        @search="search" @edit="edit" :data="searchForm" />
+                    <SearchComponent :key="renderKey" search-title="规格型号" :searchContent=spec ref="search2" field="spec"
+                        @search="search" @edit="edit" :data="searchForm" />
                     <el-button type="primary" style="margin-left: 10px; width: 7%" @click="update">
                         <Search style="width: 1em; height: 1em; margin-right: 8px" />搜索
                     </el-button>
                     <el-button style="width: 7%" @click="reset">
                         <DeleteFilled style="width: 1em; height: 1em; margin-right: 8px" />清空
                     </el-button>
-                </div>
-                <br />
+                </div> -->
+                <!-- <br /> -->
                 <!-- operation -->
                 <div v-if="!userStore.isReadOnly" style="display: flex; justify-content: space-between">
                     <span>
                         <el-button type="primary" @click="addDialog.dialogVisible = true, dialog = true">
-                            <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增检测结果
+                            <Plus style="width: 1em; height: 1em; margin-right: 8px" />新增耗材
                         </el-button>
 
                         <ExportButton v-model="selectedRows" :headers="headers" :tableData="tableData.value"
                             fileName="物料库存信息.xlsx" :filterFunction="filterExportData" buttonLabel="导出" />
                     </span>
                     <span>
-                        <!-- <el-button
-                            @click="stockInDialog.dialogVisible = true, stockform.operation = '入库', dialog = true, getDefaultDate()">入库</el-button>
                         <el-button
+                            @click="stockInDialog.dialogVisible = true, stockform.operation = '入库', dialog = true, getDefaultDate()">数据填报</el-button>
+                        <!-- <el-button
                             @click="stockOutDialog.dialogVisible = true, stockform.operation = '出库', dialog = true, getDefaultDate()">出库</el-button>
                         <el-button
                             @click="transferDialog.dialogVisible = true, stockform.operation = '转入不良物料库', dialog = true, getDefaultDate()">转入不良物料
@@ -520,27 +459,20 @@ const getMaterialInspectionDetailsByCode = async (code) => {
             width: fit-content;
             cursor: pointer;
           ">
-                    <!-- <RouterLink to="/inventory/operation">操作记录</RouterLink> -->
+                    <RouterLink style="margin-left: 2vh;" to=" /inventory/operation">变更记录</RouterLink>
                 </div>
 
                 <!-- 弹框区 -->
                 <!-- 新增弹框 -->
-                <DialogComponent ref="addDialog" :form="addform" dialog-title="检测结果记录" :refreshFunc="getDataFromAPI"
-                    :confirm-func="addMaterialAPIxx" @dialogClose="dialogClose">
+                <DialogComponent ref="addDialog" :form="addform" dialog-title="新增类型" :refreshFunc="getDataFromAPI"
+                    :confirm-func="addMaterialAPI" @dialogClose="dialogClose">
                     <el-form-item label="物料名称" prop="name" :rules="[
                         { required: true, message: '请输入物料名称', trigger: 'blur' },
                         {
                             min: 1, max: 30,
                             message: '长度必须在1-30之间', trigger: 'blur'
                         }]">
-                        <el-radio-group v-model="addform.name" size="medium">
-                            <el-radio-button label="柱芯连接板" value="New York" />
-                            <el-radio-button label="柱尾加强板" value="Washington" />
-                            <el-radio-button label="角柱柱身方通" value="Los Angeles" />
-                            <el-radio-button label="角柱柱尾方通" value="Chicago" />
-                            <el-radio-button label="角柱芯柱方通" value="Chicago" />
-                        </el-radio-group>
-                        <!-- <el-input v-model="addform.name" autocomplete="off" placeholder="请输入物料名称" /> -->
+                        <el-input v-model="addform.name" autocomplete="off" placeholder="请输入物料名称" />
                     </el-form-item>
                     <el-form-item label="规格型号" prop="spec" :rules="[
                         { required: true, message: '请输入规格型号', trigger: 'blur' },
@@ -548,123 +480,13 @@ const getMaterialInspectionDetailsByCode = async (code) => {
                             min: 1, max: 30,
                             message: '长度必须在1-30之间', trigger: 'blur'
                         }]">
-                        <el-radio-group v-model="addform.spec" size="medium">
-                            <el-radio-button label="360*180*8mm" value="New York" />
-                            <el-radio-button label="450*200*8mm" value="Washington" />
-                        </el-radio-group>
-                        <!-- <el-input v-model="addform.spec" autocomplete="off" placeholder="请输入规格型号" /> -->
+                        <el-input v-model="addform.spec" autocomplete="off" placeholder="请输入规格型号" />
                     </el-form-item>
-                    <el-row>
-                        <el-col :span="8">
-
-
-                            <el-form-item prop="threshold" :rules="[
-                                { required: true, message: '请输入阈值', trigger: 'blur' },
-                                { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-                            ]">
-                                <template v-slot:label>
-                                    <span>
-                                        外表面
-                                    </span>
-
-                                    <el-tooltip effect="light" content="应平整光洁，无裂缝、折边、夹渣、锈斑等" placement="top">
-                                        <el-icon>
-                                            <QuestionFilled />
-                                        </el-icon>
-                                    </el-tooltip>
-                                </template>
-                                <el-radio-group v-model="addform.spec" size="medium">
-                                    <el-radio-button label="合格" value="New York" />
-                                    <el-radio-button label="不合格" value="Washington" />
-                                </el-radio-group>
-                                <!-- <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入低库存阈值" /> -->
-                            </el-form-item>
-                        </el-col>
-
-                        <el-col :span="8">
-
-                            <el-form-item prop="threshold" :rules="[
-                                { required: true, message: '请输入阈值', trigger: 'blur' },
-                                { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-                            ]">
-                                <template v-slot:label>
-                                    <span>
-                                        切面
-                                    </span>
-
-                                    <el-tooltip effect="light" content="应无裂纹、夹渣、毛刺和分层" placement="top">
-                                        <el-icon>
-                                            <QuestionFilled />
-                                        </el-icon>
-                                    </el-tooltip>
-                                </template>
-                                <el-radio-group v-model="addform.spec" size="medium">
-                                    <el-radio-button label="合格" value="New York" />
-                                    <el-radio-button label="不合格" value="Washington" />
-                                </el-radio-group>
-                                <!-- <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入低库存阈值" /> -->
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
-
-                            <el-form-item label="平整度(mm)" prop="threshold" :rules="[
-                                { required: true, message: '请输入阈值', trigger: 'blur' },
-                                { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-                            ]">
-                                <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入平整度值" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="8">
-
-                            <el-form-item label="长(mm)" prop="threshold" :rules="[
-                                { required: true, message: '请输入阈值', trigger: 'blur' },
-                                { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-                            ]">
-                                <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入长度值" />
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
-
-                            <el-form-item label="宽(mm)" prop="threshold" :rules="[
-                                { required: true, message: '请输入阈值', trigger: 'blur' },
-                                { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-                            ]">
-                                <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入宽度值" />
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
-
-                            <el-form-item label="厚(mm)" prop="threshold" :rules="[
-                                { required: true, message: '请输入阈值', trigger: 'blur' },
-                                { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
-                            ]">
-                                <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入厚度值" />
-                            </el-form-item>
-                        </el-col>
-
-                    </el-row>
-                    <el-form-item prop="threshold" :rules="[
+                    <el-form-item label="低库存阈值" prop="threshold" :rules="[
                         { required: true, message: '请输入阈值', trigger: 'blur' },
                         { type: 'number', message: '阈值必须是数字', trigger: 'blur' }
                     ]">
-                        <template v-slot:label>
-                            <span>
-                                除锈等级
-                            </span>
-
-                            <el-tooltip effect="light" content="Sa2.5" placement="top">
-                                <el-icon>
-                                    <QuestionFilled />
-                                </el-icon>
-                            </el-tooltip>
-                        </template>
-                        <el-radio-group v-model="addform.spec" size="medium">
-                            <el-radio-button label="合格" value="New York" />
-                            <el-radio-button label="不合格" value="Washington" />
-                        </el-radio-group>
-                        <!-- <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入低库存阈值" /> -->
+                        <el-input v-model.number="addform.threshold" autocomplete="off" placeholder="请输入低库存阈值" />
                     </el-form-item>
                 </DialogComponent>
 
@@ -920,55 +742,27 @@ const getMaterialInspectionDetailsByCode = async (code) => {
 
                 <!-- table -->
                 <el-table :data="tableData.value" @selection-change="handleSelectionChange"
-                    style="width: 100%; margin-top: 1vh;border-radius: 1vh" table-layout="fixed" height="52vh"
+                    style="width: 100%; margin-top: 1vh;border-radius: 1vh" table-layout="fixed" height="56vh"
                     show-overflow-tooltip>
                     <el-table-column type="selection" align="center" />
                     <el-table-column label="序号" type="index" align="center" min-width="70vh" />
-                    <el-table-column prop="name" label="物料名称" align="center">
-                        <template #default="scope">
-                            {{ scope.row.type.split('-')[0] }}
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="spec" label="规格型号" align="center" min-width="140vh">
-                        <template #default="scope">
-                            {{ scope.row.type.substring(scope.row.type.indexOf("-") + 1) }}
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="code" label="质检编号" align="center" />
-                    <el-table-column prop="qualification" label="质检结果" align="center" />
-                    <!-- <el-table-column prop="surface" label="外表面" align="center" />
-                    <el-table-column prop="cutFace" label="切面" align="center" />
-                    <el-table-column prop="length" label="长度" align="center" />
-                    <el-table-column prop="width" label="宽度" align="center" />
-                    <el-table-column prop="thickness" label="厚度" align="center" />
-                    <el-table-column prop="flatness" label="平整度" align="center" />
-                    <el-table-column prop="derust" label="除锈等级" align="center" />
-                    <el-table-column prop="rAngle" label="R角" align="center" />
-                    <el-table-column prop="crossSection" label="截面尺寸" align="center" />
-                    <el-table-column prop="inspector" label="检测人" align="center" /> -->
-                    <el-table-column prop="updateTime" label="检测时间" align="center" min-width="120vh">
-                        <template #default="scope">
-                            {{ scope.row.updateTime.substring(0, 10) }} {{ scope.row.updateTime.substring(11,) }}
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="pics" label="图片" align="center" min-width="40vh">
+                    <el-table-column prop="name" label="名称" align="center" />
+                    <!-- <el-table-column prop="spec" label="规格型号" align="center" />
+                    <el-table-column prop="amount" label="库存数量" align="center" />
+                    <el-table-column prop="threshold" label="低库存阈值" align="center" /> -->
 
+
+                    <el-table-column prop="amount" label="单价" align="center" />
+
+                    <el-table-column v-if="!userStore.isReadOnly" prop="operation" label="操作" align="center">
                         <template #default="scope">
-                            <span v-if="!scope.row.pics || scope.row.pics.trim() === ''">无</span>
-                            <el-button v-else class="inline_button" @click="detail(scope.row.pics), dialog = true">
-                                查看
+                            <el-button class="inline_button"
+                                @click="getMaterialByID(scope.row.id), editDialog.dialogVisible = true, dialog = true, updateform.id = scope.row.id">
+                                编辑
                             </el-button>
-                        </template>
-                    </el-table-column>
-                    <el-table-column v-if="!userStore.isReadOnly" label="详情" align="center">
-                        <template #default="scope">
-                            <el-button class="inline_button" @click="item.code = scope.row.code, item.type = scope.row.type, item.qualification = scope.row.qualification,
-                                getMaterialInspectionDetailsByCode(scope.row.code), dialog = true">
-                                查看
-                            </el-button>
-                            <!-- <el-button class="inline_button" @click="deleteConfirm(scope.row.id)">
+                            <el-button class="inline_button" @click="deleteConfirm(scope.row.id)">
                                 删除
-                            </el-button> -->
+                            </el-button>
                         </template>
                     </el-table-column>
 
@@ -980,51 +774,6 @@ const getMaterialInspectionDetailsByCode = async (code) => {
             </el-footer>
         </el-container>
     </dv-border-box1>
-    <!-- 图片详情弹框 -->
-    <el-dialog v-model="dialogVisible" style="width: fit-content;border-radius: 1vh;">
-        <ArrowLeft @click="prevImage" v-if="currentIndex > 0" style="width: 5vh; height: 5vh" class="prev-button" />
-        <canvas v-if="pdf" v-for="pageIndex in pdfPages" :id="`pdf-canvas-` + pageIndex" :key="pageIndex"
-            style="display: block;"></canvas>
-        <img v-else w-full :src="imageUrls[currentIndex]" alt="无图片" class="image" />
-        <ArrowRight @click="nextImage" v-if="currentIndex < imageUrls.length - 1" style="width: 5vh; height: 5vh"
-            class="next-button" />
-
-    </el-dialog>
-
-    <!-- 检测项细节弹框 -->
-    <el-dialog v-model="detailDialog" title="检测项详情" center destroy-on-close style="width: 80%;border-radius: 1vh;">
-        <div style="display: flex; justify-content: space-around; align-items: center">
-            <el-card shadow="always" style="width: 20%; text-align: center;">
-                {{ item.code }}
-            </el-card>
-            <el-card shadow="always" style="width: 65%; text-align: center;">
-                {{ item.type }}
-            </el-card>
-            <el-card shadow="always" style="width: 10%; text-align: center;">
-                {{ item.qualification }}
-            </el-card>
-        </div>
-        <el-divider />
-        <el-table :data="inspectionDetails" style="width: 100%;" height="50vh">
-            <el-table-column label="检测项" prop="name" align="center"></el-table-column>
-            <el-table-column label="检测结果" align="center">
-                <template #default="scope">
-                    <div v-if="Object.keys(scope.row.results).length === 1">
-                        {{ Object.values(scope.row.results)[0] }}
-                    </div>
-                    <div v-else v-for="(value, key) in scope.row.results" :key="key">
-                        {{ key }}: {{ value }}
-                    </div>
-                </template>
-            </el-table-column>
-            <el-table-column label="合格标准及允许偏差" prop="tolerance" align="center"></el-table-column>
-            <el-table-column label="合格情况" prop="qualification" align="center"></el-table-column>
-        </el-table>
-
-        <!-- <span slot="footer" class="dialog-footer">
-            <el-button @click="detailDialog = false">关闭</el-button>
-        </span> -->
-    </el-dialog>
 </template>
 
 <style scoped>
@@ -1068,35 +817,12 @@ const getMaterialInspectionDetailsByCode = async (code) => {
     background-color: rgba(37, 54, 83, 0.498);
 }
 
-
-.image-dialog {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+:deep .el-breadcrumb__inner {
+    color: #fff !important;
 }
 
-.prev-button {
-    position: absolute;
-    left: 20px;
-    /* Adjust the left position as needed */
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1;
-    color: white
-}
-
-.next-button {
-    position: absolute;
-    right: 20px;
-    /* Adjust the right position as needed */
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1;
-    color: white
-}
-
-.image {
-    max-width: 100%;
-    max-height: 60vh;
+:deep .el-breadcrumb__inner.is-link {
+    color: #fff !important;
+    text-shadow: 1px 1px 15px #a3ccf9;
 }
 </style>

@@ -149,6 +149,21 @@ const routes = [
     component: () => import('../views/LowCarbon.vue')
   },
   {
+    path: '/cost',
+    name: 'cost',
+    component: () => import('../views/Cost.vue')
+  },
+  {
+    path: '/cost/consumable',
+    name: 'costConsumable',
+    component: () => import('../views/Consumable.vue')
+  },
+  {
+    path: '/cost/worker',
+    name: 'costWorker',
+    component: () => import('../views/Worker.vue')
+  },
+  {
     path: '/defectiveMaterial',
     name: 'defectiveMaterial',
     component: () => import('../views/DefectiveMaterial.vue')
